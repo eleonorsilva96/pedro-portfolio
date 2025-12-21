@@ -9,10 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@datocms/cda-client": "^0.2.7",
     "clsx": "^2.1.1",
-    "next": "16.0.3",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "next": "^16.0.10",
+    "react": "^19.2.3",
+    "react-datocms": "^7.2.3",
+    "react-dom": "^19.2.3",
+    "react-player": "^3.4.0",
+    "use-deep-compare-effect": "^1.8.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

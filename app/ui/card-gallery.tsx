@@ -9,6 +9,7 @@ export default function CardGallery({
     hasShadow,
     title,
     imgUrl, // add also link url
+    alt
 } : {
     width: number,
     height: number,
@@ -16,6 +17,7 @@ export default function CardGallery({
     hasShadow?: boolean, // optional
     title?: string, // optional
     imgUrl: string,
+    alt: string,
 }) {
   return (
     <div className={clsx( // add hover here and link to the corresponded page
@@ -24,7 +26,8 @@ export default function CardGallery({
         },
         'overflow-hidden', // hide the content that overflows the container
         'w-full',
-        'max-w-[800px]',
+        'max-w-[500px]', // 'max-w-[800px]',
+        'h-auto',
         {
             'rounded-lg': hasRadius === true,
             'shadow-lg': hasShadow === true,
@@ -35,7 +38,7 @@ export default function CardGallery({
             className="w-full h-auto"
             width={width}
             height={height}
-            alt="Service"
+            alt={alt}
           />
           <h3 className={clsx(
             '',
@@ -46,3 +49,6 @@ export default function CardGallery({
     </div>
   );
 }
+
+
+       // 'max-w-[800px]',

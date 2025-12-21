@@ -1,31 +1,46 @@
 import CardGallery from "@/app/ui/card-gallery";
 import clsx from "clsx";
+import { GalleryItems, PortfolioPhotoImage } from "../lib/definitions";
 
 // add props to receive fetching data 
-export default function Gallery({
+export default async function Gallery({
+    galleryItems,
     hasTitle,
     removeBtn
 }: {
+    galleryItems: (GalleryItems[] | PortfolioPhotoImage[]),
     hasTitle?: boolean,
-    removeBtn?:boolean,
+    removeBtn?: boolean,
 }) {
+  console.log(galleryItems)
+  const content = galleryItems.map((item) => {
+    if (item?.__typename === 'GalleryItemRecord' || item.__typename === 'ImageBlockRecord') {
+      return (
+        <CardGallery
+              key={item.id}
+              imgUrl={item.asset?.url}
+              width={item.asset?.width}
+              height={item.asset?.height}
+              alt={item.asset?.alt}
+              hasRadius={!hasTitle}
+          />
+      );
+    }
+    return null; 
+  });
+
   return (
-    <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:flex-row lg:flex-wrap lg:gap-6 w-full h-auto items-center">
-            <CardGallery width={2784} height={1320} hasRadius={!hasTitle} title={hasTitle ? 'Web Design' : undefined} imgUrl="/home.avif"/>
-            <CardGallery width={2784} height={1320} hasRadius={!hasTitle} title={hasTitle ? 'Web Design' : undefined} imgUrl="/home.avif"/>
-            <CardGallery width={2784} height={1320} hasRadius={!hasTitle} title={hasTitle ? 'Web Design' : undefined} imgUrl="/home.avif"/>
-            <CardGallery width={2784} height={1320} hasRadius={!hasTitle} title={hasTitle ? 'Web Design' : undefined} imgUrl="/home.avif"/>
-            <CardGallery width={2784} height={1320} hasRadius={!hasTitle} title={hasTitle ? 'Web Design' : undefined} imgUrl="/home.avif"/>
-            <CardGallery width={2784} height={1320} hasRadius={!hasTitle} title={hasTitle ? 'Web Design' : undefined} imgUrl="/home.avif"/>
-        </div>
-        <button
-            className={clsx(
-                {
-                    'hidden' : removeBtn === true,
-                },
-            )}
-        >Ver Mais</button>
+    <div className="flex flex-col w-auto gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 lg:flex-row lg:flex-wrap lg:gap-6 w-full h-auto items-center">
+        {content}
+      </div>
+      <button
+        className={clsx({
+          hidden: removeBtn === true,
+        })}
+      >
+        Ver Mais
+      </button>
     </div>
   );
 }

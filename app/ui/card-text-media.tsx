@@ -6,12 +6,16 @@ export default function CardTextMedia({
   btnLabel,
   bgColor,
   imgUrl,
+  width,
+  height,
 } : {
 title : string,
 desc: string,
 btnLabel: string,
 bgColor: string,
 imgUrl: string,
+width: number,
+height: number,
 }) {
   return (
     <div className={`flex flex-col lg:flex-row w-full h-auto justify-between items-center ${bgColor}`}>
@@ -24,8 +28,8 @@ imgUrl: string,
         <Image
           src={imgUrl}
           className="w-full h-[500px] lg:h-[600px] object-cover object-[35%_0] md:object-center"
-          width={2784}
-          height={1320}
+          width={width}
+          height={height}
           alt="Picture of the author"
         />
       </div>
