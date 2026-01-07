@@ -16,7 +16,9 @@
     "react-datocms": "^7.2.3",
     "react-dom": "^19.2.3",
     "react-player": "^3.4.0",
-    "use-deep-compare-effect": "^1.8.1"
+    "resend": "^6.6.0",
+    "use-deep-compare-effect": "^1.8.1",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

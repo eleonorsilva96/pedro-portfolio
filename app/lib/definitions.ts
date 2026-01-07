@@ -13,8 +13,9 @@ type TextBlock = {
 };
 
 export type GalleryItems = {
-  __typename: 'GalleryItemRecord'; // i think it has another names
+  __typename: 'GalleryItemRecord'; 
   id: string;
+  slug: string;
   title: string;
   asset: ImageAsset;
 };
@@ -101,11 +102,28 @@ type PrivacyPolicyLink = {
     __typename: 'PrivacyPolicyRecord';
 } | null;
 
+
 // Check for only one of this block shapes
 type SectionBlock = VideoBlock | CardTextImg | CardGallery;
 
 
 // ----- Portfolio -----
+
+type AdditionalLinkBlock = {
+  __typename: 'AdditionalLinkBlockRecord';
+  text: string | null;
+  link: string | null;
+}
+
+type RelatedLinkBlock = {
+  __typename: 'RelatedProjectBlockRecord';
+  text: string | null;
+  link: {
+    project: string;
+  };
+}
+
+type LinkBlock = AdditionalLinkBlock | RelatedLinkBlock;
 
 export type PortfolioPhotoImage = {
   __typename: 'ImageBlockRecord';
@@ -126,30 +144,35 @@ export type PortfolioGalleryTag = {
 
 type ExternalVideoBlock = {
   __typename: 'ExternalVideoRecord';
+  id: string;
+  slug: string;
   title: string;
   link: ExternalVideo;
 }
 
 type CardGalleryBlock = {
+  __typename: 'SectionCardGalleryBlock';
+  id: string;
   title: string;
   galleryItems: GalleryItemsProjectBlock[];
 }
 
-type GalleryItemsProjectBlock = ExternalVideoBlock | GalleryItems | PortfolioPhotoImage; 
+export type GalleryItemsProjectBlock = ExternalVideoBlock | GalleryItems | PortfolioPhotoImage; 
 
 export type SlideProjectBlock = {
   __typename: 'SlideProjectRecord';
+  id: string;
   urlVideo: ExternalVideo | null;
   video: VideoAsset | null;
   context: string;
   role: string | null;
   date: string | null;
-  additionalLinkText: string | null;
-  additionalLink: string | null; // can be null
+  linkBlock: LinkBlock | null;
 }
 
 type SectionProjectBlock = {
   __typename: 'SectionProjectRecord';
+  id: string;
   description: string;
   section: CardGalleryBlock[];
 
@@ -196,6 +219,13 @@ type PortfolioCategoryRecord = {
   slug: string;
   gallery: CategoryRecord[];
   cta: string | null;
+}
+
+export type ProjectData = {
+  project: {
+    title: string;
+    content: SectionProjectBlock;
+  };
 }
 
 export type PortfolioData = {

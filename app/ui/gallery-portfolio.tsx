@@ -26,7 +26,7 @@ export default function GalleryPortfolio({
           let newUrl = null;
 
           if (isModal) {
-            params.set("projectId", project.projectId.project);
+            params.set("id", project.projectId.project);
             newUrl = `${pathname}?${params.toString()}`;
           } else {
             newUrl = `${pathname}/${project.projectId.project}`;
@@ -35,7 +35,6 @@ export default function GalleryPortfolio({
           return (
             <Link
               key={project.id}
-              // added intercepting route to be able to open the modal page
               href={newUrl}
             >
               <div

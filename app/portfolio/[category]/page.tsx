@@ -7,7 +7,7 @@ import ModalContent from "@/app/ui/modal-content";
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
   query Portfolio {
-    allPortfolioCategories { # get all records from the collection model
+    allPortfolioCategories { # get all records from the Portfolio collection model
       title
       description
       slug
@@ -99,6 +99,7 @@ const PAGE_CONTENT_QUERY = `
                 }
                 ... on SlideProjectRecord {
                   __typename
+                  id
                   urlVideo {
                     url
                     title
@@ -122,8 +123,22 @@ const PAGE_CONTENT_QUERY = `
                   context
                   role
                   date
-                  additionalLinkText
-                  additionalLink
+                  linkBlock {
+                    ... on AdditionalLinkBlockRecord {
+                      __typename
+                      text
+                      link
+                    }
+                    ... on RelatedProjectBlockRecord {
+                      __typename
+                      text
+                      link {
+                        ... on ProjectRecord {
+                          project
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -167,11 +182,11 @@ export default async function PortfolioPage({
   searchParams,
 }: {
   params: Promise<{ category: string }>;
-  searchParams: Promise<{ filter: string; projectId: string }>;
+  searchParams: Promise<{ filter: string; id: string }>;
 }) {
   // inside the route props we can get the dynamic url from the route using params
   const { category } = await params;
-  const { filter, projectId } = (await searchParams) ?? Promise.resolve({}); // if there's no filters return a empty object
+  const { filter, id } = await searchParams ?? Promise.resolve({}); // if there's no filters return a empty object
   const { allPortfolioCategories, allPortfolioTags } = (await performRequest(
     PAGE_CONTENT_QUERY
   )) as PortfolioData;
@@ -197,11 +212,11 @@ export default async function PortfolioPage({
     );
   }
 
-  const modalProject = projectId
+  const modalProject = id
     ? categoryData?.gallery.find(
         (p) =>
           p.__typename === "GalleryPortfolioRecord" &&
-          p.projectId.project === projectId
+          p.projectId.project === id
       )
     : null;
 
@@ -218,7 +233,7 @@ export default async function PortfolioPage({
       galleryList={galleryList || []}
       modalProject={modalProject}
       sliderContent={sliderContent}
-      projectId={projectId}
+      projectId={id}
       category={category}
     />
   ) : null;

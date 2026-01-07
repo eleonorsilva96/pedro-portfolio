@@ -1,11 +1,15 @@
 'use client';
 
 import {useSearchParams, useRouter, usePathname } from "next/navigation";
+import CloseIcon from "./icons/close-icon";
+import clsx from "clsx";
 
 export default function Close({
-    projectId
+    projectId,
+    isProject
 } : {
     projectId: string;
+    isProject: boolean;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -15,8 +19,8 @@ export default function Close({
       const params = new URLSearchParams(searchParams);
 
       if (id) {
-        if (params.get("projectId") === id) {
-            params.delete("projectId");
+        if (params.get("id") === id) {
+            params.delete("id");
         }
       }
 
@@ -25,8 +29,13 @@ export default function Close({
 
 
   return (
-    <div
-    onClick={() => handleClick(projectId)} 
-    className="mt-4 mr-4 absolute top-0 right-0 cursor-pointer z-10">Close</div>
+    <div className="mt-4 mr-4 absolute top-0 right-0 cursor-pointer z-10" onClick={() => handleClick(projectId)}>
+      <CloseIcon className={clsx(
+        {
+          'text-neutral-800' : isProject,
+          'text-neutral-100' : !isProject
+        }
+      )} />
+    </div>
   );  
 }

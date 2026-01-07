@@ -104,6 +104,7 @@ const PAGE_CONTENT_QUERY = `
                 }
                 ... on SlideProjectRecord {
                   __typename
+                  id
                   urlVideo {
                     url
                     title
@@ -127,7 +128,22 @@ const PAGE_CONTENT_QUERY = `
                   context
                   role
                   date
-                  additionalLink
+                  linkBlock {
+                    ... on AdditionalLinkBlockRecord {
+                      __typename
+                      text
+                      link
+                    }
+                    ... on RelatedProjectBlockRecord {
+                      __typename
+                      text
+                      link { # Link to another Record
+                        id
+                        title
+                        project
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -170,6 +186,8 @@ export default async function PortfolioPage({
   let title = null;
   let description = null;
 
+  console.log("allPortfolioCategories", allPortfolioCategories);
+
   const categoryRecord = allPortfolioCategories.find(
     (p) =>
       p.slug === category
@@ -200,7 +218,7 @@ export default async function PortfolioPage({
       projectDetails?.projectId.content.__typename === "GalleryProjectRecord"
     ) {
 
-      description = <p>{projectDetails?.projectId.content.description}</p>;
+      description = projectDetails?.projectId.content.description;
       contentView = (
         <Gallery
           galleryItems={projectDetails?.projectId.content.photosGallery ?? []}
@@ -208,7 +226,7 @@ export default async function PortfolioPage({
         />
       );
     } else {
-      description = <p>{projectDetails?.projectId.content.description}</p>;
+      description = projectDetails?.projectId.content.description;
       contentView = <div>Section Project</div>;
     }
   }
