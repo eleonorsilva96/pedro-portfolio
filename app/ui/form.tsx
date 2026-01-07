@@ -1,7 +1,19 @@
 
+'use client'
+
+import { sendEmail, State } from "@/app/lib/actions";
+import { useActionState } from "react";
+
 export default function Form() {
+  const initialState : State = { errors: {}, message: null, success: undefined };
+  const [state, formAction] = useActionState(sendEmail, initialState);
+
+  console.log(state)
+
+  const errorMessage = state.message ? <p>${state.message}</p> : null;
+
   return (
-    <form className="w-full max-w-md">
+    <form action={formAction} className="w-full max-w-md">
       <div className="grid grid-cols-1">
         <div className="col-span-full">
           <label
@@ -39,15 +51,15 @@ export default function Form() {
         </div>
         <div className="col-span-full">
           <label
-            htmlFor="about"
+            htmlFor="message"
             className="block text-sm/6 font-medium text-gray-900"
           >
             Deixe sua mensagem
           </label>
           <div className="mt-2">
             <textarea
-              id="about"
-              name="about"
+              id="message"
+              name="message"
               rows={3}
               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               required
@@ -55,6 +67,7 @@ export default function Form() {
           </div>
           {/* <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p> */}
         </div>
+        {errorMessage}
         <button type="submit" className="w-full">Submeter</button>
       </div>
     </form>
