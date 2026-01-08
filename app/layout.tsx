@@ -78,7 +78,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.className} antialiased text-gray-950`}
+        className={`${quicksand.className} antialiased`}
       >
         <Header logo={global.headerLogo} navLinks={global.headerNavigation} />
         {children}

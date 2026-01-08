@@ -154,18 +154,24 @@ const PAGE_CONTENT_QUERY = `
           id
           title
           description
-          uploadVideo {
-            url
-            alt
-            video {
-              muxPlaybackId
-              title
-              width
-              height
-              blurUpThumb
+          video {
+            ... on VideoBlockRecord {
+              videoAsset {
+                url
+                alt
+                video {
+                  muxPlaybackId
+                  title
+                  width
+                  height
+                  blurUpThumb
+                }
+              }
+            }  
+            ... on ExternalVideoStringRecord {
+              externalVideoLink
             }
           }
-          externalVideoLink
         }
       }
       cta

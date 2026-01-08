@@ -82,7 +82,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
-      <main className="flex min-h-screen w-full flex-col items-center bg-white sm:items-start">
+      <main className="flex min-h-screen w-full flex-col items-center sm:items-start">
         {/* <Video /> */}
         <div className="relative w-full h-[1000px] lg:h-[800px]">
           <VideoPlayer

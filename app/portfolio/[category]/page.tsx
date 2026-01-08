@@ -3,6 +3,8 @@ import { performRequest } from "@/app/lib/datocms";
 import Filter from "@/app/ui/filter";
 import GalleryPortfolio from "@/app/ui/gallery-portfolio";
 import ModalContent from "@/app/ui/modal-content";
+import CardTextMediaTest from "@/app/ui/card-text-media-test";
+import ReactMarkdown from "react-markdown";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -149,18 +151,24 @@ const PAGE_CONTENT_QUERY = `
           id
           title
           description
-          uploadVideo {
-            url
-            alt
-            video {
-              muxPlaybackId
-              title
-              width
-              height
-              blurUpThumb
+          video {
+            ... on VideoBlockRecord {
+              videoAsset {
+                url
+                alt
+                video {
+                  muxPlaybackId
+                  title
+                  width
+                  height
+                  blurUpThumb
+                }
+              }
+            }  
+            ... on ExternalVideoStringRecord {
+              externalVideoLink
             }
           }
-          externalVideoLink
         }
       }
       cta
@@ -186,11 +194,13 @@ export default async function PortfolioPage({
 }) {
   // inside the route props we can get the dynamic url from the route using params
   const { category } = await params;
-  const { filter, id } = await searchParams ?? Promise.resolve({}); // if there's no filters return a empty object
+  const { filter, id } = (await searchParams) ?? Promise.resolve({}); // if there's no filters return a empty object
   const { allPortfolioCategories, allPortfolioTags } = (await performRequest(
     PAGE_CONTENT_QUERY
   )) as PortfolioData;
   let categoryDataFiltered = null;
+
+  console.log("categories", allPortfolioCategories);
 
   const categoryData = allPortfolioCategories.find((c) => c.slug === category);
   const categoryTags = allPortfolioTags.filter((t) =>
@@ -200,6 +210,43 @@ export default async function PortfolioPage({
   const galleryList = categoryData?.gallery.filter(
     (project) => project.__typename === "GalleryPortfolioRecord"
   );
+
+  const musicList = categoryData?.gallery.filter(
+    (project) => project.__typename === "MusicPortfolioRecord"
+  );
+
+  console.log("music", musicList);
+
+  const musicCard = musicList?.map((item, index) => {
+    const videoLink = item.video.externalVideoLink
+      ? item.video.externalVideoLink
+      : item.video.videoAsset;
+
+    if (index % 2 === 0) {
+      // return <div key={item.id}>{item.title} + RIGHT IMAGE</div>;
+      return (
+        <CardTextMediaTest
+          key={item.id}
+          title={item.title}
+          desc={item.description}
+          bgColor="bg-transparent"
+          media={videoLink}
+          isMediaRight
+        />
+      );
+    } else {
+      // return <div key={item.id}>{item.title} + LEFT IMAGE</div>;
+      return (
+        <CardTextMediaTest
+          key={item.id}
+          title={item.title}
+          desc={item.description}
+          bgColor="bg-transparent"
+          media={videoLink}
+        />
+      );
+    }
+  });
 
   const isModal =
     category === "animation" || category === "digital-image" ? true : false;
@@ -240,18 +287,48 @@ export default async function PortfolioPage({
 
   return (
     <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
-      <main className="flex min-h-screen w-full flex-col items-start bg-white md:items-center">
+      <main className="flex min-h-screen w-full flex-col items-start md:items-center">
         <h1 className="text-5xl my-4">{categoryData?.title}</h1>
-        {categoryData?.description ? <p className="text-center w-4xl">{categoryData?.description}</p> : ""}
-        <div className="flex flex-col w-full my-6 px-6">
-          {categoryTags.length > 0 ? <Filter tags={categoryTags} /> : ""}
-          <GalleryPortfolio
-            data={
-              filter ? categoryDataFiltered || [] : categoryData?.gallery || []
-            }
-            isModal={isModal}
-          />
-        </div>
+        {categoryData?.description ? (
+          <p className="text-center w-3xl text-lg">{categoryData?.description}</p>
+        ) : (
+          ""
+        )}
+        {categoryData?.slug !== "music" ? (
+          <div className="flex flex-col w-full my-6 px-6">
+            {categoryTags.length > 0 ? <Filter tags={categoryTags} /> : ""}
+            <GalleryPortfolio
+              data={
+                filter
+                  ? categoryDataFiltered || []
+                  : categoryData?.gallery || []
+              }
+              isModal={isModal}
+            />
+          </div>
+        ) : (
+          <>
+            {musicCard}
+            <div className="flex justify-center w-full mt-8 py-14 bg-neutral-400/50 ">
+              <ReactMarkdown
+                components={{
+                  p: ({ node, ...props }) => (
+                    <p {...props} className="text-4xl text-stone-900"></p>
+                  ),
+                  a: ({ node, ...props }) => (
+                    <a
+                      {...props}
+                      className="!text-stone-900 !underline"
+                      target="_blank"
+                    />
+                  ),
+                }}
+              >
+                {categoryData?.cta}
+              </ReactMarkdown>
+            </div>
+          </>
+        )}
         {modal}
       </main>
     </div>

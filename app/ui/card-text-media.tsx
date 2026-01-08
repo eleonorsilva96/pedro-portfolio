@@ -11,7 +11,7 @@ export default function CardTextMedia({
 } : {
 title : string,
 desc: string,
-btnLabel: string,
+btnLabel?: string,
 bgColor: string,
 imgUrl: string,
 width: number,

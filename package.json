@@ -15,6 +15,7 @@
     "react": "^19.2.3",
     "react-datocms": "^7.2.3",
     "react-dom": "^19.2.3",
+    "react-markdown": "^10.1.0",
     "react-player": "^3.4.0",
     "resend": "^6.6.0",
     "use-deep-compare-effect": "^1.8.1",

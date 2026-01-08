@@ -28,7 +28,7 @@ export default function PrevNextButtons({
   isModal?: boolean;
   hidePrev?: boolean;
   hideNext?: boolean;
-  isProject: boolean;
+  isProject?: boolean;
 }) {
   let disableBtn = null;
   let prevSlug = null;

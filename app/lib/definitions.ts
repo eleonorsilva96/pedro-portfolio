@@ -38,7 +38,7 @@ type Video = {
   blurUpThumb: string;
 };
 
-type VideoAsset = {
+export type VideoAsset = {
   url: string;
   alt?: string;
   video: Video;
@@ -207,8 +207,10 @@ export type PortfolioMusicType = {
   id: string;
   title: string;
   description: string;
-  uploadVideo: VideoAsset;
-  externalVideoLink: string;
+  video: {
+    videoAsset: VideoAsset;
+    externalVideoLink: string;
+  };
 }
 
 export type CategoryRecord = PortfolioGalleryType | PortfolioMusicType; 
