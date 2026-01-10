@@ -48,7 +48,7 @@ export default function CardTextMediaTest({
       );
     } else {
       mediaContent = (
-        <div className="w-lg h-auto aspect-[16/9]">
+        <div className="w-full md:w-lg h-auto aspect-[16/9]">
           <ReactPlayer
             src={media}
             width="100%"
@@ -78,7 +78,7 @@ export default function CardTextMediaTest({
     // uploaded video
   } else if ("video" in media && media.video) {
     mediaContent = (
-      <div className="w-lg h-auto aspect-[16/9]">
+      <div className="w-full md:w-lg h-auto aspect-[16/9]">
         <VideoPlayer
           data={media.video}
           className="object-cover"
@@ -88,7 +88,7 @@ export default function CardTextMediaTest({
     );
   }
   return (
-    <div className="flex flex-col w-full mt-14">
+    <div className="flex flex-col w-full mt-14 px-4">
       <div className="w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 rounded"></div>
       <div
         className={clsx(
@@ -104,7 +104,7 @@ export default function CardTextMediaTest({
       >
         <div
           className={clsx(
-            "flex flex-col h-[500px] md:h-auto md:w-sm justify-center gap-4",
+            "flex flex-col h-auto md:w-sm justify-center gap-4",
             {
               "items-start": typeof media === "string" || "video" in media,
               "items-center":
@@ -137,9 +137,11 @@ export default function CardTextMediaTest({
           {/* <button>{btnLabel}</button> */}
         </div>
         <div
-          className={clsx({
-            "order-last": isMediaRight,
-            "order-first": !isMediaRight,
+          className={clsx(
+            'flex justify-center order-last w-full lg:w-auto lg:w-auto',
+            {
+            "lg:order-last": isMediaRight,
+            "lg:order-first": !isMediaRight,
           })}
         >
           {mediaContent}

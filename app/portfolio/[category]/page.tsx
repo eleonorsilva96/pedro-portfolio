@@ -287,10 +287,10 @@ export default async function PortfolioPage({
 
   return (
     <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
-      <main className="flex min-h-screen w-full flex-col items-start md:items-center">
-        <h1 className="text-5xl my-4">{categoryData?.title}</h1>
+      <main className="flex min-h-screen w-full flex-col items-center">
+        <h1 className="text-5xl mb-4 mt-8 px-4">{categoryData?.title}</h1>
         {categoryData?.description ? (
-          <p className="text-center w-3xl text-lg">{categoryData?.description}</p>
+          <p className="text-center w-full md:w-2xl lg:w-3xl text-lg px-4 min-w-0 break-words">{categoryData?.description}</p>
         ) : (
           ""
         )}
@@ -313,7 +313,7 @@ export default async function PortfolioPage({
               <ReactMarkdown
                 components={{
                   p: ({ node, ...props }) => (
-                    <p {...props} className="text-4xl text-stone-900"></p>
+                    <p {...props} className="text-4xl text-stone-900 text-center"></p>
                   ),
                   a: ({ node, ...props }) => (
                     <a
