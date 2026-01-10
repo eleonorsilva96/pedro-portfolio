@@ -3,11 +3,13 @@
 :root {
   --background: oklch(0.9265 0.0022 17.2);
   --foreground: oklch(20.5% 0 0); 
+  --primary: oklch(0.4711 0.1 328.4);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
   --font-sans: var(--font-quicksand);
 }
 
