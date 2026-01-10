@@ -4,6 +4,7 @@ import Form from "@/app/ui/form";
 import { performRequest } from '@/app/lib/datocms';
 import { VideoPlayer } from "react-datocms";
 import { HomeData } from "@/app/lib/definitions";
+import CardTextMediaTest from "./ui/card-text-media-test";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -105,6 +106,14 @@ export default async function Home() {
           imgUrl={cardTextImg.asset.url}
           width={cardTextImg.asset.width}
           height={cardTextImg.asset.height}
+        />
+        <CardTextMediaTest 
+          title={cardTextImg.title}
+          desc={cardTextImg.description}
+          btnLabel={cardTextImg.buttonText}
+          bgColor="bg-gray-300"
+          media={cardTextImg.asset}
+          isMediaRight
         />
         <div
           id="last-works"
