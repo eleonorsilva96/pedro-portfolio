@@ -11,14 +11,12 @@ export default function CardTextMediaTest({
   title,
   desc,
   btnLabel,
-  bgColor,
   media,
   isMediaRight,
 }: {
   title: string;
   desc: string;
   btnLabel?: string;
-  bgColor: string;
   media: ImageAsset | VideoAsset | string; // externalLink is a string and not a external video
   isMediaRight?: boolean;
 }) {
@@ -68,7 +66,7 @@ export default function CardTextMediaTest({
       <div className="w-full">
         <Image
           src={media.url}
-          className="w-full h-[500px] md:object-center lg:w-3xl lg:h-[660px] object-fit object-[35%_0]"
+          className="w-full md:object-center lg:w-3xl lg:h-[660px] object-fit object-[35%_0]"
           width={media.width}
           height={media.height}
           alt={media.alt}
@@ -89,9 +87,9 @@ export default function CardTextMediaTest({
   }
   return (
     <div className={clsx(
-        '"flex flex-col w-full mt-14',
+        'flex flex-col w-full h-auto',
         {
-            'px-4' : !btnLabel
+            'mt-14 px-4' : !btnLabel
         }
     )}>
       <div className={clsx({
@@ -100,13 +98,9 @@ export default function CardTextMediaTest({
       )}></div>
       <div
         className={clsx(
-          `flex flex-col lg:flex-row w-full gap-8 items-center ${bgColor}`,
+          `flex flex-col lg:flex-row w-full items-center bg-transparent`,
           {
             "justify-center": typeof media === "string" || "video" in media,
-            // "justify-between":
-            //   typeof media !== "string" &&
-            //   "width" in media &&
-            //   "height" in media,
           }
         )}
       >
@@ -115,7 +109,7 @@ export default function CardTextMediaTest({
             "w-full flex flex-col h-auto justify-center gap-4",
             {
               "md:w-sm" : !btnLabel,
-              "md:w-full" : btnLabel,
+              "py-8 px-4 lg:p-0 md:w-full" : btnLabel,
               "items-start": typeof media === "string" || "video" in media,
               "items-center":
                 typeof media !== "string" &&
@@ -124,9 +118,12 @@ export default function CardTextMediaTest({
             }
           )}
         >
-          <h1 className="text-3xl">{title}</h1>
+          <h1 className={clsx({
+            'text-3xl' : !btnLabel,
+            'text-3xl md:text-4xl text-center' : btnLabel
+          })}>{title}</h1>
           <div className={clsx({
-            'w-7 h-[5px] bg-neutral-500 mx-auto my-4' : btnLabel
+            'w-7 h-[4px] bg-primary mx-auto my-4' : btnLabel
           })}></div>
           {/* insert description in a markdown parser to allow links */}
           <ReactMarkdown
@@ -135,9 +132,9 @@ export default function CardTextMediaTest({
             // remove node property out of the object
               p: ({node, ...props }) => (
                 <p {...props} className={clsx(
-                    'w-full whitespace-pre-line text-lg',
+                    'w-full whitespace-pre-line text-md md:text-lg',
                     {
-                        'text-center w-lg' : btnLabel,
+                        'text-center w-full md:w-lg' : btnLabel,
                     }
                 )}></p>
               ),
@@ -152,7 +149,7 @@ export default function CardTextMediaTest({
           >
             {desc}
           </ReactMarkdown>
-          {btnLabel ? <button>{btnLabel}</button> : null}
+          {btnLabel ? <button className="w-3xs h-12 rounded-full bg-primary text-neutral-50 mt-4 font-semibold">{btnLabel}</button> : null}
         </div>
         <div
           className={clsx(

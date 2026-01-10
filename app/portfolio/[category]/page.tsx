@@ -229,7 +229,6 @@ export default async function PortfolioPage({
           key={item.id}
           title={item.title}
           desc={item.description}
-          bgColor="bg-transparent"
           media={videoLink}
           isMediaRight
         />
@@ -241,7 +240,6 @@ export default async function PortfolioPage({
           key={item.id}
           title={item.title}
           desc={item.description}
-          bgColor="bg-transparent"
           media={videoLink}
         />
       );

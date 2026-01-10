@@ -98,20 +98,10 @@ export default async function Home() {
           {/* to avoid showing control panel */}
           <div className="absolute inset-0 z-10 bg-transparent"></div>
         </div>
-        <CardTextMedia
-          title={cardTextImg.title}
-          desc={cardTextImg.description}
-          btnLabel={cardTextImg.buttonText}
-          bgColor="bg-gray-300"
-          imgUrl={cardTextImg.asset.url}
-          width={cardTextImg.asset.width}
-          height={cardTextImg.asset.height}
-        />
         <CardTextMediaTest 
           title={cardTextImg.title}
           desc={cardTextImg.description}
           btnLabel={cardTextImg.buttonText}
-          bgColor="bg-gray-300"
           media={cardTextImg.asset}
           isMediaRight
         />
