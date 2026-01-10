@@ -1,10 +1,9 @@
-import CardTextMedia from "@/app/ui/card-text-media";
 import Gallery from "@/app/ui/gallery";
 import Form from "@/app/ui/form";
 import { performRequest } from '@/app/lib/datocms';
 import { VideoPlayer } from "react-datocms";
 import { HomeData } from "@/app/lib/definitions";
-import CardTextMediaTest from "./ui/card-text-media-test";
+import CardTextMedia from "@/app/ui/card-text-media";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -98,7 +97,7 @@ export default async function Home() {
           {/* to avoid showing control panel */}
           <div className="absolute inset-0 z-10 bg-transparent"></div>
         </div>
-        <CardTextMediaTest 
+        <CardTextMedia
           title={cardTextImg.title}
           desc={cardTextImg.description}
           btnLabel={cardTextImg.buttonText}

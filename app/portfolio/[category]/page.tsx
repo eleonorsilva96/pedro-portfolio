@@ -3,7 +3,7 @@ import { performRequest } from "@/app/lib/datocms";
 import Filter from "@/app/ui/filter";
 import GalleryPortfolio from "@/app/ui/gallery-portfolio";
 import ModalContent from "@/app/ui/modal-content";
-import CardTextMediaTest from "@/app/ui/card-text-media-test";
+import CardTextMedia from "@/app/ui/card-text-media";
 import ReactMarkdown from "react-markdown";
 
 // send query to DatoCMS
@@ -225,7 +225,7 @@ export default async function PortfolioPage({
     if (index % 2 === 0) {
       // return <div key={item.id}>{item.title} + RIGHT IMAGE</div>;
       return (
-        <CardTextMediaTest
+        <CardTextMedia
           key={item.id}
           title={item.title}
           desc={item.description}
@@ -236,7 +236,7 @@ export default async function PortfolioPage({
     } else {
       // return <div key={item.id}>{item.title} + LEFT IMAGE</div>;
       return (
-        <CardTextMediaTest
+        <CardTextMedia
           key={item.id}
           title={item.title}
           desc={item.description}
