@@ -15,7 +15,7 @@ export default function CardGallery({
     height: number,
     hasRadius?: boolean, // optional
     hasShadow?: boolean, // optional
-    title?: string, // optional
+    title?: string | null, // optional
     imgUrl: string,
     alt: string,
 }) {

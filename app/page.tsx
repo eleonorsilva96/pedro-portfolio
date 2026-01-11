@@ -69,16 +69,13 @@ export default async function Home() {
   // run the query and treat the result as HomeData
   const { homepage } = await performRequest(PAGE_CONTENT_QUERY) as HomeData;
   
-  // console.log(global)
-  
   const videoBlock = homepage.sections?.find((s) => s.__typename === 'VideoBlockRecord');
   const cardTextImg = homepage.sections?.find((s) => s.__typename === 'CardTextImgRecord');
-  const CardGallery = homepage.sections?.find((s) => s.__typename === 'CardGalleryRecord');
-
+  const cardGallery = homepage.sections?.filter((s) => s.__typename === 'CardGalleryRecord');
+  
   if (!videoBlock) return null;
   if (!cardTextImg) return null;
-  if (!CardGallery) return null;
-
+  if (!cardGallery) return null;
 
   return (
     <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
@@ -106,17 +103,19 @@ export default async function Home() {
         />
         <div
           id="last-works"
-          className="flex flex-col w-full h-auto items-center px-5 lg:px-[56px]"
+          className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px] bg-white"
         >
-          <h1>{CardGallery.title}</h1>
-          <Gallery galleryItems={CardGallery.galleryItems}/>
+          <h1 className="text-4xl">{cardGallery[0].title}</h1>
+          <div className="w-7 h-[3px] bg-foreground mx-auto my-4"></div>
+          <Gallery galleryItems={cardGallery[0].galleryItems}/>
         </div>
         <div
           id="services"
-          className="flex flex-col w-full h-auto items-center px-5 lg:px-[56px]"
+          className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px]"
         >
-          <h1>Os meus serviços</h1>
-          <Gallery galleryItems={CardGallery.galleryItems} hasTitle removeBtn />
+          <h1 className="text-4xl">{cardGallery[1].title}</h1>
+          <div className="w-7 h-[3px] bg-foreground mx-auto my-4"></div>
+          <Gallery galleryItems={cardGallery[1].galleryItems} hasTitle removeBtn />
         </div>
         <div
           id="contact"
