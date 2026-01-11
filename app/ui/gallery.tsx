@@ -12,7 +12,7 @@ export default async function Gallery({
     hasTitle?: boolean,
     removeBtn?: boolean,
 }) {
-  console.log(galleryItems)
+  console.log("card title", galleryItems)
   const content = galleryItems.map((item) => {
     if (item?.__typename === 'GalleryItemRecord' || item.__typename === 'ImageBlockRecord') {
       return (
@@ -23,6 +23,7 @@ export default async function Gallery({
               height={item.asset?.height}
               alt={item.asset?.alt}
               hasRadius={!hasTitle}
+              title={hasTitle && item?.__typename === 'GalleryItemRecord' ? item.title : null}
           />
       );
     }
@@ -30,12 +31,14 @@ export default async function Gallery({
   });
 
   return (
-    <div className="flex flex-col w-auto gap-4">
+    <div className="flex flex-col w-auto gap-6 lg:gap-10 items-center">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 lg:flex-row lg:flex-wrap lg:gap-6 w-full h-auto items-center">
         {content}
       </div>
       <button
-        className={clsx({
+        className={clsx(
+          'py-3 px-8 rounded-full bg-primary text-white text-base',
+          {
           hidden: removeBtn === true,
         })}
       >

@@ -110,7 +110,7 @@ export default function CardTextMediaTest({
             "w-full flex flex-col h-auto justify-center gap-4",
             {
               'md:w-sm' : !btnLabel,
-              'py-8 px-4 lg:p-0 md:w-full' : btnLabel,
+              'py-14 px-4 lg:p-0 md:w-full' : btnLabel,
               'items-start': typeof media === "string" || "video" in media,
               'items-center':
                 typeof media !== "string" &&
