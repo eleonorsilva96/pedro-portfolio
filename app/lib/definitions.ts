@@ -95,11 +95,12 @@ type SocialMediaLinkRef = {
     __typename: 'SocialMediaLinkRecord';
     id: string;
     link: string;
-    icon: ImageAsset;
+    icon: string;
 };
 
 type PrivacyPolicyLink = {
-    __typename: 'PrivacyPolicyRecord';
+    title: string;
+    slug: string;
 } | null;
 
 

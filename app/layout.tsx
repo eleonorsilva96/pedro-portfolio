@@ -38,22 +38,20 @@ const PAGE_CONTENT_QUERY = `
       }
       footerPhoneNumber
       footerEmail
-      footerSocialMediaLinks {
+      footerSocialMediaLinks { # modular content list that could contain different types of blocks
         ... on SocialMediaLinkRecord {
           __typename
           id
           link
-          icon {
-            url
-            width
-            height
-            alt
-          }
+          icon
         }
       }
       complaintsBookLink
       privacyPolicyLink {
-        __typename
+        ... on PrivacyPolicyRecord {
+          title
+          slug
+        }
       }
       copyright
     }
@@ -72,8 +70,19 @@ export default async function RootLayout({
 
   // run the query and treat the result as HomeData
   const { global } = await performRequest(PAGE_CONTENT_QUERY) as GlobalData;
+  
+  if(!global) return null;
 
-  if(!global) return null
+  const FOOTER = {
+    number: global.footerPhoneNumber,
+    email: global.footerEmail,
+    mediaLinks: global.footerSocialMediaLinks,
+    complaintsLink: global.complaintsBookLink,
+    privacyLink: global.privacyPolicyLink,
+    copy: global.copyright,
+  } 
+
+  console.log("global", global);
 
   return (
     <html lang="en">
@@ -82,7 +91,7 @@ export default async function RootLayout({
       >
         <Header logo={global.headerLogo} navLinks={global.headerNavigation} />
         {children}
-        <Footer />
+        <Footer data={FOOTER}/>
       </body>
     </html>
   );
