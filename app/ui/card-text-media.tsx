@@ -124,7 +124,7 @@ export default function CardTextMediaTest({
             'w-xl text-4xl md:text-[44px] text-center' : btnLabel
           })}>{title}</h1>
           <div className={clsx({
-            'w-7 h-[4px] bg-primary mx-auto my-4' : btnLabel
+            'w-7 h-[4px] bg-primary-500 mx-auto my-4' : btnLabel
           })}></div>
           {/* insert description in a markdown parser to allow links */}
           <ReactMarkdown
@@ -150,7 +150,7 @@ export default function CardTextMediaTest({
           >
             {desc}
           </ReactMarkdown>
-          {btnLabel ? <button className="w-3xs h-12 rounded-full bg-primary text-neutral-50 mt-4">{btnLabel}</button> : null}
+          {btnLabel ? <button className="w-3xs h-12 rounded-full bg-primary-500 text-neutral-50 mt-4">{btnLabel}</button> : null}
         </div>
         <div
           className={clsx(

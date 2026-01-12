@@ -67,7 +67,7 @@ export default function Form() {
           {/* <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p> */}
         </div>
         {errorMessage}
-        <button type="submit" className="w-full rounded-full h-12 bg-primary text-white mt-8">
+        <button type="submit" className="w-full rounded-full h-12 bg-primary-500 text-white mt-8">
           Submeter
         </button>
       </div>

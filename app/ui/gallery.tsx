@@ -43,7 +43,7 @@ export default async function Gallery({
       </div>
       <button
         className={clsx(
-          'py-3 px-8 rounded-full bg-primary text-white text-base',
+          'py-3 px-8 rounded-full bg-primary-500 text-white text-base',
           {
           hidden: removeBtn === true,
         })}

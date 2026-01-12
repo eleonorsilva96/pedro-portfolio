@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { quicksand } from "@/app/ui/fonts";
+import { quicksand, openSans } from "@/app/ui/fonts";
 import "./globals.css";
 import Header from '@/app/ui/header';
 import Footer from "@/app/ui/footer";
@@ -78,7 +78,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.className} antialiased`}
+        className={`${quicksand.variable} ${openSans.variable} antialiased`}
       >
         <Header logo={global.headerLogo} navLinks={global.headerNavigation} />
         {children}
