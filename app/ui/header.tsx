@@ -46,14 +46,14 @@ export default function Header({
   }, [show]); // watch list run this every time show changes
 
   return (
-    <header className="sticky w-full h-20 bg-gray-400 items-center justify-between px-4 z-50">
+    <header className="sticky w-full h-20 bg-neutral-200 items-center justify-between px-4 z-50">
       <nav className="relative flex h-full items-center justify-between">
         <div id="logo" className="active:text-red-400">
           <Link href="/">{logo}</Link>
         </div>
         <div
           id="links"
-          className="hidden lg:flex items-center justify-around gap-10"
+          className="hidden lg:flex items-center justify-around gap-10 font-open uppercase font-bold text-neutral-500"
         >
           {navLinks.map((link) => {
             // has more than one link
@@ -72,7 +72,7 @@ export default function Header({
                   </span>
                   <div
                     className={clsx(
-                      "absolute top-full -left-5 bg-gray-100 w-[120px] flex flex-col gap-3 p-2",
+                      "absolute top-full -left-5 bg-gray-100 w-[120px] lg:w-fit flex flex-col gap-3 p-2",
                       {
                         // when hover the category show the corresponded links and hide the other one
                         hidden: showCategories !== link.id,
@@ -84,6 +84,7 @@ export default function Header({
                       return (
                         <a
                           key={categoryLink.id}
+                          className="whitespace-nowrap hover:text-primary-600"
                           href={`/${
                             link.categoryLinks[0].link.__typename ===
                             "ServiceRecord"
@@ -130,19 +131,16 @@ export default function Header({
         <div
           ref={menuRef}
           className={clsx(
+            'bg-neutral-200 absolute text-lg z-50 top-full -top-4 -left-4 flex flex-col w-screen lg:hidden',
             {
               hidden: show === false,
             },
-            "bg-gray-400 absolute z-50 top-full -top-4 -left-4 flex flex-col w-screen lg:hidden",
-            {
-              /* Pushes the menu 100% down from the top of the relative parent - when you what to align outside the relative parent */
-            }
           )}
         >
           <Link
             href="/"
             onClick={() => setShow(false)}
-            className="w-full py-2 px-3 text-white bg-brand rounded"
+            className="w-full py-2 px-3 bg-brand rounded"
             aria-current="page"
           >
             Home
@@ -180,7 +178,7 @@ export default function Header({
                   <div
                     id="category-items"
                     className={clsx(
-                      "flex flex-col bg-white rounded my-3 mx-3",
+                      "flex flex-col bg-neutral-300 rounded my-3 mx-3",
                       {
                         hidden: showCategories !== link.id,
                         block: showCategories === link.id,
@@ -197,7 +195,7 @@ export default function Header({
                             : "portfolio"
                         }/${categoryLink.link.slug}`}
                         onClick={() => setShow(false)}
-                        className="w-full py-2 pl-4 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
+                        className="w-full py-2 pl-4 text-heading rounded hover:bg-primary-300 active:bg-gray-300"
                       >
                         {categoryLink.name}
                       </a>
