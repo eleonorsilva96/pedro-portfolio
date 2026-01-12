@@ -32,7 +32,13 @@ export default async function Gallery({
 
   return (
     <div className="flex flex-col w-auto gap-6 lg:gap-10 items-center">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 lg:flex-row lg:flex-wrap lg:gap-6 w-full h-auto items-center">
+      <div className={clsx(
+        'grid grid-cols-1 gap-4 lg:flex-row lg:flex-wrap lg:gap-6 w-full h-auto items-center',
+        {
+          'md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : !hasTitle,
+          'md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : hasTitle,
+        }
+      )}>
         {content}
       </div>
       <button

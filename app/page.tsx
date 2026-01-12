@@ -105,23 +105,24 @@ export default async function Home() {
           id="last-works"
           className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px] bg-white"
         >
-          <h1 className="text-4xl">{cardGallery[0].title}</h1>
-          <div className="w-7 h-[3px] bg-foreground mx-auto my-4"></div>
+          <h1 className="text-4xl lg:text-[44px]">{cardGallery[0].title}</h1>
+          <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
           <Gallery galleryItems={cardGallery[0].galleryItems}/>
         </div>
         <div
           id="services"
           className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px]"
         >
-          <h1 className="text-4xl">{cardGallery[1].title}</h1>
-          <div className="w-7 h-[3px] bg-foreground mx-auto my-4"></div>
+          <h1 className="text-4xl lg:text-[44px]">{cardGallery[1].title}</h1>
+          <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
           <Gallery galleryItems={cardGallery[1].galleryItems} hasTitle removeBtn />
         </div>
         <div
           id="contact"
-          className="flex flex-col w-full h-auto items-center px-5 lg:px-[56px]"
+          className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px] bg-white"
         >
-          <h1>Pede um orçamento gratis</h1>
+          <h1 className="text-4xl lg:text-[44px] text-center">Pede um orçamento gratis</h1>
+          <div className="w-7 h-[3px] bg-foreground mx-auto my-5"></div>
           <Form />
         </div>
       </main>

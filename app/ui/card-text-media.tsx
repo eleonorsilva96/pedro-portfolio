@@ -66,7 +66,7 @@ export default function CardTextMediaTest({
       <div className="w-full">
         <Image
           src={media.url}
-          className="w-full md:object-center lg:w-3xl lg:h-[660px] object-fit object-[35%_0]"
+          className="w-full md:object-center lg:h-[660px] object-cover lg:object-[22%] 2xl:object-[50%_19%]"
           width={media.width}
           height={media.height}
           alt={media.alt}
@@ -121,7 +121,7 @@ export default function CardTextMediaTest({
         >
           <h1 className={clsx({
             'text-3xl' : !btnLabel,
-            'text-3xl md:text-4xl text-center' : btnLabel
+            'w-xl text-4xl md:text-[44px] text-center' : btnLabel
           })}>{title}</h1>
           <div className={clsx({
             'w-7 h-[4px] bg-primary mx-auto my-4' : btnLabel
@@ -150,13 +150,12 @@ export default function CardTextMediaTest({
           >
             {desc}
           </ReactMarkdown>
-          {btnLabel ? <button className="w-3xs h-12 rounded-full bg-primary text-neutral-50 mt-4 font-semibold">{btnLabel}</button> : null}
+          {btnLabel ? <button className="w-3xs h-12 rounded-full bg-primary text-neutral-50 mt-4">{btnLabel}</button> : null}
         </div>
         <div
           className={clsx(
-            'flex justify-center order-last w-full lg:w-auto',
+            'flex justify-center order-last w-full',
             {
-            "lg:w-full" : btnLabel,
             "lg:order-last": isMediaRight,
             "lg:order-first": !isMediaRight,
           })}

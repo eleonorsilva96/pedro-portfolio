@@ -21,13 +21,10 @@ export default function CardGallery({
 }) {
   return (
     <div className={clsx( // add hover here and link to the corresponded page
+      'w-full max-w-[500px] h-auto overflow-hidden', // hide the content that overflows the container
         {
             'flex flex-col items-center gap-3': title,
         },
-        'overflow-hidden', // hide the content that overflows the container
-        'w-full',
-        'max-w-[500px]', // 'max-w-[800px]',
-        'h-auto',
         {
             'rounded-lg': hasRadius === true,
             'shadow-lg': hasShadow === true,
@@ -35,13 +32,19 @@ export default function CardGallery({
     )}>
           <Image
             src={imgUrl}
-            className="w-full h-auto"
+            className={clsx(
+              // 'w-full',
+              {
+                'w-full h-auto' : !title,
+                'aspect-square object-cover' : title,
+              }
+            )}
             width={width}
             height={height}
             alt={alt}
           />
           <h3 className={clsx(
-            '',
+            'text-xl lg:text-2xl',
             {
                 'hidden': !title,
             },
@@ -50,5 +53,3 @@ export default function CardGallery({
   );
 }
 
-
-       // 'max-w-[800px]',
