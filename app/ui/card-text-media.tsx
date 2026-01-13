@@ -131,7 +131,7 @@ export default function CardTextMediaTest({
             // add custom style for the link
             components={{
             // remove node property out of the object
-              p: ({node, ...props }) => (
+              p: ({ ...props }) => (
                 <p {...props} className={clsx(
                     'w-full whitespace-pre-line text-md md:text-lg',
                     {
@@ -139,7 +139,7 @@ export default function CardTextMediaTest({
                     }
                 )}></p>
               ),
-              a: ({node, ...props }) => (
+              a: ({ ...props }) => (
                 <a
                   {...props}
                   className="!text-neutral-900 !underline"
@@ -154,8 +154,9 @@ export default function CardTextMediaTest({
         </div>
         <div
           className={clsx(
-            'flex justify-center order-last w-full',
+            'flex justify-center order-last',
             {
+            "w-full" : btnLabel,
             "lg:order-last": isMediaRight,
             "lg:order-first": !isMediaRight,
           })}
