@@ -5,9 +5,9 @@ export default function ImageSkeleton({ className, alt, ...props }: ImageProps) 
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className={`relative overflow-hidden bg-gray-100 ${className}`}>
+    <div className={`relative overflow-hidden bg-neutral-100 ${className}`}>
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />
+        <div className="absolute inset-0 bg-neutral-500/30 animate-pulse z-10" />
       )}
       <Image
         {...props}
