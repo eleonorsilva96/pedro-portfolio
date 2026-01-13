@@ -309,15 +309,17 @@ export default async function PortfolioPage({
             <div className="flex justify-center w-full mt-8 py-14 bg-neutral-400/50 ">
               <ReactMarkdown
                 components={{
-                  p: ({ node, ...props }) => (
+                  p: ({ ...props }) => (
                     <p {...props} className="text-4xl text-stone-900 text-center"></p>
                   ),
-                  a: ({ node, ...props }) => (
-                    <a
-                      {...props}
-                      className="!text-stone-900 !underline"
-                      target="_blank"
-                    />
+                  a: ({ ...props }) => (
+                    <>
+                      <br className="lg:hidden"/> <a
+                        {...props}
+                        className="!text-stone-900 !underline"
+                        target="_blank"
+                      />
+                    </>
                   ),
                 }}
               >
