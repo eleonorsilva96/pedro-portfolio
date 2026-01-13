@@ -5,9 +5,9 @@ import {
   GalleryItemsProjectBlock,
 } from "../lib/definitions";
 import clsx from "clsx";
-import Link from "next/link";
-import ArrowRight from "./icons/arrow-right";
 import ArrowLeft from "./icons/arrow-left";
+import ArrowRight from "./icons/arrow-right";
+import Link from "next/link";
 
 export default function PrevNextButtons({
   gallery,
@@ -89,13 +89,19 @@ export default function PrevNextButtons({
       Anterior
     </span>
   ) : (
-    <ArrowLeft
-      className={clsx({
-        "text-neutral-900": disableBtn !== "prev" && isProject,
-        "text-neutral-500": disableBtn === "prev" && (!isProject || isProject),
-        "text-neutral-100": disableBtn !== "prev" && !isProject,
-      })}
-    />
+    <div className="relative z-50">
+      <ArrowLeft
+        className={clsx(
+          'w-10 h-10 lg:w-12 lg:h-12',
+          {
+            "text-neutral-900": disableBtn !== "prev" && isProject,
+            "text-neutral-500": disableBtn === "prev" && (!isProject || isProject),
+            "text-neutral-100": disableBtn !== "prev" && !isProject,
+          }
+        )}
+      />
+      <div className="absolute inset-0 -z-10 w-10 h-10 lg:w-12 lg:h-12 bg-neutral-100/30 rounded-full"></div>
+    </div>
   );
 
   const nextButtonType = isTextBtn ? (
@@ -108,13 +114,19 @@ export default function PrevNextButtons({
       Próximo
     </span>
   ) : (
-    <ArrowRight
-      className={clsx({
-        "text-neutral-900": disableBtn !== "next" && isProject,
-        "text-neutral-500": disableBtn === "next" && (!isProject || isProject),
-        "text-neutral-100": disableBtn !== "next"&& !isProject,
-      })}
-    />
+    <div className="relative z-50">
+      <ArrowRight
+        className={clsx(
+          'w-10 h-10 lg:w-12 lg:h-12',
+          {
+            "text-neutral-900": disableBtn !== "next" && isProject,
+            "text-neutral-500": disableBtn === "next" && (!isProject || isProject),
+            "text-neutral-100": disableBtn !== "next"&& !isProject,
+          }
+        )}
+      />
+      <div className="absolute inset-0 -z-10 w-10 h-10 lg:w-12 lg:h-12 bg-neutral-100/30 rounded-full"></div>
+    </div>
   );
 
   const buttonsLayout = isTextBtn ? (

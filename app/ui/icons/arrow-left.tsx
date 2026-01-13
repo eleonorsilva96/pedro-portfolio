@@ -3,8 +3,6 @@ import React from "react";
 export default function ArrowLeft(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="48"
-      height="48"
       viewBox="0 0 48 48"
       fill="currentColor"
       {...props}
