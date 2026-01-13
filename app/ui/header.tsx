@@ -17,33 +17,21 @@ export default function Header({
 }) {
   const [show, setShow] = useState(false);
   const [showCategories, setCategories] = useState<string | null>(null);
-  // const [showItemsPortfolio, setItemsPortfolio] = useState(false);
-  // const [showItemsServices, setItemsServices] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null); // initializes empty box that will contain a div element
-  const btnRef = useRef<HTMLButtonElement>(null);
 
   // when component mounts
   useEffect(() => {
-    // hide menu when user clicks on the viewport
-    const handleClick = (event: MouseEvent) => {
-      // don't hide menu when clicking inside the list and on the btn
-      if (
-        !menuRef.current?.contains(event.target as Node) &&
-        !btnRef.current?.contains(event.target as Node)
-      ) {
-        // accepts HTML block
-        setShow(false);
-      }
-    };
-
-    // attach event listener on the viewport only when the menu is open
-    if (show) document.addEventListener("mousedown", handleClick);
-
-    // remove event listener to avoid being always active
+    // remove scrollbar when menu list appears 
+    if (show) {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } 
+    
+    // when component unmounts and menu is not open reset overflow style
     return () => {
-      document.removeEventListener("mousedown", handleClick);
+      document.documentElement.style.overflow = "unset";
+      document.body.style.overflow = "unset";
     };
-  }, [show]); // watch list run this every time show changes
+  }, [show]); // run/watch this every time state show changes
 
   return (
     <header className="sticky w-full h-20 bg-neutral-200 items-center justify-between px-4 z-50">
@@ -120,7 +108,6 @@ export default function Header({
         </div>
         {/* mobile */}
         <button
-          ref={btnRef}
           type="button"
           onClick={() => setShow(!show)}
           className="lg:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base hover:bg-neutral-tertiary hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary"
@@ -129,9 +116,8 @@ export default function Header({
         </button>
         {/* mobile */}
         <div
-          ref={menuRef}
           className={clsx(
-            'bg-neutral-200 absolute text-lg z-50 top-full -top-4 -left-4 flex flex-col w-screen lg:hidden',
+            'bg-neutral-200 absolute text-lg z-50 top-full -top-4 -left-4 flex flex-col h-screen w-screen lg:hidden',
             {
               hidden: show === false,
             },
