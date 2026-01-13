@@ -78,8 +78,7 @@ export default async function Home() {
   if (!cardGallery) return null;
 
   return (
-    <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
-      <main className="flex min-h-screen w-full flex-col items-center sm:items-start">
+    <div className="flex flex-col w-full items-center sm:items-start">
         {/* <Video /> */}
         <div className="relative w-full h-[1000px] lg:h-[800px]">
           <VideoPlayer
@@ -125,7 +124,6 @@ export default async function Home() {
           <div className="w-7 h-[3px] bg-foreground mx-auto my-5"></div>
           <Form />
         </div>
-      </main>
     </div>
   );
 }

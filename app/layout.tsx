@@ -87,10 +87,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.variable} ${openSans.variable} antialiased`}
+        className={`${quicksand.variable} ${openSans.variable} antialiased flex flex-col !min-h-screen`}
       >
         <Header logo={global.headerLogo} navLinks={global.headerNavigation} />
-        {children}
+        <main className="flex-grow">
+          {children}
+        </main>
         <Footer data={FOOTER}/>
       </body>
     </html>

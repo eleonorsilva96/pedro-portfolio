@@ -8,11 +8,8 @@ export default async function ServicesPage({ params } : {
   console.log(category);
 
   return (
-    <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
-      <main className="flex min-h-screen w-full flex-col items-center bg-white sm:items-start">
+    <div className="flex flex-col w-full items-center bg-white sm:items-start">
         <h1>{category}</h1>
-        {/* <Gallery galleryItems={CardGallery.galleryItems}/> */}
-      </main>
     </div>
   );
 }

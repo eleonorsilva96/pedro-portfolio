@@ -289,8 +289,7 @@ export default async function PortfolioPage({
   ) : null;
 
   return (
-    <div className="flex min-h-screen min-w-screen items-center justify-center font-sans">
-      <main className="flex min-h-screen w-full flex-col items-center">
+    <div className="flex flex-col w-full items-center">
         <h1 className="text-5xl mb-4 mt-8 px-4">{categoryData?.title}</h1>
         {categoryData?.description ? (
           <p className="text-center w-full md:w-2xl lg:w-3xl text-lg px-4 min-w-0 break-words">{categoryData?.description}</p>
@@ -335,7 +334,6 @@ export default async function PortfolioPage({
           </>
         )}
         {modal}
-      </main>
     </div>
   );
 }

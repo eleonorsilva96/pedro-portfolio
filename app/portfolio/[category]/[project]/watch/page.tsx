@@ -124,8 +124,7 @@ export default async function Watch({
   //   console.log(content);
 
   return (
-    <div className="flex flex-col items-center">
-      <main className="flex min-h-screen w-full flex-col items-start bg-white md:items-center">
+    <div className="flex flex-col w-full items-start bg-white md:items-center">
       <div className="w-full flex flex-col items-center py-10 bg-neutral-800 text-neutral-50 gap-5">
         <h3 className="text-3xl">{title}</h3>
         <p className="w-2xl whitespace-pre-line text-center">
@@ -135,7 +134,6 @@ export default async function Watch({
       </div>
       {section}
       {modal}
-      </main>
     </div>
   );
 }
