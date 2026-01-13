@@ -66,7 +66,7 @@ const PAGE_CONTENT_QUERY = `
                     ... on CardGalleryRecord {
                       title
                       galleryItems {
-                        ... on ExternalVideoRecord {
+                        ... on ExternalVideoTitleRecord {
                           __typename
                           title
                           link {
@@ -107,25 +107,31 @@ const PAGE_CONTENT_QUERY = `
                 ... on SlideProjectRecord {
                   __typename
                   id
-                  urlVideo {
-                    url
-                    title
-                    width
-                    height
-                    provider
-                    providerUid
-                    thumbnailUrl
-                  }
-                  video {
-                    url
-                    alt
-                    video {
-                      muxPlaybackId
-                      title
-                      width
-                      height
-                      blurUpThumb
+                  videoMedia {
+                    ... on ExternalVideoRecord {
+                      externalVideo {
+                        url
+                        title
+                        width
+                        height
+                        provider
+                        providerUid
+                        thumbnailUrl
+                      }
                     }
+                     ... on VideoBlockRecord {
+                      videoAsset {
+                        url
+                        alt
+                        video {
+                          muxPlaybackId
+                          title
+                          width
+                          height
+                          blurUpThumb
+                        }
+                      }
+                    } 
                   }
                   context
                   role

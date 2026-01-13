@@ -19,7 +19,7 @@ const PAGE_CONTENT_QUERY = `
                     id
                     title
                     galleryItems {
-                        ... on ExternalVideoRecord {
+                        ... on ExternalVideoTitleRecord {
                         __typename
                         id
                         slug

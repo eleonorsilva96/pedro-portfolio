@@ -64,20 +64,20 @@ export default function ModalContent({
   
   const checkGalleryList = projectGalleryList.length !== 0 ? projectGalleryList : moreDetailsGalleryList; // return watchGalleryList
 
-  if (projectModal?.urlVideo || moreDetailsModal?.__typename === 'ExternalVideoRecord') {
+  if (projectModal?.videoMedia?.externalVideo || moreDetailsModal?.__typename === 'ExternalVideoRecord') {
     mediaPlayer = (
       <ReactPlayer
-        src={moreDetailsModal?.__typename !== 'ExternalVideoRecord' ? projectModal?.urlVideo?.url : moreDetailsModal.link.url}
-        light={moreDetailsModal?.__typename !== 'ExternalVideoRecord' ? projectModal?.urlVideo?.thumbnailUrl : moreDetailsModal.link.thumbnailUrl}
+        src={moreDetailsModal?.__typename !== 'ExternalVideoRecord' ? projectModal?.videoMedia.externalVideo?.url : moreDetailsModal.link.url}
+        light={moreDetailsModal?.__typename !== 'ExternalVideoRecord' ? projectModal?.videoMedia.externalVideo?.thumbnailUrl : moreDetailsModal.link.thumbnailUrl}
         controls={true}
         width="100%"
         height="100%"
       />
     );
-  } else if (projectModal?.video) {
+  } else if (projectModal?.videoMedia?.videoAsset) {
     mediaPlayer = (
       <VideoPlayer
-        data={projectModal?.video?.video}
+        data={projectModal?.videoMedia.videoAsset.video}
         className="w-full h-full object-cover"
         preload="none"
       />
@@ -98,6 +98,8 @@ export default function ModalContent({
           alt={modalProject ? modalProject?.thumbnail.alt : moreDetailsModal?.asset.alt || ''}
         />
       );
+  } else {
+    mediaPlayer = <div>No Video or Image!</div>
   }
 
   const expandIconHandler = !isExpand ? (
@@ -166,7 +168,7 @@ export default function ModalContent({
             'w-full flex flex-col gap-4',
             {
               'aspect-[16/9]' : moreDetailsModal?.__typename !== 'GalleryItemRecord',
-              'aspect-[2/3] !w-[600px]' : moreDetailsModal?.__typename === 'GalleryItemRecord',
+              'aspect-[2/3] !w-[600px]' : moreDetailsModal?.__typename == 'GalleryItemRecord',
             }
           )}>
             {mediaPlayer}

@@ -163,8 +163,10 @@ export type GalleryItemsProjectBlock = ExternalVideoBlock | GalleryItems | Portf
 export type SlideProjectBlock = {
   __typename: 'SlideProjectRecord';
   id: string;
-  urlVideo: ExternalVideo | null;
-  video: VideoAsset | null;
+  videoMedia: {
+    externalVideo: ExternalVideo | null;
+    videoAsset: VideoAsset | null;
+  }
   context: string;
   role: string | null;
   date: string | null;

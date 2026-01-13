@@ -18,12 +18,6 @@ export default async function Slide({
   let content = null;
   let year = null;
 
-//   const year =
-//     projectDetails?.__typename === "GalleryPortfolioRecord" &&
-//     projectDetails?.projectId.content.__typename === "SlideProjectRecord"
-//       ? projectDetails?.projectId.content.date?.split("-")
-//       : null;
-
   if (
     projectDetails?.__typename === "GalleryPortfolioRecord" &&
     projectDetails?.projectId.content.__typename === "SlideProjectRecord"
@@ -32,24 +26,26 @@ export default async function Slide({
 
     console.log(year)
 
-    if (projectDetails?.projectId.content.urlVideo) {
+    if (projectDetails?.projectId.content.videoMedia?.externalVideo) {
       video = (
         <ReactPlayer
-          src={projectDetails?.projectId.content.urlVideo?.url}
-          light={projectDetails?.projectId.content.urlVideo?.thumbnailUrl}
+          src={projectDetails?.projectId.content.videoMedia.externalVideo.url}
+          light={projectDetails?.projectId.content.videoMedia.externalVideo.thumbnailUrl}
           controls={true}
           width="100%"
           height="100%"
         />
       );
-    } else {
+    } else if (projectDetails?.projectId.content.videoMedia?.videoAsset) {
       video = (
         <VideoPlayer
-          data={projectDetails?.projectId.content.video?.video}
+          data={projectDetails?.projectId.content.videoMedia.videoAsset?.video}
           className="w-full h-full object-cover"
           preload="none"
         />
       );
+    } else {
+      video = <div>No Video</div>;
     }
 
     content = (
