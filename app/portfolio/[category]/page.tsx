@@ -246,8 +246,7 @@ export default async function PortfolioPage({
     }
   });
 
-  const isModal =
-    category === "animation" || category === "digital-image" ? true : false;
+  const isModal = category === "digital-image" ? true : false;
 
   if (filter) {
     categoryDataFiltered = categoryData?.gallery.filter(
