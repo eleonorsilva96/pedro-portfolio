@@ -3,6 +3,8 @@ import { PortfolioData } from "@/app/lib/definitions";
 import Slide from "@/app/ui/slide";
 import Gallery from "@/app/ui/gallery";
 import clsx from "clsx";
+import ArrowLeft from "@/app/ui/icons/arrow-left";
+import Link from "next/link";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -209,7 +211,7 @@ export default async function PortfolioPage({
 
   
   if (projectDetails?.__typename === "GalleryPortfolioRecord") {
-    title = <h1 className="text-5xl">{projectDetails?.projectId.title}</h1>;
+    title = <h1 className="w-full text-5xl">{projectDetails?.projectId.title}</h1>;
     if (projectDetails?.projectId.content.__typename === "SlideProjectRecord") {
 
       contentView = (
@@ -240,29 +242,32 @@ export default async function PortfolioPage({
     <div className="flex justify-center w-full my-4">
       <div
         className={clsx(
-          "flex flex-col items-center justify-center gap-8",
+          "flex flex-col w-full items-center justify-center gap-8 mx-4 lg:mx-6",
           {
-            "max-w-1/3":
+            "lg:max-w-4xl xl:max-w-5xl lg:mx-0":
               projectDetails?.__typename === "GalleryPortfolioRecord" &&
               projectDetails?.projectId.content.__typename ===
                 "SlideProjectRecord",
-            "w-full":
-              projectDetails?.__typename === "GalleryPortfolioRecord" &&
-              projectDetails?.projectId.content.__typename ===
-                "GalleryProjectRecord",
           }
         )}
       >
-        <button className={clsx(
-          'self-start',
+        <div className={clsx(
+          'py-2 px-2 self-start text-neutral-500',
           {
             'hidden': projectDetails?.__typename === "GalleryPortfolioRecord" &&
               projectDetails?.projectId.content.__typename !==
-                "SlideProjectRecord",
+                "SlideProjectRecord" && projectDetails.projectId.content.__typename !== 'GalleryProjectRecord',
           }
-        )}>Back</button>
+        )}>
+          <Link href={`/portfolio/${category}`} className="flex gap-1 items-center group">
+              <ArrowLeft className="w-6 h-6 transition-transform duration-150 group-hover:scale-115 group-hover:text-neutral-900" /> 
+              <span className="text-lg transition-transform duration-300 group-hover:text-neutral-900">Back</span>
+          </Link>
+        </div>
+        <div className="flex flex-col gap-4 mt-4 self-start">
         {title}
-        <p className="text-center">{description}</p>
+        <p>{description}</p>
+        </div>
         {contentView}
       </div>
     </div>

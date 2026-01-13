@@ -19,7 +19,7 @@ export default function GalleryPortfolio({
   const pathname = usePathname();
   
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
       {data.map((project) => {
         if (project.__typename === "GalleryPortfolioRecord") {
           const params = new URLSearchParams(searchParams); // use utility methods from API to manipulate the URL params
@@ -39,7 +39,7 @@ export default function GalleryPortfolio({
             >
               <div
                 key={project.id}
-                className="relative aspect-[4/3] overflow-hidden w-full h-auto max-w-[600px] rounded-lg shadow-lg bg-purple-300 group cursor-pointer" 
+                className="relative aspect-[4/3] overflow-hidden w-full h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer" 
               >
                 <CardPortfolio
                   project={project}

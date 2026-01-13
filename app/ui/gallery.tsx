@@ -31,19 +31,13 @@ export default async function Gallery({
   });
 
   return (
-    <div className="flex flex-col w-auto gap-6 lg:gap-10 items-center">
-      <div className={clsx(
-        'grid grid-cols-1 gap-4 lg:flex-row lg:flex-wrap lg:gap-6 w-full h-auto items-center',
-        {
-          'md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : !hasTitle,
-          'md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : hasTitle,
-        }
-      )}>
+    <div className="text-center">
+      <div className="grid grid-cols gap-4 lg:flex-row lg:flex-wrap w-full h-auto items-center md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {content}
       </div>
       <button
         className={clsx(
-          'py-3 px-8 rounded-full bg-primary-500 text-white text-base',
+          'py-3 px-8 mt-8 rounded-full bg-primary-500 text-white text-base',
           {
           hidden: removeBtn === true,
         })}

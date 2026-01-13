@@ -79,7 +79,7 @@ export default async function Slide({
 
   return (
     <div className="self-center w-full flex flex-col gap-5">
-      <div className="w-full h-[419px]">{video}</div>
+      <div className="w-full aspect-[16/9]">{video}</div>
       <div className="flex flex-col gap-1">{content}</div>
       <PrevNextButtons
         gallery={allProjects || []}
