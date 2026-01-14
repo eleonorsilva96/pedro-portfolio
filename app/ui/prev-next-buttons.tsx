@@ -58,7 +58,7 @@ export default function PrevNextButtons({
     if(!item) return "";
     if (item.__typename === 'GalleryPortfolioRecord') {
       return item.projectId?.project || "";
-    } else if (item.__typename === 'ExternalVideoRecord' || item.__typename === 'GalleryItemRecord') {
+    } else if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === 'GalleryItemRecord') {
       return item.slug || "";
     }
   };

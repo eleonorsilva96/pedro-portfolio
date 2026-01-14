@@ -16,13 +16,15 @@ export default function SectionItem({
     let url = null;
     let items = null;
 
-    if (item.__typename === 'ExternalVideoRecord' || item.__typename === 'GalleryItemRecord') {
+    console.log("section", item);
+
+    if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === 'GalleryItemRecord') {
         const params = new URLSearchParams(searchParams);
         params.set("id", item.slug);
         url = `${pathname}?${params.toString()}`;
 
         items =
-          item.__typename === "ExternalVideoRecord" ? (
+          item.__typename === "ExternalVideoTitleRecord" ? (
             <Link key={item.id} href={url} className="group relative w-full h-auto">
               <div className="absolute w-full h-full group-hover:bg-gray-500/50 transition-colors duration-300 cursor-pointer"></div>
               <div className="aspect-[16/9] w-[378px]">

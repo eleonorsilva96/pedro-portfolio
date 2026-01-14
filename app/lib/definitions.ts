@@ -144,7 +144,7 @@ export type PortfolioGalleryTag = {
 }
 
 type ExternalVideoBlock = {
-  __typename: 'ExternalVideoRecord';
+  __typename: 'ExternalVideoTitleRecord';
   id: string;
   slug: string;
   title: string;

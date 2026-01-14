@@ -48,14 +48,14 @@ export default function ModalContent({
   console.log("modalProject", modalProject);
 
   const moreDetailsModal =
-    sliderContent?.__typename === "ExternalVideoRecord" ||
+    sliderContent?.__typename === "ExternalVideoTitleRecord" ||
     sliderContent?.__typename === "GalleryItemRecord"
       ? sliderContent
       : null;
 
   const moreDetailsGalleryList = galleryList.filter(
     (item) =>
-      item.__typename === "ExternalVideoRecord" ||
+      item.__typename === "ExternalVideoTitleRecord" ||
       item.__typename === "GalleryItemRecord"
   );
 
@@ -64,11 +64,11 @@ export default function ModalContent({
   
   const checkGalleryList = projectGalleryList.length !== 0 ? projectGalleryList : moreDetailsGalleryList; // return watchGalleryList
 
-  if (projectModal?.videoMedia?.externalVideo || moreDetailsModal?.__typename === 'ExternalVideoRecord') {
+  if (projectModal?.videoMedia?.externalVideo || moreDetailsModal?.__typename === 'ExternalVideoTitleRecord') {
     mediaPlayer = (
       <ReactPlayer
-        src={moreDetailsModal?.__typename !== 'ExternalVideoRecord' ? projectModal?.videoMedia.externalVideo?.url : moreDetailsModal.link.url}
-        light={moreDetailsModal?.__typename !== 'ExternalVideoRecord' ? projectModal?.videoMedia.externalVideo?.thumbnailUrl : moreDetailsModal.link.thumbnailUrl}
+        src={moreDetailsModal?.__typename !== 'ExternalVideoTitleRecord' ? projectModal?.videoMedia.externalVideo?.url : moreDetailsModal.link.url}
+        light={moreDetailsModal?.__typename !== 'ExternalVideoTitleRecord' ? projectModal?.videoMedia.externalVideo?.thumbnailUrl : moreDetailsModal.link.thumbnailUrl}
         controls={true}
         width="100%"
         height="100%"
@@ -174,13 +174,15 @@ export default function ModalContent({
             {mediaPlayer}
           </div>
           <div
-            className={clsx("w-full lg:w-[700px] xl:w-[400px] flex-col gap-4", {
+            className={clsx("flex flex-col gap-4", {
               hidden: isExpand === true,
               flex: isExpand === false,
+              'w-md' : modalProject,
+              'w-sm' : !modalProject,
             })}
           >
             <h3 className={clsx(
-              'text-2xl lg:text-4xl 2xl:text-6xl font-medium',
+              'text-2xl lg:text-4xl 2xl:text-5xl font-medium',
               {
                 'text-neutral-800' : modalProject,
                 'text-neutral-100' : !modalProject,

@@ -77,6 +77,8 @@ export default async function Watch({
 
   const { title, content } = response.project;
 
+  console.log("content from watch", content);
+
   // add transparent div to create a button to open the modal
   const section = content.section.map((section) => (
     <div key={section.id} className="flex flex-col items-center">
@@ -94,7 +96,7 @@ export default async function Watch({
       const itemsGallery = content.section.find((section) =>
         section.galleryItems.find(
           (i) =>
-            (i.__typename === "ExternalVideoRecord" ||
+            (i.__typename === "ExternalVideoTitleRecord" ||
               i.__typename === "GalleryItemRecord") &&
             i.slug === id
         )
@@ -104,7 +106,7 @@ export default async function Watch({
         // collect all gallery lists from all sections into one single array 
         section.galleryItems).find(
           (i) =>
-            (i.__typename === "ExternalVideoRecord" ||
+            (i.__typename === "ExternalVideoTitleRecord" ||
               i.__typename === "GalleryItemRecord") &&
             i.slug === id
         );
