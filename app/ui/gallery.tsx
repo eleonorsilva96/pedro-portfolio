@@ -94,20 +94,21 @@ export default async function Gallery({
   });
 
   return (
-    <div className="text-center">
+    <div className="flex flex-col items-center text-center">
       <div className="grid grid-cols gap-4 lg:flex-row lg:flex-wrap w-full h-auto items-center md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {content}
       </div>
-      <button
+      <Link
+        href={`/portfolio/video`}
         className={clsx(
-          "py-3 px-8 mt-8 rounded-full bg-primary-500 text-white text-base",
+          "flex items-center justify-center w-fit py-3 px-8 mt-8 rounded-full bg-primary-500 hover:bg-primary-600 text-white text-base cursor-pointer",
           {
             hidden: removeBtn === true,
           }
         )}
       >
         Ver Mais
-      </button>
+      </Link>
     </div>
   );
 }

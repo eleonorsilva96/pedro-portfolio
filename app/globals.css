@@ -19,6 +19,10 @@
   --font-open: var(--font-opensans);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   min-height: 100vh;

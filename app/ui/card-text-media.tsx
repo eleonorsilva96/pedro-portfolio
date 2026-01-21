@@ -86,58 +86,64 @@ export default function CardTextMediaTest({
     );
   }
   return (
-    <div className={clsx(
-        'flex flex-col w-full h-auto',
-        {
-            'mt-14 px-4' : !btnLabel
-        }
-    )}>
-      <div className={clsx({
-        'w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 rounded' : !btnLabel
-        }
-      )}></div>
+    <div
+      className={clsx("flex flex-col w-full h-auto", {
+        "mt-14 px-4": !btnLabel,
+      })}
+    >
+      <div
+        className={clsx({
+          "w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 rounded": !btnLabel,
+        })}
+      ></div>
       <div
         className={clsx(
           `flex flex-col lg:flex-row w-full items-center bg-transparent`,
           {
-            'justify-center': typeof media === "string" || "video" in media,
-            'gap-7 md:gap-11' : !btnLabel
+            "justify-center": typeof media === "string" || "video" in media,
+            "gap-7 md:gap-11": !btnLabel,
           }
         )}
       >
         <div
-          className={clsx(
-            "w-full flex flex-col h-auto justify-center gap-4",
-            {
-              'md:w-sm' : !btnLabel,
-              'py-14 px-4 lg:p-0 md:w-full' : btnLabel,
-              'items-start': typeof media === "string" || "video" in media,
-              'items-center':
-                typeof media !== "string" &&
-                "width" in media &&
-                "height" in media,
-            }
-          )}
+          className={clsx("w-full flex flex-col h-auto justify-center gap-4", {
+            "md:w-sm": !btnLabel,
+            "py-14 px-4 lg:p-0 md:w-full": btnLabel,
+            "items-start": typeof media === "string" || "video" in media,
+            "items-center":
+              typeof media !== "string" &&
+              "width" in media &&
+              "height" in media,
+          })}
         >
-          <h1 className={clsx({
-            'text-3xl' : !btnLabel,
-            'w-xl text-4xl md:text-[44px] text-center' : btnLabel
-          })}>{title}</h1>
-          <div className={clsx({
-            'w-7 h-[4px] bg-primary-500 mx-auto my-4' : btnLabel
-          })}></div>
+          <h1
+            className={clsx({
+              "text-3xl": !btnLabel,
+              "w-xl text-4xl md:text-[44px] text-center": btnLabel,
+            })}
+          >
+            {title}
+          </h1>
+          <div
+            className={clsx({
+              "w-7 h-[4px] bg-primary-500 mx-auto my-4": btnLabel,
+            })}
+          ></div>
           {/* insert description in a markdown parser to allow links */}
           <ReactMarkdown
             // add custom style for the link
             components={{
-            // remove node property out of the object
+              // remove node property out of the object
               p: ({ ...props }) => (
-                <p {...props} className={clsx(
-                    'w-full whitespace-pre-line text-md md:text-lg',
+                <p
+                  {...props}
+                  className={clsx(
+                    "w-full whitespace-pre-line text-md md:text-lg",
                     {
-                        'text-center w-full md:w-lg' : btnLabel,
+                      "text-center w-full md:w-lg": btnLabel,
                     }
-                )}></p>
+                  )}
+                ></p>
               ),
               a: ({ ...props }) => (
                 <a
@@ -150,13 +156,18 @@ export default function CardTextMediaTest({
           >
             {desc}
           </ReactMarkdown>
-          {btnLabel ? <button className="w-3xs h-12 rounded-full bg-primary-500 text-neutral-50 mt-4">{btnLabel}</button> : null}
+          {btnLabel ? (
+            <a
+            href="#contact"
+            className="flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
+            >
+            {btnLabel}
+            </a>
+          ) : null}
         </div>
         <div
-          className={clsx(
-            'flex justify-center order-last',
-            {
-            "w-full" : btnLabel,
+          className={clsx("flex justify-center order-last", {
+            "w-full": btnLabel,
             "lg:order-last": isMediaRight,
             "lg:order-first": !isMediaRight,
           })}

@@ -152,16 +152,3 @@ export default async function Home() {
     </div>
   );
 }
-
-
-// ... on GalleryItemRecord {
-            //   __typename
-            //   id
-            //   title
-            //   asset { # change to asset
-            //     url
-            //     width
-            //     height
-            //     alt
-            //   }
-            // }

@@ -12,7 +12,7 @@ export default function Form() {
   const errorMessage = state.message ? <p>${state.message}</p> : null;
 
   return (
-    <form action={formAction} className="w-full max-w-md">
+    <form id="contact" action={formAction} className="w-full max-w-md">
       <div className="grid grid-cols-1">
         <div className="col-span-full mt-4">
           <label
@@ -67,7 +67,7 @@ export default function Form() {
           {/* <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p> */}
         </div>
         {errorMessage}
-        <button type="submit" className="w-full rounded-full h-12 bg-primary-500 text-white mt-8">
+        <button type="submit" className="w-full rounded-full h-12 bg-primary-500 hover:bg-primary-600 cursor-pointer text-white mt-8">
           Submeter
         </button>
       </div>
