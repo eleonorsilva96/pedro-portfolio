@@ -13,12 +13,12 @@ type TextBlock = {
 };
 
 export type GalleryItems = {
-  __typename: 'GalleryItemRecord'; 
+  __typename: 'GalleryItemRecord';
   id: string;
   slug: string;
   title: string;
   asset: ImageAsset;
-};
+}
 
 type ExternalVideo = {
   url: string;
@@ -61,12 +61,37 @@ type CardTextImg = {
   asset: ImageAsset;
 };
 
+export type GalleryRelatedProjects = {
+  __typename: 'RelatedProjectsBlockRecord'; 
+  project: {
+    id: string;
+    title: string;
+    project: string;
+    portfolioCategory: {
+      slug: string;
+    };
+    thumbnail: ImageAsset;
+  };
+};
+
+export type GalleryRelatedServices = {
+  __typename: 'RelatedServicesBlockRecord';
+  service: {
+    id: string;
+    title: string;
+    slug: string;
+    thumbnailImage: ImageAsset;
+  };
+}
+
+export type GalleryItemsType = GalleryRelatedProjects | GalleryRelatedServices;
+
 // Card Gallery Record
 type CardGallery = {
   __typename: "CardGalleryRecord";
   id: string;
   title: string;
-  galleryItems: GalleryItems[]; // array of image objects
+  galleryItems: GalleryItemsType[]; // array of image objects
   filters: TextBlock[]; // array of titles
 };
 

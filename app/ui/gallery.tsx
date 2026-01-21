@@ -1,33 +1,96 @@
 import CardGallery from "@/app/ui/card-gallery";
 import clsx from "clsx";
-import { GalleryItems, PortfolioPhotoImage } from "../lib/definitions";
+import {
+  PortfolioPhotoImage,
+  GalleryItemsType,
+} from "../lib/definitions";
+import CardPortfolio from "./card-portfolio";
+import Link from "next/link";
 
-// add props to receive fetching data 
+// add props to receive fetching data
 export default async function Gallery({
-    galleryItems,
-    hasTitle,
-    removeBtn
+  galleryItems,
+  hasTitle,
+  removeBtn,
 }: {
-    galleryItems: (GalleryItems[] | PortfolioPhotoImage[]),
-    hasTitle?: boolean,
-    removeBtn?: boolean,
+  galleryItems: GalleryItemsType[] | PortfolioPhotoImage[];
+  hasTitle?: boolean;
+  removeBtn?: boolean;
 }) {
-  console.log("card title", galleryItems)
+  console.log("card title", galleryItems);
+
   const content = galleryItems.map((item) => {
-    if (item?.__typename === 'GalleryItemRecord' || item.__typename === 'ImageBlockRecord') {
-      return (
+    let card = null;
+
+    if (
+      (item?.__typename === "RelatedServicesBlockRecord" && hasTitle) ||
+      item?.__typename === "ImageBlockRecord"
+    ) {
+      card = (
         <CardGallery
-              key={item.id}
-              imgUrl={item.asset?.url}
-              width={item.asset?.width}
-              height={item.asset?.height}
-              alt={item.asset?.alt}
-              hasRadius={!hasTitle}
-              title={hasTitle && item?.__typename === 'GalleryItemRecord' ? item.title : null}
-          />
+          key={item.__typename === "ImageBlockRecord" ? item.id : null}
+          imgUrl={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.thumbnailImage.url
+              : item.asset.url
+          }
+          width={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.thumbnailImage.width
+              : item.asset.width
+          }
+          height={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.thumbnailImage.height
+              : item.asset.height
+          }
+          alt={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.thumbnailImage.alt
+              : item.asset.alt
+          }
+          hasRadius={!hasTitle}
+          title={
+            hasTitle && item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.title
+              : null
+          }
+        />
+      );
+    } else if (item.__typename === "RelatedProjectsBlockRecord") {
+      card = (
+        <div
+          key={item.project.id}
+          className="relative aspect-[4/3] overflow-hidden w-full h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer"
+        >
+          <CardPortfolio project={item || {}} />
+        </div>
       );
     }
-    return null; 
+
+    if (
+      item?.__typename === "RelatedServicesBlockRecord" ||
+      item.__typename === "RelatedProjectsBlockRecord"
+    ) {
+      return (
+        <Link
+          key={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.id
+              : item.project.id
+          }
+          href={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? `services/${item.service.slug}`
+              : `portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`
+          }
+        >
+          {card}
+        </Link>
+      );
+    } else {
+      return card;
+    }
   });
 
   return (
@@ -37,10 +100,11 @@ export default async function Gallery({
       </div>
       <button
         className={clsx(
-          'py-3 px-8 mt-8 rounded-full bg-primary-500 text-white text-base',
+          "py-3 px-8 mt-8 rounded-full bg-primary-500 text-white text-base",
           {
-          hidden: removeBtn === true,
-        })}
+            hidden: removeBtn === true,
+          }
+        )}
       >
         Ver Mais
       </button>
