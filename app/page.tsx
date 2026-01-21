@@ -48,15 +48,35 @@ const PAGE_CONTENT_QUERY = `
           title
           # Nested Modular Content (Gallery Items)
           galleryItems {
-            ... on GalleryItemRecord {
+            ... on RelatedProjectsBlockRecord {
               __typename
-              id
-              title
-              asset { # change to asset
-                url
-                width
-                height
-                alt
+              project {
+                id
+                title
+                project
+                portfolioCategory {
+                  slug
+                }
+                thumbnail {
+                  url
+                  width
+                  height
+                  alt
+                }
+              }
+            }
+            ... on RelatedServicesBlockRecord {
+              __typename
+              service {
+                id
+                title
+                slug
+                thumbnailImage {
+                  url
+                  width
+                  height
+                  alt
+                }
               }
             }
           }
@@ -76,6 +96,11 @@ export default async function Home() {
   if (!videoBlock) return null;
   if (!cardTextImg) return null;
   if (!cardGallery) return null;
+
+  console.log("cards home", cardGallery);
+
+
+  console.log("last works + services", cardGallery);
 
   return (
     <div className="flex flex-col w-full items-center sm:items-start">
@@ -127,3 +152,16 @@ export default async function Home() {
     </div>
   );
 }
+
+
+// ... on GalleryItemRecord {
+            //   __typename
+            //   id
+            //   title
+            //   asset { # change to asset
+            //     url
+            //     width
+            //     height
+            //     alt
+            //   }
+            // }
