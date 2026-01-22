@@ -7,9 +7,11 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const ContactFormSchema = z.object({
-  firstName: z.string().min(1, { message: "Please insert your first name" }),
-  email: z.email("Please enter a valid email address"),
-  message: z.string().min(10, { message: "Message must be at least 10 characters long" }),
+  firstName: z.string().min(1, { message: "Por favor, insira o seu nome." }),
+  email: z
+  .string().min(1, { message: "O email é obrigatório." })
+  .email({ message: "Por favor, insira um email válido." }),
+  message: z.string().min(10, { message: "A mensagem deve ter pelo menos 10 caracteres." }),
 });
 
 export type State = {
@@ -20,6 +22,11 @@ export type State = {
   };
   message?: string | null;
   success?: boolean;
+  inputs?: {
+    firstName?: string | null;
+    email?: string | null;
+    message?: string | null;
+  };
 };
 
 export async function sendEmail(preState: State, formData: FormData) {
@@ -32,8 +39,13 @@ export async function sendEmail(preState: State, formData: FormData) {
   if (!validateFields.success) {
     return {
       errors: validateFields.error.flatten().fieldErrors,
-      message: "There are missing fields.",
-      success: false
+      message: "Existe campos por preencher.",
+      success: false,
+      inputs: {
+        firstName: formData.get("name")?.toString(),
+        email: formData.get("email")?.toString(),
+        message: formData.get("message")?.toString(),
+      }
     };
   }
 
@@ -51,8 +63,8 @@ export async function sendEmail(preState: State, formData: FormData) {
             `,
     });
 
-    return { success: true, message: "Email sent successfully!" };
+    return { success: true, message: "Email enviado com sucesso!" };
   } catch (error) {
-    return { success: false, message: "Failed to send email." };
+    return { success: false, message: "Erro ao enviar o email." };
   }
 };
