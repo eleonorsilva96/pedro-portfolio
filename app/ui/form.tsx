@@ -1,17 +1,26 @@
 "use client";
 
 import { sendEmail, State } from "@/app/lib/actions";
-import { useActionState } from "react";
+import clsx from "clsx";
+import { useActionState, useState } from "react";
+
 
 export default function Form() {
   const initialState: State = { errors: {}, message: null, success: undefined, inputs: {} };
   const [state, formAction] = useActionState(sendEmail, initialState);
+  // create a state object to know which error input was touched that will receive property names with a boolean value
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   let globalMessage = null;
 
+  // access the current state, copy added properties and add new property 
+  const handleFocus = (field: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }))
+  };
+
   // show input validation errors
-  const nameError = state.errors?.firstName ? <p className="text-red-600">{state.errors.firstName}</p> : null;
-  const emailError = state.errors?.email ? <p className="text-red-600">{state.errors.email[0]}</p> : null;
-  const messageError = state.errors?.message ? <p className="text-red-600">{state.errors.message}</p> : null;
+  const nameError = state.errors?.firstName && !touched?.firstName ? <p className="text-red-600">{state.errors.firstName}</p> : null;
+  const emailError = state.errors?.email && !touched?.email ? <p className="text-red-600">{state.errors.email[0]}</p> : null;
+  const messageError = state.errors?.message && !touched?.message ? <p className="text-red-600">{state.errors.message}</p> : null;
 
   // show global message
   if (state.success) {
@@ -19,7 +28,7 @@ export default function Form() {
   } 
 
   return (
-    <form id="contact" action={formAction} className="w-full max-w-md" noValidate>
+    <form onSubmit={() => setTouched({})} id="contact" action={formAction} className="w-full max-w-md" noValidate>
       <div className="grid grid-cols-1">
         <div className="col-span-full mt-4">
           <label
@@ -32,8 +41,14 @@ export default function Form() {
             <input
               id="name"
               type="text"
+              className={clsx(
+                "block w-full bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-neutral-900 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6",
+                {
+                  "outline-2 -outline-offset-2 outline-red-600" : nameError
+                }
+              )}
+              onFocus={() => handleFocus("firstName")}
               name="name"
-              className="block w-full bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-neutral-900 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6"
               aria-required="true"
               defaultValue={state.inputs?.firstName || ""}
             />
@@ -52,7 +67,13 @@ export default function Form() {
               id="email"
               type="email"
               name="email"
-              className="block w-full bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-neutral-900 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6"
+              className={clsx(
+                "block w-full bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-neutral-900 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6",
+                {
+                  "outline-2 -outline-offset-2 outline-red-600" : emailError
+                }
+              )}
+              onFocus={() => handleFocus("email")}
               aria-required="true"
               defaultValue={state.inputs?.email || ""}
             />
@@ -71,7 +92,13 @@ export default function Form() {
               id="message"
               name="message"
               rows={3}
-              className="block w-full bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-neutral-900 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6"
+              className={clsx(
+                "block w-full bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-neutral-900 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6",
+                {
+                  "outline-2 -outline-offset-2 outline-red-600" : messageError
+                }
+              )}
+              onFocus={() => handleFocus("message")}
               aria-required="true"
               defaultValue={state.inputs?.message || ""}
             ></textarea>
