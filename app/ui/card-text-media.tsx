@@ -159,7 +159,7 @@ export default function CardTextMediaTest({
           {btnLabel ? (
             <a
             href="#contact"
-            className="flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
+            className="font-mulish font-medium flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
             >
             {btnLabel}
             </a>

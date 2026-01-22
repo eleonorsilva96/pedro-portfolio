@@ -107,7 +107,7 @@ export default function Form() {
           {messageError}
         </div>
         {globalMessage}
-        <button type="submit" className="w-full rounded-full h-12 bg-primary-500 hover:bg-primary-600 cursor-pointer text-white mt-8">
+        <button type="submit" className="font-mulish font-medium w-full rounded-full h-12 bg-primary-500 hover:bg-primary-600 cursor-pointer text-white mt-8">
           Submeter
         </button>
       </div>

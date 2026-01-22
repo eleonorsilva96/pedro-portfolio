@@ -43,7 +43,7 @@ export default function Footer({
   });
 
   return (
-    <footer className="flex w-full h-80 lg:h-64 bg-neutral-200 justify-center">
+    <footer className="font-quick flex w-full h-80 lg:h-64 bg-neutral-200 justify-center">
       <div className="w-full lg:w-1/2 h-full flex flex-col gap-8 justify-center items-center">
         <div className="flex flex-col w-full items-center lg:flex-row lg:justify-between gap-6">
           <div className="flex flex-col items-center lg:items-start gap-2">

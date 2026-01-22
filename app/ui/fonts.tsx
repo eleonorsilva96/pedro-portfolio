@@ -1,4 +1,4 @@
-import { Quicksand, Open_Sans } from 'next/font/google';
+import { Quicksand, Open_Sans, Lemon, Mulish } from 'next/font/google';
 
 export const quicksand = Quicksand({ 
     subsets: ['latin'],
@@ -8,4 +8,15 @@ export const quicksand = Quicksand({
 export const openSans = Open_Sans({
     subsets: ['latin'],
     variable: '--font-opensans'
+});
+
+export const lemon = Lemon({
+    weight: '400',
+    subsets: ['latin'],
+    variable: '--font-lemon'
+});
+
+export const mulish = Mulish({
+    subsets: ['latin'],
+    variable: '--font-mulish'
 });

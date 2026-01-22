@@ -4,7 +4,6 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useRef } from "react";
 import Image from "next/image";
 import { HeaderNavigation } from "@/app/lib/definitions";
 
@@ -34,14 +33,14 @@ export default function Header({
   }, [show]); // run/watch this every time state show changes
 
   return (
-    <header className="sticky w-full h-20 bg-neutral-200 items-center justify-between px-4 z-50">
+    <header className="font-open sticky w-full h-20 bg-neutral-200 items-center justify-between px-4 z-50">
       <nav className="relative flex h-full items-center justify-between">
-        <div id="logo" className="active:text-red-400">
+        <div id="logo" className="font-lemon text-xl text-primary-500 active:text-red-400">
           <Link href="/">{logo}</Link>
         </div>
         <div
           id="links"
-          className="hidden lg:flex items-center justify-around gap-10 font-open uppercase font-bold text-neutral-500"
+          className="hidden lg:flex items-center justify-around gap-10 uppercase font-bold text-neutral-500"
         >
           {navLinks.map((link) => {
             // has more than one link

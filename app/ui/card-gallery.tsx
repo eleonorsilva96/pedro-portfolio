@@ -51,7 +51,7 @@ export default function CardGallery({
           />
       </div>
           <h3 className={clsx(
-            'text-xl lg:text-2xl',
+            'font-medium text-xl lg:text-2xl',
             {
                 'hidden': !title,
             },

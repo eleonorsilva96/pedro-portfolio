@@ -15,8 +15,10 @@
   --color-primary-200: var(--primary-200);
   --color-primary-500: var(--primary-500);
   --color-primary-600: var(--primary-600);
-  --font-sans: var(--font-quicksand);
+  --font-quick: var(--font-quicksand);
   --font-open: var(--font-opensans);
+  --font-lemon: var(--font-lemon);
+  --font-mulish: var(--font-mulish);
 }
 
 html {

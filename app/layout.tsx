@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { quicksand, openSans } from "@/app/ui/fonts";
+import { quicksand, openSans, lemon, mulish } from "@/app/ui/fonts";
 import "./globals.css";
 import Header from '@/app/ui/header';
 import Footer from "@/app/ui/footer";
@@ -87,10 +87,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.variable} ${openSans.variable} antialiased flex flex-col !min-h-screen`}
+        className={`${quicksand.variable} ${openSans.variable} ${lemon.variable} ${mulish.variable} antialiased flex flex-col !min-h-screen`}
       >
         <Header logo={global.headerLogo} navLinks={global.headerNavigation} />
-        <main className="flex-grow">
+        <main className="font-quick flex-grow">
           {children}
         </main>
         <Footer data={FOOTER}/>
