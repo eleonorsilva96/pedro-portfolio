@@ -27,35 +27,37 @@ export default async function Gallery({
       item?.__typename === "ImageBlockRecord"
     ) {
       card = (
-        <CardGallery
-          key={item.__typename === "ImageBlockRecord" ? item.id : null}
-          imgUrl={
-            item.__typename === "RelatedServicesBlockRecord"
-              ? item.service.thumbnailImage.url
-              : item.asset.url
-          }
-          width={
-            item.__typename === "RelatedServicesBlockRecord"
-              ? item.service.thumbnailImage.width
-              : item.asset.width
-          }
-          height={
-            item.__typename === "RelatedServicesBlockRecord"
-              ? item.service.thumbnailImage.height
-              : item.asset.height
-          }
-          alt={
-            item.__typename === "RelatedServicesBlockRecord"
-              ? item.service.thumbnailImage.alt
-              : item.asset.alt
-          }
-          hasRadius={!hasTitle}
-          title={
-            hasTitle && item.__typename === "RelatedServicesBlockRecord"
-              ? item.service.title
-              : null
-          }
-        />
+        <div className="group">
+          <CardGallery
+            key={item.__typename === "ImageBlockRecord" ? item.id : null}
+            imgUrl={
+              item.__typename === "RelatedServicesBlockRecord"
+                ? item.service.thumbnailImage.url
+                : item.asset.url
+            }
+            width={
+              item.__typename === "RelatedServicesBlockRecord"
+                ? item.service.thumbnailImage.width
+                : item.asset.width
+            }
+            height={
+              item.__typename === "RelatedServicesBlockRecord"
+                ? item.service.thumbnailImage.height
+                : item.asset.height
+            }
+            alt={
+              item.__typename === "RelatedServicesBlockRecord"
+                ? item.service.thumbnailImage.alt
+                : item.asset.alt
+            }
+            hasRadius={!hasTitle}
+            title={
+              hasTitle && item.__typename === "RelatedServicesBlockRecord"
+                ? item.service.title
+                : null
+            }
+          />
+        </div>
       );
     } else if (item.__typename === "RelatedProjectsBlockRecord") {
       card = (
