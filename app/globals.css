@@ -21,10 +21,6 @@
   --font-mulish: var(--font-mulish);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   background: var(--background);
   min-height: 100vh;

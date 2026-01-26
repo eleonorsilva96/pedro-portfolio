@@ -1,5 +1,6 @@
 "use client";
 
+import { isValidElement, MouseEvent, RefObject } from "react";
 import Image from "next/image";
 import { ImageAsset, VideoAsset } from "../lib/definitions";
 import ReactPlayer from "react-player";
@@ -12,13 +13,17 @@ export default function CardTextMediaTest({
   desc,
   btnLabel,
   media,
+  formRef,
   isMediaRight,
+  isVertical
 }: {
   title: string;
   desc: string;
   btnLabel?: string;
   media: ImageAsset | VideoAsset | string; // externalLink is a string and not a external video
+  formRef?: RefObject<HTMLDivElement | null>;
   isMediaRight?: boolean;
+  isVertical?: boolean;
 }) {
   let mediaContent = null;
 
@@ -26,12 +31,36 @@ export default function CardTextMediaTest({
 
   if (!media) return null;
 
+  const scrollToSection = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    if (formRef) {
+      return formRef.current?.scrollIntoView({
+        behavior: 'smooth'
+      })
+    }
+  };
+
+  // extract plain text from any react child data type and return a string
+  const getTextFromChildren = (children: React.ReactNode): string => {
+    if (typeof children === 'string') return children;
+    if (typeof children === 'number') return children.toString();
+    // iterate array and run the function for each item and join them in a single text value 
+    if (Array.isArray(children)) return children.map(getTextFromChildren).join('');
+    // check if this is a react element and ensure it has react children with type assertion
+    if (isValidElement<{ children?: React.ReactNode }>(children) && children.props.children) {
+      return getTextFromChildren(children.props.children);
+    }
+    return '';
+  };
+
   // external video link
   if (typeof media === "string") {
     if (media.includes("soundcloud.com")) {
       const encodedUrl = encodeURIComponent(media);
 
       const embedUrl = `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`;
+
 
       mediaContent = (
         <div className="w-[388px] h-[388px]">
@@ -66,7 +95,13 @@ export default function CardTextMediaTest({
       <div className="w-full">
         <Image
           src={media.url}
-          className="w-full md:object-center lg:h-[660px] object-cover lg:object-[22%] 2xl:object-[50%_19%]"
+          className={clsx(
+            "w-full object-cover md:object-center lg:object-[22%] 2xl:object-[50%_19%]",
+            {
+              "max-h-[800px] md:max-h-[660px]" : !isVertical,
+              "aspect-[9/16] max-h-[600px] lg:max-h-[850px]" : isVertical
+            }
+          )}
           width={media.width}
           height={media.height}
           alt={media.alt}
@@ -119,7 +154,7 @@ export default function CardTextMediaTest({
           <h1
             className={clsx({
               "text-3xl": !btnLabel,
-              "w-xl text-4xl md:text-[44px] text-center": btnLabel,
+              "text-4xl lg:w-xl md:text-[44px] text-center": btnLabel,
             })}
           >
             {title}
@@ -134,17 +169,28 @@ export default function CardTextMediaTest({
             // add custom style for the link
             components={{
               // remove node property out of the object
-              p: ({ ...props }) => (
-                <p
-                  {...props}
-                  className={clsx(
-                    "w-full whitespace-pre-line text-md md:text-lg",
-                    {
-                      "text-center w-full md:w-lg": btnLabel,
-                    }
-                  )}
-                ></p>
-              ),
+              p: ({ children, ...props }) => {
+
+                // extract number of words to know if a shortText
+                const textContent = getTextFromChildren(children);
+                const wordCount = textContent.trim().split(/\s+/).length;
+                const isShortText = wordCount < 30;
+
+                return (
+                  <p
+                    {...props}
+                    className={clsx(
+                      "w-full whitespace-pre-line text-md md:text-lg",
+                      {
+                        "w-full md:w-lg lg:w-xl": btnLabel,
+                        "text-center": isShortText,
+                      }
+                    )}
+                  >
+                  {children}
+                  </p>
+                );
+              },
               a: ({ ...props }) => (
                 <a
                   {...props}
@@ -158,6 +204,7 @@ export default function CardTextMediaTest({
           </ReactMarkdown>
           {btnLabel ? (
             <a
+            onClick={(e) => scrollToSection(e)}
             href="#contact"
             className="font-mulish font-medium flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
             >

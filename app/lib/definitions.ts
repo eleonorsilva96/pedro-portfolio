@@ -130,7 +130,7 @@ type PrivacyPolicyLink = {
 
 
 // Check for only one of this block shapes
-type SectionBlock = VideoBlock | CardTextImg | CardGallery;
+export type SectionBlock = VideoBlock | CardTextImg | CardGallery;
 
 
 // ----- Portfolio -----
@@ -262,6 +262,18 @@ export type PortfolioData = {
   allPortfolioCategories: PortfolioCategoryRecord[];
   allPortfolioTags: PortfolioGalleryTag[];
 };
+
+export type ServiceDataBlock = {
+  slug: string;
+  thumbnailImage: ImageAsset;
+  title: string;
+  description: string;
+  buttonText: string;
+}
+
+export type ServiceData = {
+  service: ServiceDataBlock;
+}
 
 export type HomeData = {
   homepage: {

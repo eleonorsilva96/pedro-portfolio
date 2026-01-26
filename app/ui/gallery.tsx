@@ -8,7 +8,7 @@ import CardPortfolio from "./card-portfolio";
 import Link from "next/link";
 
 // add props to receive fetching data
-export default async function Gallery({
+export default function Gallery({
   galleryItems,
   hasTitle,
   removeBtn,
@@ -83,8 +83,8 @@ export default async function Gallery({
           }
           href={
             item.__typename === "RelatedServicesBlockRecord"
-              ? `services/${item.service.slug}`
-              : `portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`
+              ? `/services/${item.service.slug}`
+              : `/portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`
           }
         >
           {card}
