@@ -27,9 +27,14 @@ export default function Gallery({
       item?.__typename === "ImageBlockRecord"
     ) {
       card = (
-        <div className="group">
+        <div className={clsx(
+          {
+            "group" : hasTitle
+          }
+        )}
+          key={item.__typename === "RelatedServicesBlockRecord" ? item.service.id : item.id}
+        >
           <CardGallery
-            key={item.__typename === "ImageBlockRecord" ? item.id : null}
             imgUrl={
               item.__typename === "RelatedServicesBlockRecord"
                 ? item.service.thumbnailImage.url
