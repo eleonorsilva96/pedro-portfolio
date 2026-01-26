@@ -2,6 +2,7 @@ import { performRequest } from "@/app/lib/datocms";
 import { ProjectData } from "@/app/lib/definitions";
 import SectionItem from "@/app/ui/section-item";
 import ModalContent from "@/app/ui/modal-content";
+import clsx from "clsx";
 
 const PAGE_CONTENT_QUERY = `
   query SectionProject($project: String!) {
@@ -80,56 +81,64 @@ export default async function Watch({
   console.log("content from watch", content);
 
   // add transparent div to create a button to open the modal
-  const section = content.section.map((section) => (
-    <div key={section.id} className="flex flex-col items-center">
+  const section = content.section.map((section, index) => (
+    <div key={section.id} className="w-full flex flex-col items-center">
       <h3>{section.title}</h3>
-      <div className="flex gap-4">
+      <div
+        className={clsx(
+          "w-full max-w-[100vw] flex overflow-x-auto overflow-y-hidden snap-x scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] xl:overflow-x-hidden xl:flex-wrap xl:justify-center gap-4 px-4",
+          {
+            "md:justify-center": index === content.section.length - 1,
+          },
+        )}
+      >
         {section.galleryItems.map((item) => (
           <SectionItem key={item.id} item={item} />
         ))}
       </div>
     </div>
   ));
-  
+
   if (id) {
-    // return the section object when opens a item 
-      const itemsGallery = content.section.find((section) =>
-        section.galleryItems.find(
-          (i) =>
-            (i.__typename === "ExternalVideoTitleRecord" ||
-              i.__typename === "GalleryItemRecord") &&
-            i.slug === id
-        )
-      );
+    // return the section object when opens a item
+    const itemsGallery = content.section.find((section) =>
+      section.galleryItems.find(
+        (i) =>
+          (i.__typename === "ExternalVideoTitleRecord" ||
+            i.__typename === "GalleryItemRecord") &&
+          i.slug === id,
+      ),
+    );
     // returns the item details
-      const itemContent = content.section.flatMap((section) =>
-        // collect all gallery lists from all sections into one single array 
-        section.galleryItems).find(
-          (i) =>
-            (i.__typename === "ExternalVideoTitleRecord" ||
-              i.__typename === "GalleryItemRecord") &&
-            i.slug === id
-        );
+    const itemContent = content.section
+      .flatMap(
+        (section) =>
+          // collect all gallery lists from all sections into one single array
+          section.galleryItems,
+      )
+      .find(
+        (i) =>
+          (i.__typename === "ExternalVideoTitleRecord" ||
+            i.__typename === "GalleryItemRecord") &&
+          i.slug === id,
+      );
 
     modal = (
-    <ModalContent
-      galleryList={itemsGallery?.galleryItems || []}
-      sliderContent={itemContent || null}
-      projectId={id}
-      category={category}
-      project={project}
+      <ModalContent
+        galleryList={itemsGallery?.galleryItems || []}
+        sliderContent={itemContent || null}
+        projectId={id}
+        category={category}
+        project={project}
       />
     );
   }
 
-  //   console.log(title);
-  //   console.log(content);
-
   return (
     <div className="flex flex-col w-full items-start bg-white md:items-center">
-      <div className="w-full flex flex-col items-center py-10 bg-neutral-800 text-neutral-50 gap-5">
-        <h3 className="text-3xl">{title}</h3>
-        <p className="w-2xl whitespace-pre-line text-center">
+      <div className="w-full flex flex-col items-center py-10 bg-neutral-800 text-neutral-50 px-4 gap-5">
+        <h3 className="w-full text-center text-3xl">{title}</h3>
+        <p className="w-full md:w-2xl whitespace-pre-line text-center">
           {content.description}
         </p>{" "}
         {/* remove indentation but preserves the line breaks */}

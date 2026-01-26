@@ -163,12 +163,12 @@ export default function ModalContent({
           {expandIconHandler}
         </div>
         <Close isProject={modalProject ? true : false} projectId={projectId} />
-        <div className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] flex flex-col lg:flex-row px-4 gap-8 justify-center">
+        <div className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start">
           <div className={clsx(
             'w-full flex flex-col gap-4',
             {
               'aspect-[16/9]' : moreDetailsModal?.__typename !== 'GalleryItemRecord',
-              'aspect-[2/3] !w-[600px]' : moreDetailsModal?.__typename == 'GalleryItemRecord',
+              'aspect-[2/3] md:!w-[500px] lg:!w-[600px]' : moreDetailsModal?.__typename == 'GalleryItemRecord',
             }
           )}>
             {mediaPlayer}
@@ -178,7 +178,7 @@ export default function ModalContent({
               hidden: isExpand === true,
               flex: isExpand === false,
               'w-md' : modalProject,
-              'w-sm' : !modalProject,
+              'w-fit lg:w-sm' : !modalProject,
             })}
           >
             <h3 className={clsx(
