@@ -50,7 +50,13 @@ export default function Form({
     <div
       id="contact"
       ref={innerRef}
-      className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px] bg-white"
+      className={clsx(
+        "flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px]",
+        {
+          "bg-white" : !hasBgWhite,
+          "bg-neutral-200" : hasBgWhite
+        }
+      )}
     >
       <h1 className="text-4xl lg:text-[44px] text-center">Pede um orçamento gratis</h1>
       <div className="w-7 h-[3px] bg-foreground mx-auto my-5"></div>
