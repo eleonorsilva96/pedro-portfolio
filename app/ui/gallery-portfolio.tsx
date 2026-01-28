@@ -6,7 +6,6 @@ import CardPortfolio from "@/app/ui/card-portfolio";
 import { useSearchParams, usePathname } from "next/navigation";
 import { useScrollLock } from "@/app/lib/hooks";
 
-
 export default function GalleryPortfolio({
   data,
   isModal,
@@ -17,9 +16,9 @@ export default function GalleryPortfolio({
   useScrollLock(isModal); // it only works on client components
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  
-    return (
-      <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+
+  return (
+    <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-[repeat(4,max-content)] gap-4">
       {data.map((project) => {
         if (project.__typename === "GalleryPortfolioRecord") {
           const params = new URLSearchParams(searchParams); // use utility methods from API to manipulate the URL params
@@ -33,18 +32,8 @@ export default function GalleryPortfolio({
           }
 
           return (
-            <Link
-              key={project.id}
-              href={newUrl}
-            >
-              <div
-                key={project.id}
-                className="relative aspect-[4/3] overflow-hidden w-full h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer" 
-              >
-                <CardPortfolio
-                  project={project}
-                />
-              </div>
+            <Link key={project.id} href={newUrl}>
+              <CardPortfolio project={project} />
             </Link>
           );
         }

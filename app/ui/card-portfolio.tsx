@@ -37,7 +37,9 @@ export default function CardPortfolio({
   }
 
   return (
-    <>
+    <div
+      className="relative aspect-[4/3] overflow-hidden w-full max-w-xl h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer"
+    >
       <ImageSkeleton
         src={urlProps}
         width={widthProps}
@@ -48,6 +50,6 @@ export default function CardPortfolio({
       <div className="absolute opacity-0 group-hover:opacity-100 inset-0 flex items-center justify-center transition-opacity duration-300">
         <span className="text-center">{titleProps}</span>
       </div>
-    </>
+    </div>
   );
 }

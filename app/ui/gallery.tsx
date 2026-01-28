@@ -1,9 +1,6 @@
 import CardGallery from "@/app/ui/card-gallery";
 import clsx from "clsx";
-import {
-  PortfolioPhotoImage,
-  GalleryItemsType,
-} from "../lib/definitions";
+import { PortfolioPhotoImage, GalleryItemsType } from "../lib/definitions";
 import CardPortfolio from "./card-portfolio";
 import Link from "next/link";
 
@@ -27,12 +24,15 @@ export default function Gallery({
       item?.__typename === "ImageBlockRecord"
     ) {
       card = (
-        <div className={clsx(
-          {
-            "group" : hasTitle
+        <div
+          className={clsx({
+            group: hasTitle,
+          })}
+          key={
+            item.__typename === "RelatedServicesBlockRecord"
+              ? item.service.id
+              : item.id
           }
-        )}
-          key={item.__typename === "RelatedServicesBlockRecord" ? item.service.id : item.id}
         >
           <CardGallery
             imgUrl={
@@ -65,14 +65,7 @@ export default function Gallery({
         </div>
       );
     } else if (item.__typename === "RelatedProjectsBlockRecord") {
-      card = (
-        <div
-          key={item.project.id}
-          className="relative aspect-[4/3] overflow-hidden w-full h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer"
-        >
-          <CardPortfolio project={item || {}} />
-        </div>
-      );
+      card = <CardPortfolio project={item || {}} />;
     }
 
     if (
@@ -102,7 +95,7 @@ export default function Gallery({
 
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="grid grid-cols gap-4 lg:gap-x-6 lg:gap-y-10 lg:flex-row lg:flex-wrap w-full h-auto items-center md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="grid grid-cols gap-4 lg:flex-row lg:flex-wrap w-full h-auto items-center md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[repeat(4,max-content)]">
         {content}
       </div>
       <Link
@@ -111,7 +104,7 @@ export default function Gallery({
           "font-mulish font-medium flex items-center justify-center w-fit py-3 px-8 mt-8 rounded-full bg-primary-500 hover:bg-primary-600 text-white text-base cursor-pointer",
           {
             hidden: removeBtn === true,
-          }
+          },
         )}
       >
         Ver Mais
