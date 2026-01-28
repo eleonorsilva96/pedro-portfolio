@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function ModalContent({
   galleryList,
@@ -31,12 +32,24 @@ export default function ModalContent({
   category: string;
   project?: string | null;
 }) {
-  // console.log(sliderContent);
   // use state for the expand
   const [isExpand, setExpand] = useState<boolean>(false);
   let mediaPlayer = null;
   let year = null;
   let linkBlock = null;
+
+  // when component mounts
+    useEffect(() => {
+      // remove scrollbar when menu list appears 
+        // document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      
+      // when component unmounts
+      return () => {
+        // document.documentElement.style.overflow = "unset";
+        document.body.style.overflow = "unset";
+      };
+    }); 
 
   const projectModal =
     sliderContent?.__typename === "SlideProjectRecord" ? sliderContent : null;
@@ -147,7 +160,6 @@ export default function ModalContent({
   }
 
   return (
-    // "fixed inset-0 z-[9999] bg-gray-300"
     <div className={clsx(
       'fixed inset-0 z-[9999] bg-gray-300',
       {
@@ -163,12 +175,12 @@ export default function ModalContent({
           {expandIconHandler}
         </div>
         <Close isProject={modalProject ? true : false} projectId={projectId} />
-        <div className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start">
+        <div className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] 2xl:max-w-[1800px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start">
           <div className={clsx(
             'w-full flex flex-col gap-4',
             {
               'aspect-[16/9]' : moreDetailsModal?.__typename !== 'GalleryItemRecord',
-              'aspect-[2/3] md:!w-[500px] lg:!w-[600px]' : moreDetailsModal?.__typename == 'GalleryItemRecord',
+              'aspect-[2/3] h-[70vh] md:h-[90vh] md:!w-[450px] lg:!w-[500px] 2xl:!w-[700px]' : moreDetailsModal?.__typename == 'GalleryItemRecord',
             }
           )}>
             {mediaPlayer}
@@ -178,7 +190,7 @@ export default function ModalContent({
               hidden: isExpand === true,
               flex: isExpand === false,
               'w-md' : modalProject,
-              'w-fit lg:w-sm' : !modalProject,
+              'w-fit lg:min-w-3xs lg:max-w-2xs text-balance' : !modalProject, //w-fit lg:w-[304px] 2xl:w-[405px] 
             })}
           >
             <h3 className={clsx(
