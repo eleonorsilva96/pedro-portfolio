@@ -8,12 +8,13 @@ import { VideoPlayer } from "react-datocms";
 import clsx from "clsx";
 import ReactMarkdown from "react-markdown";
 
-export default function CardTextMediaTest({
+export default function CardTextMedia({
   title,
   desc,
   btnLabel,
   media,
   formRef,
+  isBlogSection,
   isMediaRight,
   isVertical
 }: {
@@ -22,6 +23,7 @@ export default function CardTextMediaTest({
   btnLabel?: string;
   media: ImageAsset | VideoAsset | string; // externalLink is a string and not a external video
   formRef?: RefObject<HTMLDivElement | null>;
+  isBlogSection?: boolean;
   isMediaRight?: boolean;
   isVertical?: boolean;
 }) {
@@ -96,7 +98,7 @@ export default function CardTextMediaTest({
         <Image
           src={media.url}
           className={clsx(
-            "w-full object-cover md:object-center lg:object-[22%] 2xl:object-[50%_19%]",
+            "w-full object-cover md:object-center 2xl:object-[50%_19%]",
             {
               "max-h-[800px] md:max-h-[660px]" : !isVertical,
               "aspect-[9/16] max-h-[600px] lg:max-h-[850px]" : isVertical
@@ -123,12 +125,12 @@ export default function CardTextMediaTest({
   return (
     <div
       className={clsx("flex flex-col w-full h-auto", {
-        "mt-14 px-4": !btnLabel,
+        "mt-14 px-4": isBlogSection,
       })}
     >
       <div
         className={clsx({
-          "w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 rounded": !btnLabel,
+          "w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 rounded": isBlogSection,
         })}
       ></div>
       <div
@@ -136,14 +138,14 @@ export default function CardTextMediaTest({
           `flex flex-col lg:flex-row w-full items-center bg-transparent`,
           {
             "justify-center": typeof media === "string" || "video" in media,
-            "gap-7 md:gap-11": !btnLabel,
+            "gap-7 md:gap-11": isBlogSection,
           }
         )}
       >
         <div
           className={clsx("w-full flex flex-col h-auto justify-center gap-4", {
-            "md:w-sm": !btnLabel,
-            "py-14 px-4 lg:p-0 md:w-full": btnLabel,
+            "md:w-sm": isBlogSection,
+            "py-14 px-4 lg:p-0 md:w-full": !isBlogSection,
             "items-start": typeof media === "string" || "video" in media,
             "items-center":
               typeof media !== "string" &&
@@ -153,15 +155,15 @@ export default function CardTextMediaTest({
         >
           <h1
             className={clsx({
-              "text-3xl": !btnLabel,
-              "text-4xl lg:w-xl md:text-[44px] text-center": btnLabel,
+              "text-3xl": isBlogSection,
+              "text-4xl lg:w-xl md:text-[44px] text-center": !isBlogSection,
             })}
           >
             {title}
           </h1>
           <div
             className={clsx({
-              "w-7 h-[4px] bg-primary-500 mx-auto my-4": btnLabel,
+              "w-7 h-[4px] bg-primary-500 mx-auto my-4": !isBlogSection,
             })}
           ></div>
           {/* insert description in a markdown parser to allow links */}
@@ -182,7 +184,7 @@ export default function CardTextMediaTest({
                     className={clsx(
                       "w-full whitespace-pre-line text-md md:text-lg",
                       {
-                        "w-full md:w-lg lg:w-xl": btnLabel,
+                        "w-full md:w-lg lg:w-xl": !isBlogSection,
                         "text-center": isShortText,
                       }
                     )}
@@ -214,7 +216,7 @@ export default function CardTextMediaTest({
         </div>
         <div
           className={clsx("flex justify-center order-last", {
-            "w-full": btnLabel,
+            "w-full": !isBlogSection,
             "lg:order-last": isMediaRight,
             "lg:order-first": !isMediaRight,
           })}

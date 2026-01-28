@@ -13,12 +13,12 @@ type TextBlock = {
 };
 
 export type GalleryItems = {
-  __typename: 'GalleryItemRecord';
+  __typename: "GalleryItemRecord";
   id: string;
   slug: string;
   title: string;
   asset: ImageAsset;
-}
+};
 
 type ExternalVideo = {
   url: string;
@@ -28,7 +28,7 @@ type ExternalVideo = {
   provider: string;
   providerUid: string;
   thumbnailUrl: string;
-}
+};
 
 type Video = {
   muxPlaybackId: string;
@@ -62,7 +62,7 @@ type CardTextImg = {
 };
 
 export type GalleryRelatedProjects = {
-  __typename: 'RelatedProjectsBlockRecord'; 
+  __typename: "RelatedProjectsBlockRecord";
   project: {
     id: string;
     title: string;
@@ -75,14 +75,14 @@ export type GalleryRelatedProjects = {
 };
 
 export type GalleryRelatedServices = {
-  __typename: 'RelatedServicesBlockRecord';
+  __typename: "RelatedServicesBlockRecord";
   service: {
     id: string;
     title: string;
     slug: string;
     thumbnailImage: ImageAsset;
   };
-}
+};
 
 export type GalleryItemsType = GalleryRelatedProjects | GalleryRelatedServices;
 
@@ -96,142 +96,145 @@ type CardGallery = {
 };
 
 type CategoryLinkRef = {
-    id: string;
-    __typename: 'LinkRecord';
-    name: string;
-    link: {
-        __typename: 'PortfolioCategoryRecord' | 'ServiceRecord';
-        slug: string;
-    };
+  id: string;
+  __typename: "LinkRecord";
+  name: string;
+  link: {
+    __typename: "PortfolioCategoryRecord" | "ServiceRecord";
+    slug: string;
+  };
 };
 
 type SingleLinkRef = {
-    __typename: 'AboutMeRecord' | 'ContactRecord';
+  __typename: "AboutRecord" | "ContactRecord";
 } | null;
 
 export type HeaderNavigation = {
-    __typename: 'NavItemRecord';
-    id: string;
-    singleLink: SingleLinkRef;
-    categoryLinks: CategoryLinkRef[];
-}
+  __typename: "NavItemRecord";
+  id: string;
+  singleLink: SingleLinkRef;
+  categoryLinks: CategoryLinkRef[];
+};
 
 type SocialMediaLinkRef = {
-    __typename: 'SocialMediaLinkRecord';
-    id: string;
-    link: string;
-    icon: string;
+  __typename: "SocialMediaLinkRecord";
+  id: string;
+  link: string;
+  icon: string;
 };
 
 type PrivacyPolicyLink = {
-    title: string;
-    slug: string;
+  title: string;
+  slug: string;
 } | null;
-
 
 // Check for only one of this block shapes
 export type SectionBlock = VideoBlock | CardTextImg | CardGallery;
 
-
 // ----- Portfolio -----
 
 type AdditionalLinkBlock = {
-  __typename: 'AdditionalLinkBlockRecord';
+  __typename: "AdditionalLinkBlockRecord";
   text: string | null;
   link: string | null;
-}
+};
 
 type RelatedLinkBlock = {
-  __typename: 'RelatedProjectBlockRecord';
+  __typename: "RelatedProjectBlockRecord";
   text: string | null;
   link: {
     project: string;
   };
-}
+};
 
 type LinkBlock = AdditionalLinkBlock | RelatedLinkBlock;
 
 export type PortfolioPhotoImage = {
-  __typename: 'ImageBlockRecord';
+  __typename: "ImageBlockRecord";
   id: string;
   asset: ImageAsset;
-}
+};
 
 type PortfolioCategoryRef = {
   slug: string;
-}
+};
 
 export type PortfolioGalleryTag = {
   id: string;
   title: string;
   slug: string;
   categoryRef: PortfolioCategoryRef[];
-}
+};
 
 type ExternalVideoBlock = {
-  __typename: 'ExternalVideoTitleRecord';
+  __typename: "ExternalVideoTitleRecord";
   id: string;
   slug: string;
   title: string;
   link: ExternalVideo;
-}
+};
 
 type CardGalleryBlock = {
-  __typename: 'SectionCardGalleryBlock';
+  __typename: "SectionCardGalleryBlock";
   id: string;
   title: string;
   galleryItems: GalleryItemsProjectBlock[];
-}
+};
 
-export type GalleryItemsProjectBlock = ExternalVideoBlock | GalleryItems | PortfolioPhotoImage; 
+export type GalleryItemsProjectBlock =
+  | ExternalVideoBlock
+  | GalleryItems
+  | PortfolioPhotoImage;
 
 export type SlideProjectBlock = {
-  __typename: 'SlideProjectRecord';
+  __typename: "SlideProjectRecord";
   id: string;
   videoMedia: {
     externalVideo: ExternalVideo | null;
     videoAsset: VideoAsset | null;
-  }
+  };
   context: string;
   role: string | null;
   date: string | null;
   linkBlock: LinkBlock | null;
-}
+};
 
 type SectionProjectBlock = {
-  __typename: 'SectionProjectRecord';
+  __typename: "SectionProjectRecord";
   id: string;
   description: string;
   section: CardGalleryBlock[];
-
-}
+};
 
 type GalleryProjectBlock = {
-  __typename: 'GalleryProjectRecord';
+  __typename: "GalleryProjectRecord";
   description: string;
   photosGallery: PortfolioPhotoImage[]; // convert from arr to obj
-}
+};
 
 // conditional contentProject
-type ContentProject = GalleryProjectBlock | SectionProjectBlock | SlideProjectBlock; 
+type ContentProject =
+  | GalleryProjectBlock
+  | SectionProjectBlock
+  | SlideProjectBlock;
 
 type ProjectIdBlock = {
   id: string;
   title: string;
   project: string;
   content: ContentProject;
-}
+};
 
 export type PortfolioGalleryType = {
-  __typename: 'GalleryPortfolioRecord';
+  __typename: "GalleryPortfolioRecord";
   id: string;
   thumbnail: ImageAsset;
   tag: PortfolioGalleryTag[];
   projectId: ProjectIdBlock;
-}
+};
 
 export type PortfolioMusicType = {
-  __typename: 'MusicPortfolioRecord';
+  __typename: "MusicPortfolioRecord";
   id: string;
   title: string;
   description: string;
@@ -239,9 +242,9 @@ export type PortfolioMusicType = {
     videoAsset: VideoAsset;
     externalVideoLink: string;
   };
-}
+};
 
-export type CategoryRecord = PortfolioGalleryType | PortfolioMusicType; 
+export type CategoryRecord = PortfolioGalleryType | PortfolioMusicType;
 
 type PortfolioCategoryRecord = {
   title: string;
@@ -249,14 +252,14 @@ type PortfolioCategoryRecord = {
   slug: string;
   gallery: CategoryRecord[];
   cta: string | null;
-}
+};
 
 export type ProjectData = {
   project: {
     title: string;
     content: SectionProjectBlock;
   };
-}
+};
 
 export type PortfolioData = {
   allPortfolioCategories: PortfolioCategoryRecord[];
@@ -264,16 +267,17 @@ export type PortfolioData = {
 };
 
 export type ServiceDataBlock = {
+  __typename: 'ServiceRecord';
   slug: string;
   thumbnailImage: ImageAsset;
   title: string;
   description: string;
   buttonText: string;
-}
+};
 
 export type ServiceData = {
   service: ServiceDataBlock;
-}
+};
 
 export type HomeData = {
   homepage: {
@@ -295,4 +299,14 @@ export type GlobalData = {
   };
 };
 
+export type AboutDataBlock = {
+  __typename: "AboutRecord";
+  slug: string;
+  title: string;
+  coverImage: ImageAsset;
+  description: string;
+};
 
+export type AboutData = {
+  about: AboutDataBlock;
+};

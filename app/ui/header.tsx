@@ -91,13 +91,13 @@ export default function Header({
                 <Link
                   key={link.id}
                   href={`/${
-                    link.singleLink?.__typename === "AboutMeRecord"
+                    link.singleLink?.__typename === "AboutRecord"
                       ? "about"
                       : "contact"
                   }`}
                   className="p-2"
                 >
-                  {link.singleLink?.__typename === "AboutMeRecord"
+                  {link.singleLink?.__typename === "AboutRecord"
                     ? "Sobre mim"
                     : "Contacto"}
                 </Link>
@@ -193,14 +193,14 @@ export default function Header({
                 <Link
                   key={link.id}
                   href={`/${
-                    link.singleLink?.__typename === "AboutMeRecord"
+                    link.singleLink?.__typename === "AboutRecord"
                       ? "about"
                       : "contact"
                   }`}
                   onClick={() => setShow(false)}
                   className="w-full py-2 px-3 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
                 >
-                  {link.singleLink?.__typename === "AboutMeRecord"
+                  {link.singleLink?.__typename === "AboutRecord"
                     ? "Sobre mim"
                     : "Contacto"}
                 </Link>

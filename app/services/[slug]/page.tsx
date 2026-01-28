@@ -5,6 +5,7 @@ import SectionContent from "@/app/ui/section-content";
 const PAGE_CONTENT_QUERY = `
 query IndividualService($slug: String!) {
   service(filter: { slug: { eq: $slug } }) {
+    __typename
     slug
     thumbnailImage {
       url
@@ -32,8 +33,9 @@ export default async function ServicesPage({
     },
   })) as ServiceData;
 
-  // const { title, thumbnailImage, description, buttonText } = response.service;
   const content = response.service;
+
+  console.log(response);
 
   return (
     <div className="flex flex-col w-full items-center bg-white">

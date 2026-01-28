@@ -236,6 +236,7 @@ export default async function PortfolioPage({
           title={item.title}
           desc={item.description}
           media={videoLink}
+          isBlogSection
           isMediaRight
         />
       );
@@ -247,6 +248,7 @@ export default async function PortfolioPage({
           title={item.title}
           desc={item.description}
           media={videoLink}
+          isBlogSection
         />
       );
     }
