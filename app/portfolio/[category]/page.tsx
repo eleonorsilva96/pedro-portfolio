@@ -252,7 +252,7 @@ export default async function PortfolioPage({
     }
   });
 
-  const isModal = category === "digital-image" ? true : false;
+  const isModal = category === "imagem-digital" ? true : false;
 
   if (filter) {
     categoryDataFiltered = categoryData?.gallery.filter(
@@ -296,7 +296,7 @@ export default async function PortfolioPage({
         ) : (
           ""
         )}
-        {categoryData?.slug !== "music" ? (
+        {categoryData?.slug !== "musica" ? (
           <div className="flex flex-col w-full my-6 px-6">
             {categoryTags.length > 0 ? <Filter tags={categoryTags} /> : ""}
             <GalleryPortfolio
