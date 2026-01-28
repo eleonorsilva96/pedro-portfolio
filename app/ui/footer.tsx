@@ -7,6 +7,7 @@ import LinkedInIcon from "./icons/linkedin-icon";
 import YoutubeIcon from "./icons/youtube-icon";
 import InstagramIcon from "./icons/instagram-icon";
 import { GlobalData } from "../lib/definitions";
+import { formatPhoneNumber } from "../lib/utils";
 
 export default function Footer({
   data,
@@ -20,7 +21,7 @@ export default function Footer({
     copy: GlobalData["global"]["copyright"];
   };
 }) {
-  const cleanNumber = data.number.replace(/\s+/g, "");
+  const cleanNumber = formatPhoneNumber(data.number);
   const currentYear = new Date().getFullYear().toString();
 
   const ICON_MAP = {

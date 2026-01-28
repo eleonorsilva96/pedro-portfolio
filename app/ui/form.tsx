@@ -9,7 +9,7 @@ export default function Form({
   innerRef
 }: { 
   hasBgWhite?: boolean;
-  innerRef: RefObject<HTMLDivElement | null>;
+  innerRef?: RefObject<HTMLDivElement | null>;
 }) {
   const initialState: State = {
     errors: {},

@@ -1,6 +1,6 @@
 'use client'
 
-import { AboutDataBlock, ServiceDataBlock } from "../lib/definitions";
+import { AboutDataBlock, ContactDataBlock, ServiceDataBlock } from "../lib/definitions";
 import CardTextMedia from "@/app/ui/card-text-media";
 import Form from "@/app/ui/form";
 import { useRef } from "react";
@@ -8,7 +8,7 @@ import { useRef } from "react";
 export default function SectionContent({
     content
 } : {
-    content: ServiceDataBlock | AboutDataBlock;
+    content: ServiceDataBlock | AboutDataBlock | ContactDataBlock;
 }) {
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -18,14 +18,14 @@ export default function SectionContent({
     <>
       <CardTextMedia
         title={content.title}
-        desc={content.description}
+        desc={content.__typename !== 'ContactRecord' ? content.description : undefined}
         btnLabel={content.__typename === 'ServiceRecord' ? content.buttonText : undefined}
         media={content.__typename === 'ServiceRecord' ? content.thumbnailImage : content.coverImage}
         formRef={formRef}
         isMediaRight
         isVertical
       />
-      <Form innerRef={formRef} hasBgWhite />
+      {content.__typename !== 'ContactRecord' ? <Form innerRef={formRef} hasBgWhite /> : null}
     </>
   );
 }

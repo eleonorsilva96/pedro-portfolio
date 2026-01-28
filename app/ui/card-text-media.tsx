@@ -7,6 +7,7 @@ import ReactPlayer from "react-player";
 import { VideoPlayer } from "react-datocms";
 import clsx from "clsx";
 import ReactMarkdown from "react-markdown";
+import Form from "@/app/ui/form";
 
 export default function CardTextMedia({
   title,
@@ -19,7 +20,7 @@ export default function CardTextMedia({
   isVertical
 }: {
   title: string;
-  desc: string;
+  desc?: string;
   btnLabel?: string;
   media: ImageAsset | VideoAsset | string; // externalLink is a string and not a external video
   formRef?: RefObject<HTMLDivElement | null>;
@@ -42,6 +43,74 @@ export default function CardTextMedia({
       })
     }
   };
+
+  const contentType = desc ? (
+    <>
+      <h1
+        className={clsx({
+          "text-3xl": isBlogSection,
+          "text-4xl lg:w-xl md:text-[44px] text-center": !isBlogSection,
+        })}
+      >
+        {title}
+      </h1>
+      <div
+        className={clsx({
+          "w-7 h-[4px] bg-primary-500 mx-auto my-4": !isBlogSection,
+        })}
+      ></div>
+      {/* insert description in a markdown parser to allow links */}
+      <ReactMarkdown
+        // add custom style for the link
+        components={{
+          // remove node property out of the object
+          p: ({ children, ...props }) => {
+            // extract number of words to know if a shortText
+            const textContent = getTextFromChildren(children);
+            const wordCount = textContent.trim().split(/\s+/).length;
+            const isShortText = wordCount < 30;
+
+            return (
+              <p
+                {...props}
+                className={clsx(
+                  "w-full whitespace-pre-line text-md md:text-lg",
+                  {
+                    "w-full md:w-lg lg:w-xl": !isBlogSection,
+                    "text-center": isShortText,
+                  },
+                )}
+              >
+                {children}
+              </p>
+            );
+          },
+          a: ({ ...props }) => (
+            <a
+              {...props}
+              className="!text-neutral-900 !underline"
+              target="_blank"
+            />
+          ),
+        }}
+      >
+        {desc}
+      </ReactMarkdown>
+      {btnLabel ? (
+        <a
+          onClick={(e) => scrollToSection(e)}
+          href="#contact"
+          className="font-mulish font-medium flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
+        >
+          {btnLabel}
+        </a>
+      ) : null}
+    </>
+  ) : (
+    <>
+      <Form />
+    </>
+  );
 
   // extract plain text from any react child data type and return a string
   const getTextFromChildren = (children: React.ReactNode): string => {
@@ -153,66 +222,7 @@ export default function CardTextMedia({
               "height" in media,
           })}
         >
-          <h1
-            className={clsx({
-              "text-3xl": isBlogSection,
-              "text-4xl lg:w-xl md:text-[44px] text-center": !isBlogSection,
-            })}
-          >
-            {title}
-          </h1>
-          <div
-            className={clsx({
-              "w-7 h-[4px] bg-primary-500 mx-auto my-4": !isBlogSection,
-            })}
-          ></div>
-          {/* insert description in a markdown parser to allow links */}
-          <ReactMarkdown
-            // add custom style for the link
-            components={{
-              // remove node property out of the object
-              p: ({ children, ...props }) => {
-
-                // extract number of words to know if a shortText
-                const textContent = getTextFromChildren(children);
-                const wordCount = textContent.trim().split(/\s+/).length;
-                const isShortText = wordCount < 30;
-
-                return (
-                  <p
-                    {...props}
-                    className={clsx(
-                      "w-full whitespace-pre-line text-md md:text-lg",
-                      {
-                        "w-full md:w-lg lg:w-xl": !isBlogSection,
-                        "text-center": isShortText,
-                      }
-                    )}
-                  >
-                  {children}
-                  </p>
-                );
-              },
-              a: ({ ...props }) => (
-                <a
-                  {...props}
-                  className="!text-neutral-900 !underline"
-                  target="_blank"
-                />
-              ),
-            }}
-          >
-            {desc}
-          </ReactMarkdown>
-          {btnLabel ? (
-            <a
-            onClick={(e) => scrollToSection(e)}
-            href="#contact"
-            className="font-mulish font-medium flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
-            >
-            {btnLabel}
-            </a>
-          ) : null}
+          {contentType}
         </div>
         <div
           className={clsx("flex justify-center order-last", {
@@ -227,3 +237,65 @@ export default function CardTextMedia({
     </div>
   );
 }
+
+
+//  <h1
+//             className={clsx({
+//               "text-3xl": isBlogSection,
+//               "text-4xl lg:w-xl md:text-[44px] text-center": !isBlogSection,
+//             })}
+//           >
+//             {title}
+//           </h1>
+//           <div
+//             className={clsx({
+//               "w-7 h-[4px] bg-primary-500 mx-auto my-4": !isBlogSection,
+//             })}
+//           ></div>
+//           {/* insert description in a markdown parser to allow links */}
+//           <ReactMarkdown
+//             // add custom style for the link
+//             components={{
+//               // remove node property out of the object
+//               p: ({ children, ...props }) => {
+
+//                 // extract number of words to know if a shortText
+//                 const textContent = getTextFromChildren(children);
+//                 const wordCount = textContent.trim().split(/\s+/).length;
+//                 const isShortText = wordCount < 30;
+
+//                 return (
+//                   <p
+//                     {...props}
+//                     className={clsx(
+//                       "w-full whitespace-pre-line text-md md:text-lg",
+//                       {
+//                         "w-full md:w-lg lg:w-xl": !isBlogSection,
+//                         "text-center": isShortText,
+//                       }
+//                     )}
+//                   >
+//                   {children}
+//                   </p>
+//                 );
+//               },
+//               a: ({ ...props }) => (
+//                 <a
+//                   {...props}
+//                   className="!text-neutral-900 !underline"
+//                   target="_blank"
+//                 />
+//               ),
+//             }}
+//           >
+//             {desc}
+//           </ReactMarkdown>
+//           {btnLabel ? (
+//             <a
+//             onClick={(e) => scrollToSection(e)}
+//             href="#contact"
+//             className="font-mulish font-medium flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
+//             >
+//             {btnLabel}
+//             </a>
+//           ) : null}

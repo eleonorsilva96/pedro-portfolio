@@ -301,7 +301,6 @@ export type GlobalData = {
 
 export type AboutDataBlock = {
   __typename: "AboutRecord";
-  slug: string;
   title: string;
   coverImage: ImageAsset;
   description: string;
@@ -309,4 +308,16 @@ export type AboutDataBlock = {
 
 export type AboutData = {
   about: AboutDataBlock;
+};
+
+export type ContactDataBlock = {
+  __typename: "ContactRecord";
+  title: string;
+  coverImage: ImageAsset;
+  phoneNumber: string;
+  email: string;
+};
+
+export type ContactData = {
+  contact: ContactDataBlock;
 };
