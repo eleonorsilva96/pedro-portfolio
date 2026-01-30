@@ -38,7 +38,7 @@ export default function CardPortfolio({
 
   return (
     <div
-      className="relative aspect-[4/3] overflow-hidden w-full max-w-xl h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer"
+      className="relative aspect-[4/2.65] overflow-hidden w-full h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer"
     >
       <ImageSkeleton
         src={urlProps}

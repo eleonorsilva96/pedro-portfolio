@@ -20,7 +20,7 @@ export default function PrevNextButtons({
   hideNext,
   isProject,
 }: {
-  gallery: PortfolioGalleryType[] | GalleryItemsProjectBlock[];
+  gallery: (PortfolioGalleryType | GalleryItemsProjectBlock)[];
   currentId: string;
   category: string;
   project?: string | null;
@@ -60,6 +60,8 @@ export default function PrevNextButtons({
       return item.projectId?.project || "";
     } else if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === 'GalleryItemRecord') {
       return item.slug || "";
+    } else if (item.__typename === 'ImageBlockRecord') {
+      return item.id || "";
     }
   };
 
@@ -68,8 +70,13 @@ export default function PrevNextButtons({
 
   if (isModal) {
     if (project) {
-      urlPrev = `/portfolio/${category}/${project}/watch?id=${prevSlug}`;
-      urlNext = `/portfolio/${category}/${project}/watch?id=${nextSlug}`;
+      if (category === 'imagem-digital') {
+        urlPrev = `/portfolio/${category}/${project}/watch?id=${prevSlug}`;
+        urlNext = `/portfolio/${category}/${project}/watch?id=${nextSlug}`;
+      } else if (category === 'fotografia') {
+        urlPrev = `/portfolio/${category}/${project}?id=${prevSlug}`;
+        urlNext = `/portfolio/${category}/${project}?id=${nextSlug}`;
+      }
     } else {
       urlPrev = `/portfolio/${category}?id=${prevSlug}`;
       urlNext = `/portfolio/${category}?id=${nextSlug}`;
@@ -177,11 +184,11 @@ export default function PrevNextButtons({
     </>
   );
 
-  console.log(urlPrev);
-  console.log(urlNext);
+  console.log("urlPrev", urlPrev);
+  console.log("urlNext", urlNext);
 
-  console.log(prevSlug);
-  console.log(nextSlug);
+  console.log("prevSlug", prevSlug);
+  console.log("nextSlug", nextSlug);
 
   return <>{buttonsLayout}</>;
 }

@@ -1,8 +1,11 @@
+'use client'
+
 import CardGallery from "@/app/ui/card-gallery";
 import clsx from "clsx";
 import { PortfolioPhotoImage, GalleryItemsType } from "../lib/definitions";
 import CardPortfolio from "./card-portfolio";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 // add props to receive fetching data
 export default function Gallery({
@@ -14,20 +17,34 @@ export default function Gallery({
   hasTitle?: boolean;
   removeBtn?: boolean;
 }) {
-  console.log("card title", galleryItems);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
+  console.log("card title", galleryItems);
+  // the method map creates a new array populated with the results of calling a provided function on each element of the current array 
   const content = galleryItems.map((item) => {
     let card = null;
-
+    let cardId = '';
+    let cardUrl = '';
+    
     if (
       (item?.__typename === "RelatedServicesBlockRecord" && hasTitle) ||
       item?.__typename === "ImageBlockRecord"
     ) {
+      let imgUrl = '';
+
+      if (item.__typename === 'ImageBlockRecord') {
+        const params = new URLSearchParams(searchParams);
+        params.set("id", item.id);
+        imgUrl = `${pathname}?${params.toString()}`;
+      }
+
+      cardId = item.__typename === 'RelatedServicesBlockRecord' ? item.service.id : item.id;
+      cardUrl = item.__typename === 'RelatedServicesBlockRecord' ? `/services/${item.service.slug}` : imgUrl;
+      
       card = (
         <div
-          className={clsx({
-            group: hasTitle,
-          })}
+          className="group"
           key={
             item.__typename === "RelatedServicesBlockRecord"
               ? item.service.id
@@ -65,37 +82,30 @@ export default function Gallery({
         </div>
       );
     } else if (item.__typename === "RelatedProjectsBlockRecord") {
+      cardId = item.project.id;
+      cardUrl = `/portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`;
+      
       card = <CardPortfolio project={item || {}} />;
     }
 
-    if (
-      item?.__typename === "RelatedServicesBlockRecord" ||
-      item.__typename === "RelatedProjectsBlockRecord"
-    ) {
-      return (
+    console.log("id", cardId);
+    console.log("url", cardUrl);
+
+    return (
         <Link
-          key={
-            item.__typename === "RelatedServicesBlockRecord"
-              ? item.service.id
-              : item.project.id
-          }
-          href={
-            item.__typename === "RelatedServicesBlockRecord"
-              ? `/services/${item.service.slug}`
-              : `/portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`
-          }
+          key={cardId}
+          href={cardUrl}
         >
           {card}
         </Link>
       );
-    } else {
-      return card;
-    }
   });
 
+  console.log("gallery map", content);
+
   return (
-    <div className="flex flex-col items-center text-center">
-      <div className="grid grid-cols gap-4 lg:flex-row lg:flex-wrap w-full h-auto items-center md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[repeat(4,max-content)]">
+    <div className="flex flex-col items-center text-center mt-6">
+      <div className="grid grid-cols gap-4 lg:flex-row lg:flex-wrap w-full h-auto items-center md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[repeat(4,minmax(0,1fr))]">
         {content}
       </div>
       <Link
@@ -111,4 +121,5 @@ export default function Gallery({
       </Link>
     </div>
   );
+  
 }

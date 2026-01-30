@@ -8,7 +8,7 @@ export default function CardGallery({
     hasRadius,
     hasShadow,
     title,
-    imgUrl, // add also link url
+    imgUrl,
     alt
 } : {
     width: number,
@@ -19,25 +19,20 @@ export default function CardGallery({
     imgUrl: string,
     alt: string,
 }) {
-  const safeMaxWidth = title ? Math.min(width, height) : width;
-
-  const finalMaxWidth = Math.min(500, safeMaxWidth);
   return (
     <div className={clsx( // add hover here and link to the corresponded page
       'w-full h-auto overflow-hidden', // hide the content that overflows the container
         {
+            'aspect-[4/2.65]' : !title,
             'flex flex-col items-center gap-3': title,
-        },
-        {
             'rounded-lg': hasRadius === true,
             'shadow-lg': hasShadow === true,
-        },
+        }
     )}
     >
       <div className="overflow-hidden">
           <Image
             src={imgUrl}
-            style={{ maxWidth: `${finalMaxWidth}px` }}
             className={clsx(
               'transition-all duration-500 group-hover:scale-105',
               {
