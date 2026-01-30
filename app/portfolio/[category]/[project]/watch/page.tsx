@@ -65,6 +65,7 @@ export default async function Watch({
   searchParams: Promise<{ id: string }>;
 }) {
   const { category, project } = await params;
+  // if query param id is empty return a empty object
   const { id } = (await searchParams) ?? Promise.resolve({});
   let modal = null;
 
@@ -109,24 +110,10 @@ export default async function Watch({
           i.slug === id,
       ),
     );
-    // returns the item details
-    const itemContent = content.section
-      .flatMap(
-        (section) =>
-          // collect all gallery lists from all sections into one single array
-          section.galleryItems,
-      )
-      .find(
-        (i) =>
-          (i.__typename === "ExternalVideoTitleRecord" ||
-            i.__typename === "GalleryItemRecord") &&
-          i.slug === id,
-      );
-
+    
     modal = (
       <ModalContent
         galleryList={itemsGallery?.galleryItems || []}
-        sliderContent={itemContent || null}
         projectId={id}
         category={category}
         project={project}

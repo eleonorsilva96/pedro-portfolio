@@ -9,164 +9,317 @@ import { VideoPlayer } from "react-datocms";
 import ReactPlayer from "react-player";
 import {
   PortfolioGalleryType,
-  SlideProjectBlock,
   GalleryItemsProjectBlock,
 } from "@/app/lib/definitions";
 import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useScrollLock } from "../lib/hooks";
 
 export default function ModalContent({
   galleryList,
-  modalProject, // project 
-  sliderContent, // project content
   projectId,
   category,
-  project
+  project,
 }: {
-  galleryList: PortfolioGalleryType[] | GalleryItemsProjectBlock[]; // pass all the watch items/projects
-  modalProject?: PortfolioGalleryType | null; // project thumbnail
-  sliderContent: SlideProjectBlock | GalleryItemsProjectBlock | null; // item
+  // it accepts a list of pure projects or items and also a mixed list of projects and items
+  galleryList: (PortfolioGalleryType | GalleryItemsProjectBlock)[]; // pass all the watch items/projects
   projectId: string;
   category: string;
   project?: string | null;
 }) {
-  // use state for the expand
   const [isExpand, setExpand] = useState<boolean>(false);
-  let mediaPlayer = null;
+
+  useScrollLock(true);
+
+  const isMatchingItem = (
+    item: PortfolioGalleryType | GalleryItemsProjectBlock,
+  ) => {
+    if (item.__typename === "GalleryPortfolioRecord") {
+      return item.projectId.project === projectId;
+    }
+    
+    if (
+      item.__typename === "ExternalVideoTitleRecord" || item.__typename === "GalleryItemRecord"
+    ) {
+      return item.slug === projectId;
+    }
+    
+    if (item.__typename === "ImageBlockRecord") {
+      return item.id === projectId;
+    }
+    return false;
+  };
+
+  const isMatchingGallery = (
+    item: PortfolioGalleryType | GalleryItemsProjectBlock,
+  ) =>
+    item.__typename === "GalleryPortfolioRecord" ||
+    item.__typename === "ExternalVideoTitleRecord" ||
+    item.__typename === "GalleryItemRecord" ||
+    item.__typename === "ImageBlockRecord";
+
+  const getCurrentId = (item: PortfolioGalleryType | GalleryItemsProjectBlock) => {
+    if (item.__typename === 'GalleryPortfolioRecord') return item.id;
+
+    if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === "GalleryItemRecord") return item.id;
+
+    if (item.__typename === "ImageBlockRecord") return item.id;
+
+    return null;
+  };
+
+  const checkImageVertical = (item: PortfolioGalleryType | GalleryItemsProjectBlock) => {
+    if (item.__typename === 'GalleryItemRecord' || item.__typename === 'ImageBlockRecord') {
+      const height = item.asset.height;
+      const width = item.asset.width;
+
+      if (height > width) return true;
+
+      return false;
+    }
+    return false;
+  };
+  
+  const activeItem = galleryList.find(isMatchingItem);
+  
+  const activeGallery = galleryList.filter(isMatchingGallery);
+
+  if (!activeItem) return null;
+  if (!activeGallery) return null;
+  
+  const currentId = getCurrentId(activeItem);
+  
+  const removeDetails = activeItem?.__typename === 'ImageBlockRecord' ? true : false;
+
+  const isVertical = checkImageVertical(activeItem);
+  
+  const isProjectModal = activeItem.__typename === 'GalleryPortfolioRecord';
+  let media = null;
   let year = null;
   let linkBlock = null;
+  let title = null;
+  let moreDetails = null;
 
-  // when component mounts
-    useEffect(() => {
-      // remove scrollbar when menu list appears 
-        // document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
-      
-      // when component unmounts
-      return () => {
-        // document.documentElement.style.overflow = "unset";
-        document.body.style.overflow = "unset";
-      };
-    }); 
+  if (
+    (activeItem.__typename === "GalleryPortfolioRecord" &&
+      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
+      !activeItem.projectId.content.videoMedia) ||
+    activeItem.__typename === "ImageBlockRecord" ||
+    activeItem.__typename === "GalleryItemRecord"
+  ) {
+    // image
+    let imgUrl = "";
+    let imgWidth = 0;
+    let imgHeight = 0;
+    let imgAlt = "";
+    let imgClassName = "";
+    let linkUrl = "";
+    let linkText = null;
 
-  const projectModal =
-    sliderContent?.__typename === "SlideProjectRecord" ? sliderContent : null;
-  const projectGalleryList = galleryList?.filter(
-    (item) => item.__typename === "GalleryPortfolioRecord"
-  );
+    if (
+      activeItem.__typename === "GalleryPortfolioRecord" &&
+      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
+      !activeItem.projectId.content.videoMedia
+    ) {
+      imgUrl = activeItem.thumbnail.url;
+      imgWidth = activeItem.thumbnail.width;
+      imgHeight = activeItem.thumbnail.height;
+      imgAlt = activeItem.thumbnail.alt;
+      imgClassName = "h-auto";
+      title = activeItem.projectId.title;
 
-  console.log("projectModal", projectModal);
-  console.log("modalProject", modalProject);
+      if (activeItem.projectId.content.date) {
+        year = activeItem.projectId.content.date.split("-").at(0);
+      }
 
-  const moreDetailsModal =
-    sliderContent?.__typename === "ExternalVideoTitleRecord" ||
-    sliderContent?.__typename === "GalleryItemRecord"
-      ? sliderContent
-      : null;
+      if (activeItem.projectId.content.linkBlock) {
+        if (
+          activeItem.projectId.content.linkBlock?.__typename ===
+          "AdditionalLinkBlockRecord"
+        ) {
+          linkUrl = `${activeItem.projectId.content.linkBlock.link}`;
+          linkText = activeItem.projectId.content.linkBlock.text;
+        } else if (
+          activeItem.projectId.content.linkBlock?.__typename ===
+          "RelatedProjectBlockRecord"
+        ) {
+          linkUrl = `/portfolio/${category}/${activeItem.projectId.content.linkBlock.link.project}/watch`;
+          linkText = activeItem.projectId.content.linkBlock.text;
+        }
 
-  const moreDetailsGalleryList = galleryList.filter(
-    (item) =>
-      item.__typename === "ExternalVideoTitleRecord" ||
-      item.__typename === "GalleryItemRecord"
-  );
+        linkBlock = (
+          <Link
+            href={linkUrl}
+            className="!underline underline-offset-4 decoration-gray-950"
+          >
+            {linkText}
+          </Link>
+        );
+      }
 
-  console.log("moreDetailsModal", moreDetailsModal);
-  console.log("moreDetailsGalleryList", moreDetailsGalleryList);
-  
-  const checkGalleryList = projectGalleryList.length !== 0 ? projectGalleryList : moreDetailsGalleryList; // return watchGalleryList
+      if (
+        activeItem.projectId.content.role ||
+        activeItem.projectId.content.context
+      ) {
+        moreDetails = (
+          <>
+            <span className="font-bold">
+              Contexto:{" "}
+              <span className="font-normal">
+                {activeItem.projectId.content.context}
+              </span>
+            </span>
+            <span className="font-bold">
+              Função:{" "}
+              <span className="font-normal">
+                {activeItem.projectId.content.role}
+              </span>
+            </span>
+          </>
+        );
+      }
+    } else if (activeItem.__typename === "GalleryItemRecord") {
+      imgUrl = activeItem.asset.url;
+      imgWidth = activeItem.asset.width;
+      imgHeight = activeItem.asset.height;
+      imgAlt = activeItem.asset.alt;
+      imgClassName = "h-full object-cover";
+      title = activeItem.title;
+    } else if (activeItem.__typename === "ImageBlockRecord") {
+      imgUrl = activeItem.asset.url;
+      imgWidth = activeItem.asset.width;
+      imgHeight = activeItem.asset.height;
+      imgAlt = activeItem.asset.alt;
+      imgClassName = "h-full object-cover";
+    }
 
-  if (projectModal?.videoMedia?.externalVideo || moreDetailsModal?.__typename === 'ExternalVideoTitleRecord') {
-    mediaPlayer = (
+    media = (
+      <Image
+        src={imgUrl}
+        className={`w-full ${imgClassName}`}
+        width={imgWidth}
+        height={imgHeight}
+        alt={imgAlt}
+      />
+    );
+  } else if (
+    (activeItem.__typename === "GalleryPortfolioRecord" &&
+      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
+      activeItem.projectId.content.videoMedia.externalVideo) ||
+    activeItem.__typename === "ExternalVideoTitleRecord"
+  ) {
+    // external link
+    let externalLinkId = null;
+    let externalLinkUrl = "";
+    let externalLinkThumbnailUrl = "";
+
+    if (
+      activeItem.__typename === "GalleryPortfolioRecord" &&
+      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
+      activeItem.projectId.content.videoMedia.externalVideo
+    ) {
+      externalLinkId = activeItem.projectId.content.id;
+      externalLinkUrl =
+        activeItem.projectId.content.videoMedia.externalVideo.url;
+      externalLinkThumbnailUrl =
+        activeItem.projectId.content.videoMedia.externalVideo.thumbnailUrl;
+      title = activeItem.projectId.title;
+    } else if (activeItem.__typename === "ExternalVideoTitleRecord") {
+      externalLinkId = activeItem.id;
+      externalLinkUrl = activeItem.link.url;
+      externalLinkThumbnailUrl = activeItem.link.thumbnailUrl;
+      title = activeItem.title;
+    }
+
+    media = (
       <ReactPlayer
-        src={moreDetailsModal?.__typename !== 'ExternalVideoTitleRecord' ? projectModal?.videoMedia.externalVideo?.url : moreDetailsModal.link.url}
-        light={moreDetailsModal?.__typename !== 'ExternalVideoTitleRecord' ? projectModal?.videoMedia.externalVideo?.thumbnailUrl : moreDetailsModal.link.thumbnailUrl}
+        key={externalLinkId}
+        src={externalLinkUrl}
+        light={externalLinkThumbnailUrl}
         controls={true}
         width="100%"
         height="100%"
       />
     );
-  } else if (projectModal?.videoMedia?.videoAsset) {
-    mediaPlayer = (
+  } else if (
+    activeItem.__typename === "GalleryPortfolioRecord" &&
+    activeItem.projectId.content.__typename === "SlideProjectRecord" &&
+    activeItem.projectId.content.videoMedia.videoAsset
+  ) {
+    title = activeItem.projectId.title;
+
+    media = (
       <VideoPlayer
-        data={projectModal?.videoMedia.videoAsset.video}
+        key={activeItem.projectId.content.id}
+        data={activeItem.projectId.content.videoMedia.videoAsset.video}
         className="w-full h-full object-cover"
         preload="none"
       />
     );
-  } else if (modalProject?.__typename === "GalleryPortfolioRecord" || moreDetailsModal?.__typename === 'GalleryItemRecord'){
-      mediaPlayer = (
-        <Image
-          src={modalProject ? modalProject?.thumbnail.url : moreDetailsModal?.asset.url || ''}
-          className={clsx(
-            'w-full',
-            {
-              'h-auto' : modalProject,
-              'h-full object-cover' : !modalProject
-            }
-          )}
-          width={modalProject ? modalProject?.thumbnail.width : moreDetailsModal?.asset.width || 0}
-          height={modalProject ? modalProject?.thumbnail.height : moreDetailsModal?.asset.height || 0}
-          alt={modalProject ? modalProject?.thumbnail.alt : moreDetailsModal?.asset.alt || ''}
-        />
-      );
-  } else {
-    mediaPlayer = <div>No Video or Image!</div>
   }
 
-  const expandIconHandler = !isExpand ? (
-    <ExpandIcon className={clsx({
-      'text-neutral-800' : modalProject,
-      'text-neutral-100' : !modalProject,
-    })} />
-  ) : (
-    <MinimizeIcon className={clsx({
-      'text-neutral-800' : modalProject,
-      'text-neutral-100' : !modalProject,
-    })} />
+  const content = (
+    <div
+      key={activeItem.id}
+      className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] 2xl:max-w-[1800px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start"
+    >
+      <div
+        className={clsx("w-full flex flex-col gap-4", {
+          "aspect-[16/9]": isProjectModal === true || !isVertical,
+          "aspect-[2/3] h-auto md:!w-[450px] lg:!w-[550px] 2xl:!w-[1000px]": isVertical,
+        })}
+      >
+        {/* change to media */}
+        {media}
+      </div>
+      <div
+        className={clsx("flex flex-col gap-4", {
+          hidden: isExpand === true || removeDetails,
+          flex: isExpand === false,
+          "w-md": isProjectModal === true,
+          "w-fit lg:min-w-3xs lg:max-w-2xs text-balance":
+            isProjectModal === false,
+        })}
+      >
+        <h3
+          className={clsx("text-2xl lg:text-4xl 2xl:text-5xl font-medium", {
+            "text-neutral-800": isProjectModal === true,
+            "text-neutral-100": isProjectModal === false,
+          })}
+        >
+          {title}
+        </h3>
+        {moreDetails}
+        {year}
+        {linkBlock}
+      </div>
+    </div>
   );
 
-  if (projectModal?.date) {
-    const yearValue = projectModal.date.split("-").at(0);
-
-    year = (
-      <span className="font-bold">
-        Data: <span className="font-normal">{yearValue}</span>
-      </span>
-    );
-  }
-
-  if (projectModal?.linkBlock?.__typename === "AdditionalLinkBlockRecord") {
-    linkBlock = (
-      <Link
-        href={`${projectModal?.linkBlock.link}`}
-        className="!underline underline-offset-4 decoration-gray-950"
-      >
-        {projectModal?.linkBlock.text}
-      </Link>
-    );
-  } else if (
-    projectModal?.linkBlock?.__typename === "RelatedProjectBlockRecord"
-  ) {
-    linkBlock = (
-      <Link
-        href={`/portfolio/${category}/${projectModal?.linkBlock.link.project}/watch`}
-        className="!underline underline-offset-4 decoration-gray-950"
-      >
-        {projectModal?.linkBlock.text}
-      </Link>
-    );
-  }
+  const expandIconHandler = !isExpand ? (
+    <ExpandIcon
+      className={clsx({
+        "text-neutral-800": isProjectModal,
+        "text-neutral-100": !isProjectModal,
+      })}
+    />
+  ) : (
+    <MinimizeIcon
+      className={clsx({
+        "text-neutral-800": isProjectModal,
+        "text-neutral-100": !isProjectModal,
+      })}
+    />
+  );
 
   return (
-    <div className={clsx(
-      'fixed inset-0 z-[9999] bg-gray-300',
-      {
-        'bg-gray-300' : modalProject,
-        'bg-neutral-800' : !modalProject,
-      }
-    )}>
+    <div
+      className={clsx("fixed inset-0 z-[9999] bg-gray-300", {
+        "bg-gray-300": isProjectModal,
+        "bg-neutral-800": !isProjectModal,
+      })}
+    >
       <div className="w-full h-full relative flex flex-col items-center justify-center">
         <div
           className="absolute top-0 left-0 ml-4 mt-4 z-[20] cursor-pointer"
@@ -174,69 +327,31 @@ export default function ModalContent({
         >
           {expandIconHandler}
         </div>
-        <Close isProject={modalProject ? true : false} projectId={projectId} />
-        <div className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] 2xl:max-w-[1800px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start">
-          <div className={clsx(
-            'w-full flex flex-col gap-4',
-            {
-              'aspect-[16/9]' : moreDetailsModal?.__typename !== 'GalleryItemRecord',
-              'aspect-[2/3] h-[70vh] md:h-[90vh] md:!w-[450px] lg:!w-[500px] 2xl:!w-[700px]' : moreDetailsModal?.__typename == 'GalleryItemRecord',
-            }
-          )}>
-            {mediaPlayer}
-          </div>
-          <div
-            className={clsx("flex flex-col gap-4", {
-              hidden: isExpand === true,
-              flex: isExpand === false,
-              'w-md' : modalProject,
-              'w-fit lg:min-w-3xs lg:max-w-2xs text-balance' : !modalProject, //w-fit lg:w-[304px] 2xl:w-[405px] 
-            })}
-          >
-            <h3 className={clsx(
-              'text-2xl lg:text-4xl 2xl:text-5xl font-medium',
-              {
-                'text-neutral-800' : modalProject,
-                'text-neutral-100' : !modalProject,
-              }
-            )}>
-              {modalProject ? modalProject?.projectId.title : moreDetailsModal?.title}
-            </h3>
-            {modalProject ? (
-              <>
-              <span className="font-bold">
-                Contexto:{" "}
-                <span className="font-normal">{projectModal?.context}</span>
-              </span>
-              <span className="font-bold">
-                Função: <span className="font-normal">{projectModal?.role}</span>
-              </span>
-              {year}
-              {linkBlock}
-              </>
-            ) : null}
-          </div>
-        </div>
+        <Close
+          isProject={isProjectModal ? true : false}
+          projectId={projectId}
+        />
+        {content}
         <div className="flex items-center absolute inset-y-0 right-0 mr-4">
           <PrevNextButtons
-            gallery={checkGalleryList || []}
-            currentId={modalProject ? modalProject?.id : moreDetailsModal?.id || ""}
+            gallery={activeGallery || []}
+            currentId={currentId || ""}
             category={category}
             project={project ? project : null}
             isModal
             hidePrev
-            isProject={modalProject ? true : false}
+            isProject={isProjectModal ? true : false}
           />
         </div>
         <div className="flex items-center absolute inset-y-0 left-0 ml-4">
           <PrevNextButtons
-            gallery={checkGalleryList || []}
-            currentId={modalProject ? modalProject?.id : moreDetailsModal?.id || ""}
+            gallery={activeGallery || []}
+            currentId={currentId || ""}
             category={category}
             project={project ? project : null}
             isModal
             hideNext
-            isProject={modalProject ? true : false}
+            isProject={isProjectModal ? true : false}
           />
         </div>
       </div>

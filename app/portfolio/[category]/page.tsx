@@ -229,7 +229,6 @@ export default async function PortfolioPage({
       : item.video.videoAsset;
 
     if (index % 2 === 0) {
-      // return <div key={item.id}>{item.title} + RIGHT IMAGE</div>;
       return (
         <CardTextMedia
           key={item.id}
@@ -241,7 +240,6 @@ export default async function PortfolioPage({
         />
       );
     } else {
-      // return <div key={item.id}>{item.title} + LEFT IMAGE</div>;
       return (
         <CardTextMedia
           key={item.id}
@@ -264,27 +262,9 @@ export default async function PortfolioPage({
     );
   }
 
-  const modalProject = id
-    ? categoryData?.gallery.find(
-        (p) =>
-          p.__typename === "GalleryPortfolioRecord" &&
-          p.projectId.project === id
-      )
-    : null;
-
-  const isValidProject = modalProject?.__typename === "GalleryPortfolioRecord";
-
-  const sliderContent =
-    isValidProject &&
-    modalProject.projectId.content.__typename === "SlideProjectRecord"
-      ? modalProject.projectId.content
-      : null;
-
-  const modal = isValidProject ? (
+  const modal = id ? (
     <ModalContent
       galleryList={galleryList || []}
-      modalProject={modalProject}
-      sliderContent={sliderContent}
       projectId={id}
       category={category}
     />
