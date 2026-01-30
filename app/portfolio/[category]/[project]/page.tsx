@@ -6,6 +6,7 @@ import clsx from "clsx";
 import ArrowLeft from "@/app/ui/icons/arrow-left";
 import Link from "next/link";
 import ModalContent from "@/app/ui/modal-content";
+import { Suspense } from "react";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -253,10 +254,12 @@ export default async function PortfolioPage({
     ) {
       description = projectDetails?.projectId.content.description;
       contentView = (
-        <Gallery
-          galleryItems={projectDetails?.projectId.content.photosGallery ?? []}
-          removeBtn
-        />
+        <Suspense fallback={null}>
+          <Gallery
+            galleryItems={projectDetails?.projectId.content.photosGallery ?? []}
+            removeBtn
+          />
+        </Suspense>
       );
     } else {
       description = projectDetails?.projectId.content.description;
@@ -265,12 +268,14 @@ export default async function PortfolioPage({
   }
 
   const modal = id ? (
-    <ModalContent
-      galleryList={projectGallery || []}
-      projectId={id}
-      category={category}
-      project={project}
-    />
+    <Suspense fallback={null}>
+      <ModalContent
+        galleryList={projectGallery || []}
+        projectId={id}
+        category={category}
+        project={project}
+      />
+    </Suspense>
   ) : null;
 
   return (

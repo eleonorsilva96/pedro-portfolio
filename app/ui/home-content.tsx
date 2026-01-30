@@ -5,7 +5,7 @@ import CardTextMedia from "@/app/ui/card-text-media";
 import Gallery from "@/app/ui/gallery";
 import Form from "@/app/ui/form";
 import { SectionBlock } from "../lib/definitions";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 
 
 export default function HomeContent({
@@ -54,7 +54,9 @@ export default function HomeContent({
       >
         <h1 className="text-4xl lg:text-[44px]">{cardGallery[0].title}</h1>
         <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
-        <Gallery galleryItems={cardGallery[0].galleryItems} />
+        <Suspense fallback={null}>
+          <Gallery galleryItems={cardGallery[0].galleryItems} />
+        </Suspense>
       </div>
       <div
         id="services"
@@ -62,11 +64,13 @@ export default function HomeContent({
       >
         <h1 className="text-4xl lg:text-[44px]">{cardGallery[1].title}</h1>
         <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
-        <Gallery
-          galleryItems={cardGallery[1].galleryItems}
-          hasTitle
-          removeBtn
-        />
+        <Suspense fallback={null}>
+          <Gallery
+            galleryItems={cardGallery[1].galleryItems}
+            hasTitle
+            removeBtn
+          />
+        </Suspense>
       </div>
       <Form innerRef={formRef} />
     </>

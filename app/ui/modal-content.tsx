@@ -11,7 +11,7 @@ import {
   PortfolioGalleryType,
   GalleryItemsProjectBlock,
 } from "@/app/lib/definitions";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { useScrollLock } from "../lib/hooks";
@@ -327,10 +327,12 @@ export default function ModalContent({
         >
           {expandIconHandler}
         </div>
-        <Close
-          isProject={isProjectModal ? true : false}
-          projectId={projectId}
-        />
+        <Suspense fallback={null}>
+          <Close
+            isProject={isProjectModal ? true : false}
+            projectId={projectId}
+          />
+        </Suspense>
         {content}
         <div className="flex items-center absolute inset-y-0 right-0 mr-4">
           <PrevNextButtons

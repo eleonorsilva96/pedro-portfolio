@@ -5,6 +5,7 @@ import GalleryPortfolio from "@/app/ui/gallery-portfolio";
 import ModalContent from "@/app/ui/modal-content";
 import CardTextMedia from "@/app/ui/card-text-media";
 import ReactMarkdown from "react-markdown";
+import { Suspense } from "react";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -263,11 +264,11 @@ export default async function PortfolioPage({
   }
 
   const modal = id ? (
-    <ModalContent
-      galleryList={galleryList || []}
-      projectId={id}
-      category={category}
-    />
+      <ModalContent
+        galleryList={galleryList || []}
+        projectId={id}
+        category={category}
+      />
   ) : null;
 
   return (
@@ -280,7 +281,14 @@ export default async function PortfolioPage({
         )}
         {categoryData?.slug !== "musica" ? (
           <div className="flex flex-col w-full my-6 px-6">
-            {categoryTags.length > 0 ? <Filter tags={categoryTags} /> : ""}
+            {categoryTags.length > 0 ? 
+            <Suspense fallback={null}>
+              <Filter tags={categoryTags} /> 
+            </Suspense>
+            : 
+            ""}
+            {/* wrap in a suspense component that will check for url params (query params) */}
+          <Suspense fallback={null}>
             <GalleryPortfolio
               data={
                 filter
@@ -289,6 +297,7 @@ export default async function PortfolioPage({
               }
               isModal={isModal}
             />
+          </Suspense>
           </div>
         ) : (
           <>

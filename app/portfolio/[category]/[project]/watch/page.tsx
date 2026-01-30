@@ -3,6 +3,7 @@ import { ProjectData } from "@/app/lib/definitions";
 import SectionItem from "@/app/ui/section-item";
 import ModalContent from "@/app/ui/modal-content";
 import clsx from "clsx";
+import { Suspense } from "react";
 
 const PAGE_CONTENT_QUERY = `
   query SectionProject($project: String!) {
@@ -94,7 +95,9 @@ export default async function Watch({
         )}
       >
         {section.galleryItems.map((item) => (
-          <SectionItem key={item.id} item={item} />
+          <Suspense key={item.id} fallback={null}>
+            <SectionItem item={item} />
+          </Suspense>
         ))}
       </div>
     </div>
@@ -112,12 +115,14 @@ export default async function Watch({
     );
     
     modal = (
-      <ModalContent
-        galleryList={itemsGallery?.galleryItems || []}
-        projectId={id}
-        category={category}
-        project={project}
-      />
+      <Suspense fallback={null}>
+        <ModalContent
+          galleryList={itemsGallery?.galleryItems || []}
+          projectId={id}
+          category={category}
+          project={project}
+        />
+      </Suspense>
     );
   }
 
