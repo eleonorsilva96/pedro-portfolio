@@ -54,17 +54,18 @@ export async function sendEmail(preState: State, formData: FormData) {
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev", // change to email in prod env
-      to: "eleonor.uxui@gmail.com", // change to client email
-      subject: `Quote Request: ${firstName}`,
+      from: `${firstName} via Pedro A. Martins Website <noreply@pedroamartins.pt>`,
+      to: "pedroandre_martins@hotmail.com",
+      replyTo: email,
+      subject: `Pedido de Orçamento: ${firstName}`,
       html: `
-                <p style="font-size: 16px;"><strong>Name:</strong> ${firstName}</p>
+                <p style="font-size: 16px;"><strong>Nome:</strong> ${firstName}</p>
                 <p style="font-size: 16px;">${message}</p>
             `,
     });
 
     return { success: true, message: "Email enviado com sucesso!" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Erro ao enviar o email." };
   }
 };
