@@ -19,6 +19,7 @@
   --font-open: var(--font-opensans);
   --font-lemon: var(--font-lemon);
   --font-mulish: var(--font-mulish);
+  --font-special: var(--font-special);
 }
 
 body {

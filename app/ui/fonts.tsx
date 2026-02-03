@@ -1,4 +1,4 @@
-import { Quicksand, Open_Sans, Lemon, Mulish } from 'next/font/google';
+import { Quicksand, Open_Sans, Lemon, Mulish, Special_Elite } from 'next/font/google';
 
 export const quicksand = Quicksand({ 
     subsets: ['latin'],
@@ -20,3 +20,9 @@ export const mulish = Mulish({
     subsets: ['latin'],
     variable: '--font-mulish'
 });
+
+export const specialElite = Special_Elite({
+    weight: '400',
+    subsets: ['latin'],
+    variable: '--font-special'
+})
