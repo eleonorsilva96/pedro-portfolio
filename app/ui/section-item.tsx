@@ -16,11 +16,13 @@ export default function SectionItem({
     let url = null;
     let items = null;
 
-    console.log("section", item);
-
     if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === 'GalleryItemRecord') {
         const params = new URLSearchParams(searchParams);
-        params.set("id", item.slug);
+        if (item.slug) {
+          params.set("id", item.slug);
+        } else {
+          params.set("id", item.id);
+        }
         url = `${pathname}?${params.toString()}`;
 
         items =

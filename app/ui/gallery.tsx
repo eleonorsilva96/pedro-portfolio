@@ -2,7 +2,7 @@
 
 import CardGallery from "@/app/ui/card-gallery";
 import clsx from "clsx";
-import { PortfolioPhotoImage, GalleryItemsType } from "../lib/definitions";
+import { GalleryItemsBlock, ContentBlock } from "../lib/definitions";
 import CardPortfolio from "./card-portfolio";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -13,7 +13,7 @@ export default function Gallery({
   hasTitle,
   removeBtn,
 }: {
-  galleryItems: GalleryItemsType[] | PortfolioPhotoImage[];
+  galleryItems: (GalleryItemsBlock | ContentBlock)[];
   hasTitle?: boolean;
   removeBtn?: boolean;
 }) {
@@ -29,11 +29,11 @@ export default function Gallery({
     
     if (
       (item?.__typename === "RelatedServicesBlockRecord" && hasTitle) ||
-      item?.__typename === "ImageBlockRecord"
+      item?.__typename === "GalleryProjectRecord"
     ) {
       let imgUrl = '';
 
-      if (item.__typename === 'ImageBlockRecord') {
+      if (item.__typename === 'GalleryProjectRecord') {
         const params = new URLSearchParams(searchParams);
         params.set("id", item.id);
         imgUrl = `${pathname}?${params.toString()}`;

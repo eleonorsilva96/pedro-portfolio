@@ -3,6 +3,7 @@
 import {
   PortfolioGalleryType,
   GalleryItemsProjectBlock,
+  ContentBlock
 } from "../lib/definitions";
 import clsx from "clsx";
 import ArrowLeft from "./icons/arrow-left";
@@ -20,7 +21,7 @@ export default function PrevNextButtons({
   hideNext,
   isProject,
 }: {
-  gallery: (PortfolioGalleryType | GalleryItemsProjectBlock)[];
+  gallery: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[];
   currentId: string;
   category: string;
   project?: string | null;
@@ -38,8 +39,22 @@ export default function PrevNextButtons({
   let prevProject = null;
   let nextProject = null;
 
-  const currentIndex = gallery.findIndex((i) => i.id === currentId);
+  if (!gallery) return null;
+
+  console.log("GALLERY", gallery);
+  
+  const findId = (item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock) => {
+    if (item.__typename === 'GalleryPortfolioRecord') {
+      return item.projectId.id === currentId;
+    } else {
+      return item.id === currentId;
+    }
+  };
+  
+  const currentIndex = gallery.findIndex(findId);
   const galleryLength = gallery?.length - 1;
+
+  console.log("CURRENT INDEX", currentIndex);
 
   if (currentIndex === 0) {
     disableBtn = "prev";
@@ -54,13 +69,18 @@ export default function PrevNextButtons({
     nextProject = gallery[currentIndex + 1];
   }
 
-  const getSlug = (item: PortfolioGalleryType | GalleryItemsProjectBlock | null) => {
+  const getSlug = (item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock | null) => {
     if(!item) return "";
     if (item.__typename === 'GalleryPortfolioRecord') {
-      return item.projectId?.project || "";
+      return item.projectId.project || "";
     } else if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === 'GalleryItemRecord') {
-      return item.slug || "";
-    } else if (item.__typename === 'ImageBlockRecord') {
+      if (item.slug) {
+        return item.slug || "";
+      } else {
+        return item.id || "";
+      }
+    } 
+    else if (item.__typename === 'GalleryProjectRecord') { // ImageBlockRecord
       return item.id || "";
     }
   };

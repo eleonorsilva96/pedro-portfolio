@@ -1,7 +1,7 @@
 import PrevNextButtons from "@/app/ui/prev-next-buttons";
 import { VideoPlayer } from "react-datocms";
 import ReactPlayer from "react-player";
-import { PortfolioGalleryType } from "@/app/lib/definitions";
+import { PortfolioGalleryType, SlideProjectBlock } from "@/app/lib/definitions";
 
 export default async function Slide({
   allProjects,
@@ -9,69 +9,66 @@ export default async function Slide({
   currentId,
   category
 }: {
-  allProjects: PortfolioGalleryType[] | [];
-  projectDetails: PortfolioGalleryType;
+  allProjects: PortfolioGalleryType[];
+  projectDetails: SlideProjectBlock; // PortfolioGalleryType 
   currentId: string;
   category: string;
 }) {
+
+  console.log("PROJECT DETAILS", projectDetails);
+
+  if (!projectDetails) return null;
+
   let video = null;
   let content = null;
   let year = null;
 
-  if (
-    projectDetails?.__typename === "GalleryPortfolioRecord" &&
-    projectDetails?.projectId.content.__typename === "SlideProjectRecord"
-  ) {
-    year = projectDetails?.projectId.content.date?.split("-");
+  year = projectDetails.date?.split("-");
 
-    console.log(year)
+  console.log(year)
 
-    if (projectDetails?.projectId.content.videoMedia?.externalVideo) {
-      video = (
-        <ReactPlayer
-          src={projectDetails?.projectId.content.videoMedia.externalVideo.url}
-          light={projectDetails?.projectId.content.videoMedia.externalVideo.thumbnailUrl}
-          controls={true}
-          width="100%"
-          height="100%"
-        />
-      );
-    } else if (projectDetails?.projectId.content.videoMedia?.videoAsset) {
-      video = (
-        <VideoPlayer
-          data={projectDetails?.projectId.content.videoMedia.videoAsset?.video}
-          className="w-full h-full object-cover"
-          preload="none"
-        />
-      );
-    } else {
-      video = <div>No Video</div>;
-    }
-
-    content = (
-      <>
-        <span className="font-bold">
-          Função:{" "}
-          <span className="font-normal">
-            {projectDetails?.projectId.content.role}
-          </span>
-        </span>
-        <span className="font-bold">
-          Contexto:{" "}
-          <span className="font-normal">
-            {projectDetails?.projectId.content.context}
-          </span>
-        </span>
-        <span className="font-bold">
-          Data:{" "}
-          <span className="font-normal">{year?.at(0)}</span>
-        </span>
-      </>
+  if (projectDetails?.videoMedia.externalVideo) {
+    video = (
+      <ReactPlayer
+        src={projectDetails.videoMedia.externalVideo.url}
+        light={projectDetails.videoMedia.externalVideo.thumbnailUrl}
+        controls={true}
+        width="100%"
+        height="100%"
+      />
+    );
+  } else if (projectDetails.videoMedia.videoAsset) {
+    video = (
+      <VideoPlayer
+        data={projectDetails.videoMedia.videoAsset.video}
+        className="w-full h-full object-cover"
+        preload="none"
+      />
     );
   } else {
-    video = <div>Video unavailable</div>;
-    content = <div>Content unavailable</div>;
+    video = <div>No Video</div>;
   }
+
+  content = (
+    <>
+      <span className="font-bold">
+        Função:{" "}
+        <span className="font-normal">
+          {projectDetails.role}
+        </span>
+      </span>
+      <span className="font-bold">
+        Contexto:{" "}
+        <span className="font-normal">
+          {projectDetails.context}
+        </span>
+      </span>
+      <span className="font-bold">
+        Data:{" "}
+        <span className="font-normal">{year?.at(0)}</span>
+      </span>
+    </>
+  );
 
   return (
     <div className="self-center w-full flex flex-col gap-5">

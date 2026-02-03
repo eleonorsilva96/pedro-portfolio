@@ -10,6 +10,7 @@ import ReactPlayer from "react-player";
 import {
   PortfolioGalleryType,
   GalleryItemsProjectBlock,
+  ContentBlock
 } from "@/app/lib/definitions";
 import { Suspense, useState } from "react";
 import clsx from "clsx";
@@ -23,7 +24,7 @@ export default function ModalContent({
   project,
 }: {
   // it accepts a list of pure projects or items and also a mixed list of projects and items
-  galleryList: (PortfolioGalleryType | GalleryItemsProjectBlock)[]; // pass all the watch items/projects
+  galleryList: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[]; // pass all the watch items/projects
   projectId: string;
   category: string;
   project?: string | null;
@@ -33,7 +34,7 @@ export default function ModalContent({
   useScrollLock(true);
 
   const isMatchingItem = (
-    item: PortfolioGalleryType | GalleryItemsProjectBlock,
+    item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock,
   ) => {
     if (item.__typename === "GalleryPortfolioRecord") {
       return item.projectId.project === projectId;
@@ -42,35 +43,39 @@ export default function ModalContent({
     if (
       item.__typename === "ExternalVideoTitleRecord" || item.__typename === "GalleryItemRecord"
     ) {
-      return item.slug === projectId;
+      if (item.slug) {
+        return item.slug === projectId;
+      } else {
+        return item.id === projectId;
+      }
     }
     
-    if (item.__typename === "ImageBlockRecord") {
+    if (item.__typename === "GalleryProjectRecord") {
       return item.id === projectId;
     }
     return false;
   };
 
   const isMatchingGallery = (
-    item: PortfolioGalleryType | GalleryItemsProjectBlock,
+    item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock,
   ) =>
     item.__typename === "GalleryPortfolioRecord" ||
     item.__typename === "ExternalVideoTitleRecord" ||
     item.__typename === "GalleryItemRecord" ||
-    item.__typename === "ImageBlockRecord";
+    item.__typename === "GalleryProjectRecord";
 
-  const getCurrentId = (item: PortfolioGalleryType | GalleryItemsProjectBlock) => {
-    if (item.__typename === 'GalleryPortfolioRecord') return item.id;
+  const getCurrentId = (item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock) => {
+    if (item.__typename === 'GalleryPortfolioRecord') return item.projectId.id;
 
     if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === "GalleryItemRecord") return item.id;
 
-    if (item.__typename === "ImageBlockRecord") return item.id;
+    if (item.__typename === "GalleryProjectRecord") return item.id;
 
     return null;
   };
 
-  const checkImageVertical = (item: PortfolioGalleryType | GalleryItemsProjectBlock) => {
-    if (item.__typename === 'GalleryItemRecord' || item.__typename === 'ImageBlockRecord') {
+  const checkImageVertical = (item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock) => {
+    if (item.__typename === 'GalleryItemRecord' || item.__typename === 'GalleryProjectRecord') {
       const height = item.asset.height;
       const width = item.asset.width;
 
@@ -85,12 +90,14 @@ export default function ModalContent({
   
   const activeGallery = galleryList.filter(isMatchingGallery);
 
+  console.log("ACTIVE GALLERY", activeGallery);
+
   if (!activeItem) return null;
   if (!activeGallery) return null;
   
   const currentId = getCurrentId(activeItem);
   
-  const removeDetails = activeItem?.__typename === 'ImageBlockRecord' ? true : false;
+  const removeDetails = activeItem?.__typename === 'GalleryProjectRecord' || activeGallery.some((item) => item.__typename === 'ExternalVideoTitleRecord' && !item.slug) ? true : false;
 
   const isVertical = checkImageVertical(activeItem);
   
@@ -103,9 +110,9 @@ export default function ModalContent({
 
   if (
     (activeItem.__typename === "GalleryPortfolioRecord" &&
-      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
-      !activeItem.projectId.content.videoMedia) ||
-    activeItem.__typename === "ImageBlockRecord" ||
+      activeItem.projectId.contentType.content.__typename === "SlideProjectRecord" &&
+      !activeItem.projectId.contentType.content.videoMedia) ||
+    activeItem.__typename === "GalleryProjectRecord" ||
     activeItem.__typename === "GalleryItemRecord"
   ) {
     // image
@@ -119,33 +126,33 @@ export default function ModalContent({
 
     if (
       activeItem.__typename === "GalleryPortfolioRecord" &&
-      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
-      !activeItem.projectId.content.videoMedia
+      activeItem.projectId.contentType.content.__typename === "SlideProjectRecord" &&
+      !activeItem.projectId.contentType.content.videoMedia
     ) {
-      imgUrl = activeItem.thumbnail.url;
-      imgWidth = activeItem.thumbnail.width;
-      imgHeight = activeItem.thumbnail.height;
-      imgAlt = activeItem.thumbnail.alt;
+      imgUrl = activeItem.projectId.thumbnail.url;
+      imgWidth = activeItem.projectId.thumbnail.width;
+      imgHeight = activeItem.projectId.thumbnail.height;
+      imgAlt = activeItem.projectId.thumbnail.alt;
       imgClassName = "h-auto";
       title = activeItem.projectId.title;
 
-      if (activeItem.projectId.content.date) {
-        year = activeItem.projectId.content.date.split("-").at(0);
+      if (activeItem.projectId.contentType.content.date) {
+        year = activeItem.projectId.contentType.content.date.split("-").at(0);
       }
 
-      if (activeItem.projectId.content.linkBlock) {
+      if (activeItem.projectId.contentType.content.linkBlock) {
         if (
-          activeItem.projectId.content.linkBlock?.__typename ===
+          activeItem.projectId.contentType.content.linkBlock?.__typename ===
           "AdditionalLinkBlockRecord"
         ) {
-          linkUrl = `${activeItem.projectId.content.linkBlock.link}`;
-          linkText = activeItem.projectId.content.linkBlock.text;
+          linkUrl = `${activeItem.projectId.contentType.content.linkBlock.link}`;
+          linkText = activeItem.projectId.contentType.content.linkBlock.text;
         } else if (
-          activeItem.projectId.content.linkBlock?.__typename ===
+          activeItem.projectId.contentType.content.linkBlock?.__typename ===
           "RelatedProjectBlockRecord"
         ) {
-          linkUrl = `/portfolio/${category}/${activeItem.projectId.content.linkBlock.link.project}/watch`;
-          linkText = activeItem.projectId.content.linkBlock.text;
+          linkUrl = `/portfolio/${category}/${activeItem.projectId.contentType.content.linkBlock.link.project}/watch`;
+          linkText = activeItem.projectId.contentType.content.linkBlock.text;
         }
 
         linkBlock = (
@@ -159,21 +166,21 @@ export default function ModalContent({
       }
 
       if (
-        activeItem.projectId.content.role ||
-        activeItem.projectId.content.context
+        activeItem.projectId.contentType.content.role ||
+        activeItem.projectId.contentType.content.context
       ) {
         moreDetails = (
           <>
             <span className="font-bold">
               Contexto:{" "}
               <span className="font-normal">
-                {activeItem.projectId.content.context}
+                {activeItem.projectId.contentType.content.context}
               </span>
             </span>
             <span className="font-bold">
               Função:{" "}
               <span className="font-normal">
-                {activeItem.projectId.content.role}
+                {activeItem.projectId.contentType.content.role}
               </span>
             </span>
           </>
@@ -186,7 +193,7 @@ export default function ModalContent({
       imgAlt = activeItem.asset.alt;
       imgClassName = "h-full object-cover";
       title = activeItem.title;
-    } else if (activeItem.__typename === "ImageBlockRecord") {
+    } else if (activeItem.__typename === "GalleryProjectRecord") {
       imgUrl = activeItem.asset.url;
       imgWidth = activeItem.asset.width;
       imgHeight = activeItem.asset.height;
@@ -205,8 +212,8 @@ export default function ModalContent({
     );
   } else if (
     (activeItem.__typename === "GalleryPortfolioRecord" &&
-      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
-      activeItem.projectId.content.videoMedia.externalVideo) ||
+      activeItem.projectId.contentType.content.__typename === "SlideProjectRecord" &&
+      activeItem.projectId.contentType.content.videoMedia.externalVideo) ||
     activeItem.__typename === "ExternalVideoTitleRecord"
   ) {
     // external link
@@ -216,14 +223,14 @@ export default function ModalContent({
 
     if (
       activeItem.__typename === "GalleryPortfolioRecord" &&
-      activeItem.projectId.content.__typename === "SlideProjectRecord" &&
-      activeItem.projectId.content.videoMedia.externalVideo
+      activeItem.projectId.contentType.content.__typename === "SlideProjectRecord" &&
+      activeItem.projectId.contentType.content.videoMedia.externalVideo
     ) {
-      externalLinkId = activeItem.projectId.content.id;
+      externalLinkId = activeItem.projectId.contentType.content.id;
       externalLinkUrl =
-        activeItem.projectId.content.videoMedia.externalVideo.url;
+        activeItem.projectId.contentType.content.videoMedia.externalVideo.url;
       externalLinkThumbnailUrl =
-        activeItem.projectId.content.videoMedia.externalVideo.thumbnailUrl;
+        activeItem.projectId.contentType.content.videoMedia.externalVideo.thumbnailUrl;
       title = activeItem.projectId.title;
     } else if (activeItem.__typename === "ExternalVideoTitleRecord") {
       externalLinkId = activeItem.id;
@@ -244,15 +251,15 @@ export default function ModalContent({
     );
   } else if (
     activeItem.__typename === "GalleryPortfolioRecord" &&
-    activeItem.projectId.content.__typename === "SlideProjectRecord" &&
-    activeItem.projectId.content.videoMedia.videoAsset
+    activeItem.projectId.contentType.content.__typename === "SlideProjectRecord" &&
+    activeItem.projectId.contentType.content.videoMedia.videoAsset
   ) {
     title = activeItem.projectId.title;
 
     media = (
       <VideoPlayer
-        key={activeItem.projectId.content.id}
-        data={activeItem.projectId.content.videoMedia.videoAsset.video}
+        key={activeItem.projectId.contentType.content.id}
+        data={activeItem.projectId.contentType.content.videoMedia.videoAsset.video}
         className="w-full h-full object-cover"
         preload="none"
       />
@@ -266,7 +273,7 @@ export default function ModalContent({
     >
       <div
         className={clsx("w-full flex flex-col gap-4", {
-          "aspect-[16/9]": isProjectModal === true || !isVertical,
+          "aspect-[16/9] lg:max-w-7xl": isProjectModal === true || !isVertical,
           "aspect-[2/3] h-auto md:!w-[450px] lg:!w-[550px] 2xl:!w-[1000px]": isVertical,
         })}
       >

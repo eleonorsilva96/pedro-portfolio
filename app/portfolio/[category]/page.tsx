@@ -7,24 +7,20 @@ import CardTextMedia from "@/app/ui/card-text-media";
 import ReactMarkdown from "react-markdown";
 import { Suspense } from "react";
 
-// send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
   query Portfolio {
-    allPortfolioCategories { # get all records from the Portfolio collection model
+    allPortfolioCategories {
+      id
       title
       description
       slug
-      # multiple field blocks
+      cta
+      
       gallery {
+        __typename
+
         ... on GalleryPortfolioRecord {
-          __typename
           id
-          thumbnail {
-            url
-            width
-            height
-            alt
-          }
           tag {
             ... on PortfolioTagRecord {
               id
@@ -37,113 +33,50 @@ const PAGE_CONTENT_QUERY = `
               }
             }
           }
+          
           projectId {
             ... on ProjectRecord {
               id
+              project # Assuming this is your slug field
               title
-              project
-              content {
-                ... on GalleryProjectRecord {
+              description
+              thumbnail {
+                url
+                width
+                height
+                alt
+              }
+              
+              contentType {
+                __typename
+                ... on SingleBlockRecord {
+                  id 
                   __typename
-                  description
-                  photosGallery {
-                    ... on ImageBlockRecord {
-                      asset {
-                        url
-                        width
-                        height
-                        alt
-                      }
-                    }
-                  }
-
-                }
-                ... on SectionProjectRecord {
-                  __typename
-                  description
-                  section {
-                    ... on CardGalleryRecord {
-                      title
-                      galleryItems {
-                        ... on ExternalVideoTitleRecord {
-                          title
+                  content {
+                    __typename 
+                    
+                    ... on SlideProjectRecord {
+                      id 
+                      context
+                      role
+                      date
+                      
+                      linkBlock {
+                        __typename
+                        ... on AdditionalLinkBlockRecord {
+                          id
+                          text
+                          link
+                        }
+                        ... on RelatedProjectBlockRecord {
+                          id
+                          text
                           link {
-                            url
-                            title
-                            width
-                            height
-                            provider
-                            providerUid
-                            thumbnailUrl
+                            ... on ProjectRecord {
+                              id
+                              project
+                            }
                           }
-
-                        }
-                        ... on GalleryItemRecord {
-                          title
-                          asset {
-                            url
-                            width
-                            height
-                            alt
-                          }
-                        }
-                        ... on ImageBlockRecord {
-                          asset {
-                            url
-                            width
-                            height
-                            alt
-                          }
-                        }
-                      }
-                    }
-                  }
-
-                }
-                ... on SlideProjectRecord {
-                  __typename
-                  id
-                  videoMedia {
-                    ... on ExternalVideoRecord {
-                      externalVideo {
-                        url
-                        title
-                        width
-                        height
-                        provider
-                        providerUid
-                        thumbnailUrl
-                      }
-                    }
-                     ... on VideoBlockRecord {
-                      videoAsset {
-                        url
-                        alt
-                        video {
-                          muxPlaybackId
-                          title
-                          width
-                          height
-                          blurUpThumb
-                        }
-                      }
-                    } 
-                  }
-                  context
-                  role
-                  date
-                  linkBlock {
-                    ... on AdditionalLinkBlockRecord {
-                      __typename
-                      text
-                      link
-                    }
-                    ... on RelatedProjectBlockRecord {
-                      __typename
-                      text
-                      link {
-                        ... on ProjectRecord {
-                          project
                         }
                       }
                     }
@@ -153,13 +86,16 @@ const PAGE_CONTENT_QUERY = `
             }
           }
         }
+
         ... on MusicPortfolioRecord {
           __typename
           id
           title
           description
           video {
+            __typename
             ... on VideoBlockRecord {
+              id
               videoAsset {
                 url
                 alt
@@ -173,13 +109,14 @@ const PAGE_CONTENT_QUERY = `
               }
             }  
             ... on ExternalVideoStringRecord {
+              id
               externalVideoLink
             }
           }
         }
       }
-      cta
     }
+
     allPortfolioTags {
       id
       title
@@ -207,8 +144,6 @@ export default async function PortfolioPage({
   )) as PortfolioData;
   let categoryDataFiltered = null;
 
-  console.log("categories", allPortfolioCategories);
-
   const categoryData = allPortfolioCategories.find((c) => c.slug === category);
   const categoryTags = allPortfolioTags.filter((t) =>
     t.categoryRef.find((r) => r.slug === category)
@@ -221,8 +156,6 @@ export default async function PortfolioPage({
   const musicList = categoryData?.gallery.filter(
     (project) => project.__typename === "MusicPortfolioRecord"
   );
-
-  console.log("music", musicList);
 
   const musicCard = musicList?.map((item, index) => {
     const videoLink = item.video.externalVideoLink

@@ -1,5 +1,5 @@
 import { performRequest } from "@/app/lib/datocms";
-import { PortfolioData } from "@/app/lib/definitions";
+import { ProjectData, PortfolioGalleryType } from "@/app/lib/definitions";
 import Slide from "@/app/ui/slide";
 import Gallery from "@/app/ui/gallery";
 import clsx from "clsx";
@@ -10,183 +10,103 @@ import { Suspense } from "react";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
-  query Portfolio {
-    allPortfolioCategories { # get all records from the collection model
+  query Project($project: String!, $category: String!) {
+    # Get a single project by the slug
+    project(filter: { project: { eq: $project } }) {
+      id
       title
       description
-      slug
-      # multiple field blocks
-      gallery {
-        ... on GalleryPortfolioRecord {
-          __typename
+      
+      contentType {
+        __typename
+        ... on MultipleBlockRecord {
           id
-          thumbnail {
-            url
-            width
-            height
-            alt
-          }
-          tag {
-            ... on PortfolioTagRecord {
+          content {
+            __typename
+            ... on GalleryProjectRecord {
               id
-              title
-              slug
-              categoryRef {
-                ... on PortfolioCategoryRecord {
-                  slug
-                }
-              }
-            }
-          }
-          projectId {
-            ... on ProjectRecord {
-              id
-              title
-              project
-              content {
-                ... on GalleryProjectRecord {
-                  __typename
-                  description
-                  photosGallery {
-                    ... on ImageBlockRecord {
-                      __typename
-                      id
-                      asset {
-                        url
-                        width
-                        height
-                        alt
-                      }
-                    }
-                  }
-
-                }
-                ... on SectionProjectRecord {
-                  __typename
-                  description
-                  section {
-                    ... on CardGalleryRecord {
-                      title
-                      galleryItems {
-                        ... on ExternalVideoTitleRecord {
-                          __typename
-                          title
-                          link {
-                            url
-                            title
-                            width
-                            height
-                            provider
-                            providerUid
-                            thumbnailUrl
-                          }
-
-                        }
-                        ... on GalleryItemRecord {
-                          __typename
-                          title
-                          asset {
-                            url
-                            width
-                            height
-                            alt
-                          }
-                        }
-                        ... on ImageBlockRecord {
-                          __typename
-                          asset {
-                            url
-                            width
-                            height
-                            alt
-                          }
-                        }
-                      }
-                    }
-                  }
-
-                }
-                ... on SlideProjectRecord {
-                  __typename
-                  id
-                  videoMedia {
-                    ... on ExternalVideoRecord {
-                      externalVideo {
-                        url
-                        title
-                        width
-                        height
-                        provider
-                        providerUid
-                        thumbnailUrl
-                      }
-                    }
-                     ... on VideoBlockRecord {
-                      videoAsset {
-                        url
-                        alt
-                        video {
-                          muxPlaybackId
-                          title
-                          width
-                          height
-                          blurUpThumb
-                        }
-                      }
-                    } 
-                  }
-                  context
-                  role
-                  date
-                  linkBlock {
-                    ... on AdditionalLinkBlockRecord {
-                      __typename
-                      text
-                      link
-                    }
-                    ... on RelatedProjectBlockRecord {
-                      __typename
-                      text
-                      link { # Link to another Record
-                        id
-                        title
-                        project
-                      }
-                    }
-                  }
-                }
+              asset {
+                url
+                width
+                height
+                alt
               }
             }
           }
         }
-        ... on MusicPortfolioRecord {
-          __typename
+        ... on SingleBlockRecord {
           id
-          title
-          description
-          video {
-            ... on VideoBlockRecord {
-              videoAsset {
-                url
-                alt
-                video {
-                  muxPlaybackId
-                  title
-                  width
-                  height
-                  blurUpThumb
+          content {
+            __typename
+            ... on SlideProjectRecord {
+              id
+              context
+              role
+              date
+              videoMedia {
+                __typename
+                ... on ExternalVideoRecord {
+                  externalVideo {
+                    url
+                    title
+                    width
+                    height
+                    provider
+                    providerUid
+                    thumbnailUrl
+                  }
+                }
+                ... on VideoBlockRecord {
+                  videoAsset {
+                    url
+                    alt
+                    video {
+                      muxPlaybackId
+                      title
+                      width
+                      height
+                      blurUpThumb
+                    }
+                  }
                 }
               }
-            }  
-            ... on ExternalVideoStringRecord {
-              externalVideoLink
+              linkBlock {
+                __typename
+                ... on AdditionalLinkBlockRecord {
+                  text
+                  link
+                }
+                ... on RelatedProjectBlockRecord {
+                  text
+                  link {
+                    ... on ProjectRecord {
+                      project
+                    }
+                  }
+                }
+              }
             }
           }
         }
       }
-      cta
     }
-  }`;
+    
+    # get gallery by category to handle projects navigation 
+    allPortfolioCategories(filter: { slug: { eq: $category } }){
+      gallery {
+        ... on GalleryPortfolioRecord {
+          __typename
+          projectId {
+            ... on ProjectRecord {
+              id
+              project 
+            }
+          }
+        }
+      }   
+    }
+  }
+`;
 
 // add props to receive fetching data
 export default async function PortfolioPage({
@@ -197,80 +117,51 @@ export default async function PortfolioPage({
   searchParams: Promise<{ id: string }>;
 }) {
   const { category, project } = await params;
-  const { allPortfolioCategories } = (await performRequest(
-    PAGE_CONTENT_QUERY,
-  )) as PortfolioData;
-  // if query param id is empty return a empty object
+
+  // if URL param id is empty return a empty object
   const { id } = (await searchParams) ?? Promise.resolve({});
 
+  const response = (await performRequest(PAGE_CONTENT_QUERY, {
+    variables: {
+      project: project,
+      category: category,
+    },
+  })) as ProjectData;
+
+  if (!response) return null;
+  
+  const { allPortfolioCategories } = response;
+  const { title, description, contentType } = response.project;
+  const projectId = response.project.id;
+  
+  const portfolioGallery = allPortfolioCategories[0].gallery.filter((item) => item.__typename === 'GalleryPortfolioRecord') as PortfolioGalleryType[];
+
   let contentView = null;
-  let title = null;
-  let description = null;
-
-  console.log("allPortfolioCategories", allPortfolioCategories);
-
-  const categoryRecord = allPortfolioCategories.find(
-    (p) => p.slug === category,
-  );
-  // to return in one single array
-  const projectGallery = categoryRecord?.gallery.flatMap((p) => {
-    if (
-      p.__typename === "GalleryPortfolioRecord" &&
-      p.projectId.project === project &&
-      p.projectId.content.__typename === "GalleryProjectRecord"
-    ) {
-      return p.projectId.content.photosGallery;
-    }
-    return [];
-  });
-
-  console.log("projectGallery", projectGallery);
-
-  const gallerySlideList = categoryRecord?.gallery.filter(
-    (project) => project.__typename === "GalleryPortfolioRecord",
-  );
-
-  const projectDetails = categoryRecord?.gallery.find(
-    (pd) =>
-      pd.__typename === "GalleryPortfolioRecord" &&
-      pd.projectId.project === project,
-  );
-
-  if (projectDetails?.__typename === "GalleryPortfolioRecord") {
-    title = (
-      <h1 className="w-full text-5xl">{projectDetails?.projectId.title}</h1>
+  
+  if (contentType.__typename === 'SingleBlockRecord' && contentType.content.__typename === 'SlideProjectRecord') {
+    contentView = (
+      <Slide
+        allProjects={portfolioGallery || []}
+        projectDetails={contentType.content || {}}
+        currentId={projectId}
+        category={category}
+      />
     );
-    if (projectDetails?.projectId.content.__typename === "SlideProjectRecord") {
-      contentView = (
-        <Slide
-          allProjects={gallerySlideList || []}
-          projectDetails={projectDetails || {}}
-          currentId={projectDetails.id}
-          category={category}
+  } else if (contentType.__typename === 'MultipleBlockRecord') {
+    contentView = (
+      <Suspense fallback={null}>
+        <Gallery
+          galleryItems={contentType.content ?? []}
+          removeBtn
         />
-      );
-    } else if (
-      projectDetails?.projectId.content.__typename === "GalleryProjectRecord"
-    ) {
-      description = projectDetails?.projectId.content.description;
-      contentView = (
-        <Suspense fallback={null}>
-          <Gallery
-            galleryItems={projectDetails?.projectId.content.photosGallery ?? []}
-            removeBtn
-          />
-        </Suspense>
-      );
-    } else {
-      description = projectDetails?.projectId.content.description;
-      contentView = <div>Section Project</div>;
-    }
+      </Suspense>
+    );
   }
 
   const modal = id ? (
     <Suspense fallback={null}>
       <ModalContent
-        galleryList={projectGallery || []}
+        galleryList={contentType.__typename === 'MultipleBlockRecord'? contentType.content || [] : []}
         projectId={id}
         category={category}
         project={project}
@@ -285,21 +176,12 @@ export default async function PortfolioPage({
           "flex flex-col w-full items-center justify-center mx-4 lg:mx-6",
           {
             "lg:max-w-4xl xl:max-w-5xl lg:mx-0":
-              projectDetails?.__typename === "GalleryPortfolioRecord" &&
-              projectDetails?.projectId.content.__typename ===
-                "SlideProjectRecord",
+              contentType.__typename === 'SingleBlockRecord' && contentType.content.__typename === 'SlideProjectRecord',
           },
         )}
       >
         <div
-          className={clsx("py-2 px-2 self-start text-neutral-500", {
-            hidden:
-              projectDetails?.__typename === "GalleryPortfolioRecord" &&
-              projectDetails?.projectId.content.__typename !==
-                "SlideProjectRecord" &&
-              projectDetails.projectId.content.__typename !==
-                "GalleryProjectRecord",
-          })}
+          className="py-2 px-2 self-start text-neutral-500"
         >
           <Link
             href={`/portfolio/${category}`}
@@ -312,7 +194,7 @@ export default async function PortfolioPage({
           </Link>
         </div>
         <div className="flex flex-col gap-4 mt-4 self-start">
-          {title}
+          <h1 className="text-2xl lg:text-4xl font-medium">{title}</h1>
           <p>{description}</p>
         </div>
         {contentView}

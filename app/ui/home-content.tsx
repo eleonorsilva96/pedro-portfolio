@@ -4,20 +4,20 @@ import { VideoPlayer } from "react-datocms";
 import CardTextMedia from "@/app/ui/card-text-media";
 import Gallery from "@/app/ui/gallery";
 import Form from "@/app/ui/form";
-import { SectionBlock } from "../lib/definitions";
+import { ContentBlock } from "../lib/definitions";
 import { Suspense, useRef } from "react";
 
 
 export default function HomeContent({
     sections
 } : {
-    sections: SectionBlock[];
+    sections: ContentBlock[];
 }) {
   const formRef = useRef<HTMLDivElement>(null);
 
   const videoBlock = sections?.find((s) => s.__typename === 'VideoBlockRecord');
   const cardTextImg = sections?.find((s) => s.__typename === 'CardTextImgRecord');
-  const cardGallery = sections?.filter((s) => s.__typename === 'CardGalleryRecord');
+  const cardGallery = sections?.filter((s) => s.__typename === 'SectionProjectRecord');
   
   if (!videoBlock) return null;
   if (!cardTextImg) return null;

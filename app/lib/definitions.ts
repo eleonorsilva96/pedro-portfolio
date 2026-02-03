@@ -8,10 +8,6 @@ export type ImageAsset = {
   alt: string;
 };
 
-type TextBlock = {
-  title: string;
-};
-
 export type GalleryItems = {
   __typename: "GalleryItemRecord";
   id: string;
@@ -86,15 +82,6 @@ export type GalleryRelatedServices = {
 
 export type GalleryItemsType = GalleryRelatedProjects | GalleryRelatedServices;
 
-// Card Gallery Record
-type CardGallery = {
-  __typename: "CardGalleryRecord";
-  id: string;
-  title: string;
-  galleryItems: GalleryItemsType[]; // array of image objects
-  filters: TextBlock[]; // array of titles
-};
-
 type CategoryLinkRef = {
   id: string;
   __typename: "LinkRecord";
@@ -128,8 +115,7 @@ type PrivacyPolicyLink = {
   slug: string;
 } | null;
 
-// Check for only one of this block shapes
-export type SectionBlock = VideoBlock | CardTextImg | CardGallery;
+
 
 // ----- Portfolio -----
 
@@ -174,13 +160,6 @@ type ExternalVideoBlock = {
   link: ExternalVideo;
 };
 
-type CardGalleryBlock = {
-  __typename: "SectionCardGalleryBlock";
-  id: string;
-  title: string;
-  galleryItems: GalleryItemsProjectBlock[];
-};
-
 export type GalleryItemsProjectBlock =
   | ExternalVideoBlock
   | GalleryItems
@@ -199,21 +178,22 @@ export type SlideProjectBlock = {
   linkBlock: LinkBlock | null;
 };
 
-type SectionProjectBlock = {
+export type SectionProjectBlock = {
   __typename: "SectionProjectRecord";
   id: string;
-  description: string;
-  section: CardGalleryBlock[];
+  // section: CardGalleryBlock[];
+  title: string;
+  galleryItems: GalleryItemsBlock[];
 };
 
 type GalleryProjectBlock = {
   __typename: "GalleryProjectRecord";
-  description: string;
-  photosGallery: PortfolioPhotoImage[]; // convert from arr to obj
+  id: string;
+  asset: ImageAsset;
 };
 
 // conditional contentProject
-type ContentProject =
+export type ContentProject =
   | GalleryProjectBlock
   | SectionProjectBlock
   | SlideProjectBlock;
@@ -221,14 +201,16 @@ type ContentProject =
 type ProjectIdBlock = {
   id: string;
   title: string;
+  description: string;
+  thumbnail: ImageAsset;
   project: string;
-  content: ContentProject;
+  // content: ContentProject;
+  contentType: SingleBlock;
 };
 
 export type PortfolioGalleryType = {
   __typename: "GalleryPortfolioRecord";
   id: string;
-  thumbnail: ImageAsset;
   tag: PortfolioGalleryTag[];
   projectId: ProjectIdBlock;
 };
@@ -254,11 +236,34 @@ type PortfolioCategoryRecord = {
   cta: string | null;
 };
 
-export type ProjectData = {
+export type allProjectsGalleryBlock = {
+  __typename: 'GalleryPortfolioRecord';
+  projectId: {
+    id: string;
+    project: string;
+  }
+}
+
+export type allProjectsBlock = {
+  gallery: allProjectsGalleryBlock[];
+}
+
+export type MoreDetailsProjectData = {
   project: {
     title: string;
-    content: SectionProjectBlock;
+    description: string;
+    contentType: ContentTypeBlock;
+  }
+}
+
+export type ProjectData = {
+  project: {
+    id: string;
+    title: string;
+    description: string;
+    contentType: ContentTypeBlock;
   };
+  allPortfolioCategories: allProjectsBlock[];
 };
 
 export type PortfolioData = {
@@ -279,10 +284,24 @@ export type ServiceData = {
   service: ServiceDataBlock;
 };
 
+
+export type MultipleBlock = {
+  __typename: "MultipleBlockRecord";
+  content: ContentBlock[];
+}
+
+export type SingleBlock = {
+  __typename: "SingleBlockRecord";
+  content: ContentBlock;
+}
+
+export type ContentTypeBlock = SingleBlock | MultipleBlock; 
+
 export type HomeData = {
   homepage: {
     title: string;
-    sections: SectionBlock[]; // Array of block shapes
+    // sections: SectionBlock[]; // Array of block shapes
+    contentType: MultipleBlock;
   };
 };
 
@@ -321,3 +340,8 @@ export type ContactDataBlock = {
 export type ContactData = {
   contact: ContactDataBlock;
 };
+
+// Check for only one of this block shapes
+// export type SectionBlock = VideoBlock | CardTextImg | CardGallery;
+export type ContentBlock = VideoBlock | CardTextImg | ContentProject;
+export type GalleryItemsBlock = GalleryRelatedProjects | GalleryRelatedServices | ExternalVideoBlock | GalleryItems | PortfolioPhotoImage;

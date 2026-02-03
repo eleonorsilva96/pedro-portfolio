@@ -17,10 +17,10 @@ export default function CardPortfolio({
   let titleProps = null;
 
   if (project.__typename === "GalleryPortfolioRecord") {
-    urlProps = project.thumbnail.url;
-    widthProps = project.thumbnail.width;
-    heightProps = project.thumbnail.height;
-    altProps = project.thumbnail.alt;
+    urlProps = project.projectId.thumbnail.url;
+    widthProps = project.projectId.thumbnail.width;
+    heightProps = project.projectId.thumbnail.height;
+    altProps = project.projectId.thumbnail.alt;
     titleProps = project.projectId.title;
   } else if (project.__typename === "GalleryItemRecord") {
     urlProps = project.asset.url;
