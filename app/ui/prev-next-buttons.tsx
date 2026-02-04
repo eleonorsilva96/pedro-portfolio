@@ -91,8 +91,8 @@ export default function PrevNextButtons({
   if (isModal) {
     if (project) {
       if (category === 'imagem-digital') {
-        urlPrev = `/portfolio/${category}/${project}/watch?id=${prevSlug}`;
-        urlNext = `/portfolio/${category}/${project}/watch?id=${nextSlug}`;
+        urlPrev = `/portfolio/${category}/${project}/view?id=${prevSlug}`;
+        urlNext = `/portfolio/${category}/${project}/view?id=${nextSlug}`;
       } else if (category === 'fotografia') {
         urlPrev = `/portfolio/${category}/${project}?id=${prevSlug}`;
         urlNext = `/portfolio/${category}/${project}?id=${nextSlug}`;

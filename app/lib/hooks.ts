@@ -6,12 +6,12 @@ export const useScrollLock = (element: boolean) => {
         if (element) {
             document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = '';
         }
         
         // reset when component unmounts 
         return () => {
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = '';
         };
 
     }, [element]) // re-run

@@ -3,8 +3,15 @@
 import Image, { ImageProps } from "next/image";
 import { useState } from "react";
 
-export default function ImageSkeleton({ className, alt, ...props }: ImageProps) {
+// to be able to use custom props we need to extend ImagePros 
+interface ImageSkeletonProps extends ImageProps {
+  removeOpacity?: boolean
+}
+
+export default function ImageSkeleton({ className, alt, removeOpacity, ...props }: ImageSkeletonProps) {
   const [isLoading, setIsLoading] = useState(true);
+
+  const groupHover = removeOpacity ? 'transition-all duration-500 group-hover:scale-105' : 'duration-700 ease-in-out group-hover:opacity-0 transition-opacity';
 
   return (
     <div className={`relative overflow-hidden bg-neutral-100 ${className}`}>
@@ -15,7 +22,7 @@ export default function ImageSkeleton({ className, alt, ...props }: ImageProps) 
         {...props}
         alt={alt}
         className={`
-          duration-700 ease-in-out w-full h-full object-cover group-hover:opacity-0 transition-opacity
+          w-full h-full object-cover ${groupHover}
           ${
             isLoading
               ? "blur-xl opacity-0"

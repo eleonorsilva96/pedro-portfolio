@@ -24,7 +24,8 @@ export default function ModalContent({
   project,
 }: {
   // it accepts a list of pure projects or items and also a mixed list of projects and items
-  galleryList: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[]; // pass all the watch items/projects
+  // project modal - view modal - gallery modal
+  galleryList: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[]; // pass all the view items/projects
   projectId: string;
   category: string;
   project?: string | null;
@@ -151,7 +152,7 @@ export default function ModalContent({
           activeItem.projectId.contentType.content.linkBlock?.__typename ===
           "RelatedProjectBlockRecord"
         ) {
-          linkUrl = `/portfolio/${category}/${activeItem.projectId.contentType.content.linkBlock.link.project}/watch`;
+          linkUrl = `/portfolio/${category}/${activeItem.projectId.contentType.content.linkBlock.link.project}/view`;
           linkText = activeItem.projectId.contentType.content.linkBlock.text;
         }
 

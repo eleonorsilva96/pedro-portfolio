@@ -181,12 +181,11 @@ export type SlideProjectBlock = {
 export type SectionProjectBlock = {
   __typename: "SectionProjectRecord";
   id: string;
-  // section: CardGalleryBlock[];
   title: string;
   galleryItems: GalleryItemsBlock[];
 };
 
-type GalleryProjectBlock = {
+export type GalleryProjectBlock = {
   __typename: "GalleryProjectRecord";
   id: string;
   asset: ImageAsset;
@@ -204,7 +203,6 @@ type ProjectIdBlock = {
   description: string;
   thumbnail: ImageAsset;
   project: string;
-  // content: ContentProject;
   contentType: SingleBlock;
 };
 
@@ -300,7 +298,6 @@ export type ContentTypeBlock = SingleBlock | MultipleBlock;
 export type HomeData = {
   homepage: {
     title: string;
-    // sections: SectionBlock[]; // Array of block shapes
     contentType: MultipleBlock;
   };
 };
@@ -342,6 +339,5 @@ export type ContactData = {
 };
 
 // Check for only one of this block shapes
-// export type SectionBlock = VideoBlock | CardTextImg | CardGallery;
 export type ContentBlock = VideoBlock | CardTextImg | ContentProject;
 export type GalleryItemsBlock = GalleryRelatedProjects | GalleryRelatedServices | ExternalVideoBlock | GalleryItems | PortfolioPhotoImage;

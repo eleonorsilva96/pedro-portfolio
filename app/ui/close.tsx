@@ -1,6 +1,6 @@
 'use client';
 
-import {useSearchParams, useRouter, usePathname } from "next/navigation";
+import {useSearchParams, useRouter } from "next/navigation";
 import CloseIcon from "./icons/close-icon";
 import clsx from "clsx";
 
@@ -12,8 +12,7 @@ export default function Close({
     isProject: boolean;
 }) {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const handleClick = (id: string) => {
       const params = new URLSearchParams(searchParams);
@@ -24,7 +23,9 @@ export default function Close({
         }
       }
 
-      replace(`${pathname}?${params.toString()}`);
+      // to prevent jump to the top of the page and preserve scroll position
+      router.back()
+
   }
 
 
