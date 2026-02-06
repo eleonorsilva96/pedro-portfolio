@@ -427,7 +427,7 @@ export default function ModalContent({
         className={clsx("flex flex-col gap-4", {
           hidden: isExpand === true || removeDetails,
           flex: isExpand === false,
-          "w-md": isProjectModal === true,
+          "w-full lg:w-md": isProjectModal === true,
           "w-fit lg:min-w-3xs lg:max-w-2xs text-balance":
             isProjectModal === false,
         })}
