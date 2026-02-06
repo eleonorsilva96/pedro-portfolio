@@ -35,7 +35,7 @@ export default function Header({
   return (
     <header className="font-open sticky w-full h-20 bg-neutral-200 items-center justify-between px-4 z-50">
       <nav className="relative flex h-full items-center justify-between">
-        <div id="logo" className="font-lemon text-xl text-primary-500 active:text-red-400">
+        <div id="logo" className="font-lemon text-xl text-primary-500">
           <Link href="/">{logo}</Link>
         </div>
         <div
