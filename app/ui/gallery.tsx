@@ -46,10 +46,18 @@ export default function Gallery({
       (item?.__typename === "RelatedServicesBlockRecord" && hasTitle) ||
       item?.__typename === "GalleryProjectRecord"
     ) {
-      const photoGallery = item.__typename === "GalleryProjectRecord" ? item.asset : null;
-      const serviceGallery = item.__typename === "RelatedServicesBlockRecord" ? item.service : null;
+      
+      if (item.__typename === "RelatedServicesBlockRecord") {
+        const serviceGallery = item.__typename === "RelatedServicesBlockRecord" ? item.service : null;
+        
+        if (!serviceGallery) return null;
+      }
+      
+      if (item.__typename === "GalleryProjectRecord") {
+        const photoGallery = item.__typename === "GalleryProjectRecord" ? item.asset : null;
 
-      if (!photoGallery || !serviceGallery) return null;
+        if (!photoGallery) return null;
+      }
 
       let imgUrl = "";
 
