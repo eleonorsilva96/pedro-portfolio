@@ -196,15 +196,6 @@ export default async function PortfolioPage({
     );
   }
 
-  // const modal = id ? (
-  //     <ModalContent
-  //       galleryList={galleryList || []}
-  //       projectId={id}
-  //       category={category}
-  //       isModal
-  //     />
-  // ) : null;
-
   return (
     <div className="flex flex-col w-full items-center">
         <h1 className="text-5xl mb-4 mt-8 px-4">{categoryData?.title}</h1>
@@ -258,9 +249,7 @@ export default async function PortfolioPage({
             </div>
           </>
         )}
-        <Modal content={galleryList || []} modalId={id} category={category} />
-        
-        {/* {modal} */}
+        {id && <Modal content={galleryList || []} modalId={id} category={category} />}
     </div>
   );
 }

@@ -175,7 +175,7 @@ export default async function PortfolioPage({
   return (
     <div className="flex justify-center w-full my-4">
       <ProjectContentView allProjects={portfolioGallery} project={response.project} category={category}/>
-      <Modal content={multipleContent || []} modalId={id} category={category} projectSlug={project} />
+      {id && <Modal content={multipleContent || []} modalId={id} category={category} projectSlug={project} />}
     </div>
   );
 }
