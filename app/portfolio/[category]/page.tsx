@@ -2,10 +2,10 @@ import { PortfolioData } from "@/app/lib/definitions";
 import { performRequest } from "@/app/lib/datocms";
 import Filter from "@/app/ui/filter";
 import GalleryPortfolio from "@/app/ui/gallery-portfolio";
-import ModalContent from "@/app/ui/modal-content";
 import CardTextMedia from "@/app/ui/card-text-media";
 import ReactMarkdown from "react-markdown";
 import { Suspense } from "react";
+import Modal from "@/app/ui/modal";
 
 const PAGE_CONTENT_QUERY = `
   query Portfolio {
@@ -196,13 +196,14 @@ export default async function PortfolioPage({
     );
   }
 
-  const modal = id ? (
-      <ModalContent
-        galleryList={galleryList || []}
-        projectId={id}
-        category={category}
-      />
-  ) : null;
+  // const modal = id ? (
+  //     <ModalContent
+  //       galleryList={galleryList || []}
+  //       projectId={id}
+  //       category={category}
+  //       isModal
+  //     />
+  // ) : null;
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -257,7 +258,9 @@ export default async function PortfolioPage({
             </div>
           </>
         )}
-        {modal}
+        <Modal content={galleryList || []} modalId={id} category={category} />
+        
+        {/* {modal} */}
     </div>
   );
 }

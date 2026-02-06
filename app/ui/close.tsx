@@ -1,36 +1,33 @@
 'use client';
 
-import {useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import CloseIcon from "./icons/close-icon";
 import clsx from "clsx";
 
 export default function Close({
-    projectId,
     isProject
 } : {
-    projectId: string;
     isProject: boolean;
 }) {
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
+  const currentScroll = window.scrollY;
+  console.log("current scroll close", currentScroll);
 
-  const handleClick = (id: string) => {
-      const params = new URLSearchParams(searchParams);
+  const handleClose = () => {
+    // remove url param to close Modal
+    router.replace(pathname, { scroll: false });
 
-      if (id) {
-        if (params.get("id") === id) {
-            params.delete("id");
-        }
-      }
-
-      // to prevent jump to the top of the page and preserve scroll position
-      router.back()
-
-  }
-
+    // set to current position to avoid shifting to the top of the page after react re-renders and dom is ready 
+    requestAnimationFrame(() => {
+      window.scrollTo(0, currentScroll);
+    });
+  };
 
   return (
-    <div className="mt-4 mr-4 absolute top-0 right-0 cursor-pointer z-10" onClick={() => handleClick(projectId)}>
+    <div 
+    onClick={handleClose}
+    className="mt-4 mr-4 absolute top-0 right-0 cursor-pointer z-10">
       <CloseIcon className={clsx(
         {
           'text-neutral-800' : isProject,

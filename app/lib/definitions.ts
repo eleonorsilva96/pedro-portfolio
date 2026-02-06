@@ -40,14 +40,12 @@ export type VideoAsset = {
   video: Video;
 };
 
-// Video Block Record
 type VideoBlock = {
   __typename: "VideoBlockRecord";
   id: string;
   videoAsset: VideoAsset;
 };
 
-// Card Text Image Record
 type CardTextImg = {
   __typename: "CardTextImgRecord";
   id: string;
@@ -115,10 +113,6 @@ type PrivacyPolicyLink = {
   slug: string;
 } | null;
 
-
-
-// ----- Portfolio -----
-
 type AdditionalLinkBlock = {
   __typename: "AdditionalLinkBlockRecord";
   text: string | null;
@@ -135,12 +129,6 @@ type RelatedLinkBlock = {
 
 type LinkBlock = AdditionalLinkBlock | RelatedLinkBlock;
 
-export type PortfolioPhotoImage = {
-  __typename: "ImageBlockRecord";
-  id: string;
-  asset: ImageAsset;
-};
-
 type PortfolioCategoryRef = {
   slug: string;
 };
@@ -152,7 +140,7 @@ export type PortfolioGalleryTag = {
   categoryRef: PortfolioCategoryRef[];
 };
 
-type ExternalVideoBlock = {
+export type ExternalVideoBlock = {
   __typename: "ExternalVideoTitleRecord";
   id: string;
   slug: string;
@@ -163,7 +151,6 @@ type ExternalVideoBlock = {
 export type GalleryItemsProjectBlock =
   | ExternalVideoBlock
   | GalleryItems
-  | PortfolioPhotoImage;
 
 export type SlideProjectBlock = {
   __typename: "SlideProjectRecord";
@@ -182,7 +169,7 @@ export type SectionProjectBlock = {
   __typename: "SectionProjectRecord";
   id: string;
   title: string;
-  galleryItems: GalleryItemsBlock[];
+  galleryItems: (ExternalVideoBlock | GalleryItems)[];
 };
 
 export type GalleryProjectBlock = {
@@ -197,7 +184,8 @@ export type ContentProject =
   | SectionProjectBlock
   | SlideProjectBlock;
 
-type ProjectIdBlock = {
+export type ProjectIdBlock = {
+  __typename: "ProjectIdRecord";
   id: string;
   title: string;
   description: string;
@@ -254,13 +242,16 @@ export type MoreDetailsProjectData = {
   }
 }
 
+export type ProjectDataBlock = {
+  id: string;
+  title: string;
+  project: string;
+  description: string;
+  contentType: ContentTypeBlock;
+}
+
 export type ProjectData = {
-  project: {
-    id: string;
-    title: string;
-    description: string;
-    contentType: ContentTypeBlock;
-  };
+  project: ProjectDataBlock;
   allPortfolioCategories: allProjectsBlock[];
 };
 
@@ -340,4 +331,4 @@ export type ContactData = {
 
 // Check for only one of this block shapes
 export type ContentBlock = VideoBlock | CardTextImg | ContentProject;
-export type GalleryItemsBlock = GalleryRelatedProjects | GalleryRelatedServices | ExternalVideoBlock | GalleryItems | PortfolioPhotoImage;
+export type GalleryItemsBlock = GalleryRelatedProjects | GalleryRelatedServices | ExternalVideoBlock | GalleryItems; // PortfolioPhotoImage

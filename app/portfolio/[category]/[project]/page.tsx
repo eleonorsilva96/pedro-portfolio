@@ -1,12 +1,7 @@
 import { performRequest } from "@/app/lib/datocms";
 import { ProjectData, PortfolioGalleryType } from "@/app/lib/definitions";
-import Slide from "@/app/ui/slide";
-import Gallery from "@/app/ui/gallery";
-import clsx from "clsx";
-import ArrowLeft from "@/app/ui/icons/arrow-left";
-import Link from "next/link";
-import ModalContent from "@/app/ui/modal-content";
-import { Suspense } from "react";
+import ProjectContentView from "@/app/ui/project-content-view";
+import Modal from "@/app/ui/modal";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -15,6 +10,7 @@ const PAGE_CONTENT_QUERY = `
     project(filter: { project: { eq: $project } }) {
       id
       title
+      project
       description
       
       contentType {
@@ -23,6 +19,45 @@ const PAGE_CONTENT_QUERY = `
           id
           content {
             __typename
+            ... on SectionProjectRecord {
+              id
+              title
+              
+              # Level 3: Gallery Items
+              galleryItems {
+                __typename 
+                
+                ... on ExternalVideoTitleRecord {
+                  __typename
+                  id
+                  slug
+                  title
+                  link {
+                    url
+                    title
+                    width
+                    height
+                    provider
+                    providerUid
+                    thumbnailUrl
+                  }
+                }
+                
+                ... on GalleryItemRecord {
+                  __typename
+                  id
+                  slug
+                  title
+                  asset {
+                    url
+                    width
+                    height
+                    alt
+                  }
+                }
+              }
+            }
+
             ... on GalleryProjectRecord {
               id
               asset {
@@ -127,79 +162,21 @@ export default async function PortfolioPage({
       category: category,
     },
   })) as ProjectData;
-
-  if (!response) return null;
   
+  if (!response) return null;
+
   const { allPortfolioCategories } = response;
-  const { title, description, contentType } = response.project;
-  const projectId = response.project.id;
+  const { contentType } = response.project;
   
   const portfolioGallery = allPortfolioCategories[0].gallery.filter((item) => item.__typename === 'GalleryPortfolioRecord') as PortfolioGalleryType[];
 
-  let contentView = null;
-  
-  if (contentType.__typename === 'SingleBlockRecord' && contentType.content.__typename === 'SlideProjectRecord') {
-    contentView = (
-      <Slide
-        allProjects={portfolioGallery || []}
-        projectDetails={contentType.content || {}}
-        currentId={projectId}
-        category={category}
-      />
-    );
-  } else if (contentType.__typename === 'MultipleBlockRecord') {
-    contentView = (
-      <Suspense fallback={null}>
-        <Gallery
-          galleryItems={contentType.content ?? []}
-          removeBtn
-        />
-      </Suspense>
-    );
-  }
-
-  const modal = id ? (
-    <Suspense fallback={null}>
-      <ModalContent
-        galleryList={contentType.__typename === 'MultipleBlockRecord'? contentType.content || [] : []}
-        projectId={id}
-        category={category}
-        project={project}
-      />
-    </Suspense>
-  ) : null;
+  const multipleContent = contentType.__typename === 'MultipleBlockRecord' ? contentType.content : null;
 
   return (
     <div className="flex justify-center w-full my-4">
-      <div
-        className={clsx(
-          "flex flex-col w-full items-center justify-center mx-4 lg:mx-6",
-          {
-            "lg:max-w-4xl xl:max-w-5xl lg:mx-0":
-              contentType.__typename === 'SingleBlockRecord' && contentType.content.__typename === 'SlideProjectRecord',
-          },
-        )}
-      >
-        <div
-          className="py-2 px-2 self-start text-neutral-500"
-        >
-          <Link
-            href={`/portfolio/${category}`}
-            className="flex gap-1 items-center group"
-          >
-            <ArrowLeft className="w-6 h-6 transition-transform duration-150 group-hover:scale-115 group-hover:text-neutral-900" />
-            <span className="text-lg transition-transform duration-300 group-hover:text-neutral-900">
-              Back
-            </span>
-          </Link>
-        </div>
-        <div className="flex flex-col gap-4 mt-4 self-start">
-          <h1 className="text-2xl lg:text-4xl font-medium">{title}</h1>
-          <p>{description}</p>
-        </div>
-        {contentView}
-      </div>
-      {modal}
+      <ProjectContentView allProjects={portfolioGallery} project={response.project} category={category}/>
+      <Modal content={multipleContent || []} modalId={id} category={category} projectSlug={project} />
     </div>
   );
 }
+

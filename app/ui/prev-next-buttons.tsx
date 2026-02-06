@@ -2,8 +2,9 @@
 
 import {
   PortfolioGalleryType,
-  GalleryItemsProjectBlock,
-  ContentBlock
+  ExternalVideoBlock,
+  GalleryProjectBlock,
+  GalleryItems
 } from "../lib/definitions";
 import clsx from "clsx";
 import ArrowLeft from "./icons/arrow-left";
@@ -21,7 +22,8 @@ export default function PrevNextButtons({
   hideNext,
   isProject,
 }: {
-  gallery: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[];
+  gallery: (PortfolioGalleryType | GalleryProjectBlock | ExternalVideoBlock | GalleryItems)[];
+  // gallery: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[];
   currentId: string;
   category: string;
   project?: string | null;
@@ -43,7 +45,7 @@ export default function PrevNextButtons({
 
   console.log("GALLERY", gallery);
   
-  const findId = (item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock) => {
+  const findId = (item: PortfolioGalleryType | GalleryProjectBlock | ExternalVideoBlock | GalleryItems) => {
     if (item.__typename === 'GalleryPortfolioRecord') {
       return item.projectId.id === currentId;
     } else {
@@ -69,7 +71,7 @@ export default function PrevNextButtons({
     nextProject = gallery[currentIndex + 1];
   }
 
-  const getSlug = (item: PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock | null) => {
+  const getSlug = (item: PortfolioGalleryType | GalleryProjectBlock | ExternalVideoBlock | GalleryItems | null) => {
     if(!item) return "";
     if (item.__typename === 'GalleryPortfolioRecord') {
       return item.projectId.project || "";
@@ -80,7 +82,7 @@ export default function PrevNextButtons({
         return item.id || "";
       }
     } 
-    else if (item.__typename === 'GalleryProjectRecord') { // ImageBlockRecord
+    else if (item.__typename === 'GalleryProjectRecord') {
       return item.id || "";
     }
   };
@@ -90,17 +92,13 @@ export default function PrevNextButtons({
 
   if (isModal) {
     if (project) {
-      if (category === 'imagem-digital') {
-        urlPrev = `/portfolio/${category}/${project}/view?id=${prevSlug}`;
-        urlNext = `/portfolio/${category}/${project}/view?id=${nextSlug}`;
-      } else if (category === 'fotografia') {
-        urlPrev = `/portfolio/${category}/${project}?id=${prevSlug}`;
-        urlNext = `/portfolio/${category}/${project}?id=${nextSlug}`;
-      }
+      urlPrev = `/portfolio/${category}/${project}?id=${prevSlug}`;
+      urlNext = `/portfolio/${category}/${project}?id=${nextSlug}`;
     } else {
       urlPrev = `/portfolio/${category}?id=${prevSlug}`;
       urlNext = `/portfolio/${category}?id=${nextSlug}`;
     }
+  // slide nav
   } else {
     urlPrev = `/portfolio/${category}/${prevSlug}`;
     urlNext = `/portfolio/${category}/${nextSlug}`;

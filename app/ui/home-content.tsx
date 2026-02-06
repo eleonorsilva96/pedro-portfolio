@@ -66,7 +66,7 @@ export default function HomeContent({
         <h1 className="text-4xl lg:text-[44px]">{cardGallery[0].title}</h1>
         <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
         <Suspense fallback={null}>
-          <Gallery galleryItems={cardGallery[0].galleryItems} />
+          <Gallery galleryItems={cardGallery[0].galleryItems || []} />
         </Suspense>
       </div>
       <div
@@ -77,7 +77,7 @@ export default function HomeContent({
         <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
         <Suspense fallback={null}>
           <Gallery
-            galleryItems={cardGallery[1].galleryItems}
+            galleryItems={cardGallery[1].galleryItems || []}
             hasTitle
             removeBtn
           />

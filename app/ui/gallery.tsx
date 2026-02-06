@@ -1,8 +1,14 @@
-'use client'
+"use client";
 
 import CardGallery from "@/app/ui/card-gallery";
 import clsx from "clsx";
-import { GalleryItemsBlock, ContentBlock } from "../lib/definitions";
+import {
+  GalleryRelatedProjects,
+  GalleryRelatedServices,
+  GalleryProjectBlock,
+  ExternalVideoBlock,
+  GalleryItems
+} from "../lib/definitions";
 import CardPortfolio from "./card-portfolio";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -13,7 +19,13 @@ export default function Gallery({
   hasTitle,
   removeBtn,
 }: {
-  galleryItems: (GalleryItemsBlock | ContentBlock)[];
+  galleryItems: (
+    | GalleryRelatedProjects
+    | GalleryRelatedServices
+    | ExternalVideoBlock 
+    | GalleryItems
+    | GalleryProjectBlock
+  )[];
   hasTitle?: boolean;
   removeBtn?: boolean;
 }) {
@@ -21,27 +33,41 @@ export default function Gallery({
   const pathname = usePathname();
 
   console.log("card title", galleryItems);
-  // the method map creates a new array populated with the results of calling a provided function on each element of the current array 
+  // the method map creates a new array populated with the results of calling a provided function on each element of the current array
   const content = galleryItems.map((item) => {
+
+    if (!item) return null;
+
     let card = null;
-    let cardId = '';
-    let cardUrl = '';
-    
+    let cardId = "";
+    let cardUrl = "";
+
     if (
       (item?.__typename === "RelatedServicesBlockRecord" && hasTitle) ||
       item?.__typename === "GalleryProjectRecord"
     ) {
-      let imgUrl = '';
+      const photoGallery = item.__typename === "GalleryProjectRecord" ? item.asset : null;
+      const serviceGallery = item.__typename === "RelatedServicesBlockRecord" ? item.service : null;
 
-      if (item.__typename === 'GalleryProjectRecord') {
+      if (!photoGallery || !serviceGallery) return null;
+
+      let imgUrl = "";
+
+      if (item.__typename === "GalleryProjectRecord") {
         const params = new URLSearchParams(searchParams);
         params.set("id", item.id);
         imgUrl = `${pathname}?${params.toString()}`;
       }
 
-      cardId = item.__typename === 'RelatedServicesBlockRecord' ? item.service.id : item.id;
-      cardUrl = item.__typename === 'RelatedServicesBlockRecord' ? `/services/${item.service.slug}` : imgUrl;
-      
+      cardId =
+        item.__typename === "RelatedServicesBlockRecord"
+          ? item.service.id
+          : item.id;
+      cardUrl =
+        item.__typename === "RelatedServicesBlockRecord"
+          ? `/services/${item.service.slug}`
+          : imgUrl;
+
       card = (
         <div
           className="group"
@@ -84,21 +110,20 @@ export default function Gallery({
     } else if (item.__typename === "RelatedProjectsBlockRecord") {
       cardId = item.project.id;
       cardUrl = `/portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`;
-      
+
       card = <CardPortfolio project={item || {}} />;
+    } else {
+      card = <div>No Content!</div>;
     }
 
     console.log("id", cardId);
     console.log("url", cardUrl);
 
     return (
-        <Link
-          key={cardId}
-          href={cardUrl}
-        >
-          {card}
-        </Link>
-      );
+      <Link key={cardId} href={cardUrl}>
+        {card}
+      </Link>
+    );
   });
 
   console.log("gallery map", content);
@@ -121,5 +146,4 @@ export default function Gallery({
       </Link>
     </div>
   );
-  
 }
