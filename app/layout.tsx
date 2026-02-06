@@ -5,6 +5,7 @@ import Header from '@/app/ui/header';
 import Footer from "@/app/ui/footer";
 import { GlobalData } from "@/app/lib/definitions";
 import { performRequest } from "./lib/datocms";
+import WhatsAppButton from "./ui/whatsapp-button";
 
 const PAGE_CONTENT_QUERY = `
   query Global {
@@ -94,6 +95,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer data={FOOTER}/>
+        <WhatsAppButton />
       </body>
     </html>
   );
