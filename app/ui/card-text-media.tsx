@@ -1,6 +1,6 @@
 "use client";
 
-import { isValidElement, MouseEvent, RefObject } from "react";
+import { MouseEvent, RefObject } from "react";
 import Image from "next/image";
 import { ImageAsset, VideoAsset } from "../lib/definitions";
 import ReactPlayer from "react-player";
@@ -65,11 +65,6 @@ export default function CardTextMedia({
         components={{
           // remove node property out of the object
           p: ({ children, ...props }) => {
-            // extract number of words to know if a shortText
-            const textContent = getTextFromChildren(children);
-            const wordCount = textContent.trim().split(/\s+/).length;
-            const isShortText = wordCount < 30;
-
             return (
               <p
                 {...props}
@@ -77,7 +72,7 @@ export default function CardTextMedia({
                   "w-full whitespace-pre-line text-md md:text-lg",
                   {
                     "w-full md:w-lg lg:w-xl": !isBlogSection,
-                    "text-center": isShortText,
+                    "text-center": !isBlogSection,
                   },
                 )}
               >
@@ -112,19 +107,6 @@ export default function CardTextMedia({
     </>
   );
 
-  // extract plain text from any react child data type and return a string
-  const getTextFromChildren = (children: React.ReactNode): string => {
-    if (typeof children === 'string') return children;
-    if (typeof children === 'number') return children.toString();
-    // iterate array and run the function for each item and join them in a single text value 
-    if (Array.isArray(children)) return children.map(getTextFromChildren).join('');
-    // check if this is a react element and ensure it has react children with type assertion
-    if (isValidElement<{ children?: React.ReactNode }>(children) && children.props.children) {
-      return getTextFromChildren(children.props.children);
-    }
-    return '';
-  };
-
   // external video link
   if (typeof media === "string") {
     if (media.includes("soundcloud.com")) {
@@ -146,7 +128,7 @@ export default function CardTextMedia({
       );
     } else {
       mediaContent = (
-        <div className="w-full md:w-lg h-auto aspect-[16/9]">
+        <div className="w-md px-8 md:px-0 lg:w-lg h-auto aspect-[16/9]">
           <ReactPlayer
             src={media}
             width="100%"
@@ -182,7 +164,7 @@ export default function CardTextMedia({
     // uploaded video
   } else if ("video" in media && media.video) {
     mediaContent = (
-      <div className="w-full md:w-lg h-auto aspect-[16/9]">
+      <div className="w-md px-8 md:px-0 lg:w-lg h-auto aspect-[16/9]">
         <VideoPlayer
           data={media.video}
           className="object-cover"
@@ -237,65 +219,3 @@ export default function CardTextMedia({
     </div>
   );
 }
-
-
-//  <h1
-//             className={clsx({
-//               "text-3xl": isBlogSection,
-//               "text-4xl lg:w-xl md:text-[44px] text-center": !isBlogSection,
-//             })}
-//           >
-//             {title}
-//           </h1>
-//           <div
-//             className={clsx({
-//               "w-7 h-[4px] bg-primary-500 mx-auto my-4": !isBlogSection,
-//             })}
-//           ></div>
-//           {/* insert description in a markdown parser to allow links */}
-//           <ReactMarkdown
-//             // add custom style for the link
-//             components={{
-//               // remove node property out of the object
-//               p: ({ children, ...props }) => {
-
-//                 // extract number of words to know if a shortText
-//                 const textContent = getTextFromChildren(children);
-//                 const wordCount = textContent.trim().split(/\s+/).length;
-//                 const isShortText = wordCount < 30;
-
-//                 return (
-//                   <p
-//                     {...props}
-//                     className={clsx(
-//                       "w-full whitespace-pre-line text-md md:text-lg",
-//                       {
-//                         "w-full md:w-lg lg:w-xl": !isBlogSection,
-//                         "text-center": isShortText,
-//                       }
-//                     )}
-//                   >
-//                   {children}
-//                   </p>
-//                 );
-//               },
-//               a: ({ ...props }) => (
-//                 <a
-//                   {...props}
-//                   className="!text-neutral-900 !underline"
-//                   target="_blank"
-//                 />
-//               ),
-//             }}
-//           >
-//             {desc}
-//           </ReactMarkdown>
-//           {btnLabel ? (
-//             <a
-//             onClick={(e) => scrollToSection(e)}
-//             href="#contact"
-//             className="font-mulish font-medium flex items-center justify-center w-3xs h-12 rounded-full bg-primary-500 hover:bg-primary-600 cursor-pointer text-neutral-50 pt-auto mt-4"
-//             >
-//             {btnLabel}
-//             </a>
-//           ) : null}
