@@ -12,6 +12,7 @@ import {
 import CardPortfolio from "./card-portfolio";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { saveScrollPosition } from "../lib/utils";
 
 // add props to receive fetching data
 export default function Gallery({
@@ -116,19 +117,20 @@ export default function Gallery({
         </div>
       );
     } else if (item.__typename === "RelatedProjectsBlockRecord") {
+
+      if(!item.project) return null;
+
       cardId = item.project.id;
       cardUrl = `/portfolio/${item.project.portfolioCategory.slug}/${item.project.project}`;
 
       card = <CardPortfolio project={item || {}} />;
-    } else {
-      card = <div>No Content!</div>;
-    }
+    } 
 
     console.log("id", cardId);
     console.log("url", cardUrl);
 
     return (
-      <Link key={cardId} href={cardUrl}>
+      <Link key={cardId} href={cardUrl} onClick={saveScrollPosition}>
         {card}
       </Link>
     );

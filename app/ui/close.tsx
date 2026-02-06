@@ -11,17 +11,24 @@ export default function Close({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const currentScroll = window.scrollY;
-  console.log("current scroll close", currentScroll);
+  // const currentScroll = window.scrollY;
+  // console.log("current scroll close", currentScroll);
 
   const handleClose = () => {
+    const savedPosition = sessionStorage.getItem("projectScrollPos");
     // remove url param to close Modal
     router.replace(pathname, { scroll: false });
 
     // set to current position to avoid shifting to the top of the page after react re-renders and dom is ready 
-    requestAnimationFrame(() => {
-      window.scrollTo(0, currentScroll);
-    });
+    if (savedPosition) {
+      const yPos = parseInt(savedPosition, 10);
+      
+      requestAnimationFrame(() => {
+        window.scrollTo(0, yPos);
+        // Optional: Clear it so it doesn't interfere with other pages
+        sessionStorage.removeItem("galleryScrollPos"); 
+      });
+    }
   };
 
   return (

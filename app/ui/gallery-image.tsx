@@ -5,6 +5,7 @@ import { GalleryProjectBlock } from "../lib/definitions";
 import Link from "next/link";
 import Image from "next/image";
 import ImageSkeleton from "./image-skeleton";
+import { saveScrollPosition } from "../lib/utils";
 
 export default function GalleryImage({ item } : { item: GalleryProjectBlock }) {
     const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ export default function GalleryImage({ item } : { item: GalleryProjectBlock }) {
     const url = `${pathname}?${params.toString()}`;
 
     return (
-        <Link href={url} className="overflow-hidden bg-purple-300 group">
+        <Link href={url} className="overflow-hidden bg-purple-300 group" onClick={saveScrollPosition}>
             <ImageSkeleton
                 src={item.asset.url}
                 className="w-full h-full"

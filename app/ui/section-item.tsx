@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import ReactPlayer from "react-player";
 import Link from "next/link";
+import { saveScrollPosition } from "../lib/utils";
 
 export default function SectionItem({
   item,
@@ -27,7 +28,7 @@ export default function SectionItem({
 
         items =
           item.__typename === "ExternalVideoTitleRecord" ? (
-            <Link key={item.id} href={url} className="shrink-0 snap-center group relative w-auto h-auto">
+            <Link key={item.id} href={url} className="shrink-0 snap-center group relative w-auto h-auto" onClick={saveScrollPosition}>
               <div className="absolute w-full h-full group-hover:bg-gray-500/50 transition-colors duration-300 cursor-pointer"></div>
               <div className="aspect-[16/9] w-[378px]">
                 <ReactPlayer
@@ -40,7 +41,7 @@ export default function SectionItem({
               </div>
             </Link>
           ) : (
-            <Link key={item.id} href={url} className="shrink-0 snap-center group relative w-auto h-auto">
+            <Link key={item.id} href={url} className="shrink-0 snap-center group relative w-auto h-auto" onClick={saveScrollPosition}>
               <div className="absolute w-full h-full group-hover:bg-gray-500/50 transition-colors duration-300 cursor-pointer"></div>
               <div className="aspect-[2/3] w-[325px]">
                 <Image
