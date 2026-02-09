@@ -329,6 +329,20 @@ export type ContactData = {
   contact: ContactDataBlock;
 };
 
+type PrivacyPolicyBlock = {
+  __typename: "TitleDescriptionBlockRecord";
+  id: string;
+  title: string;
+  description: string;
+}
+
+export type PrivacyPolicyData = {
+  privacyPolicy: {
+    title: string;
+    text: PrivacyPolicyBlock[];
+  }
+}
+
 // Check for only one of this block shapes
 export type ContentBlock = VideoBlock | CardTextImg | ContentProject;
 export type GalleryItemsBlock = GalleryRelatedProjects | GalleryRelatedServices | ExternalVideoBlock | GalleryItems; // PortfolioPhotoImage
