@@ -16,7 +16,7 @@ export type GalleryItems = {
   asset: ImageAsset;
 };
 
-type ExternalVideo = {
+export type ExternalVideo = {
   url: string;
   title: string;
   width: number;

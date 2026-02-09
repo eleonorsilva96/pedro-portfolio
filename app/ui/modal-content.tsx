@@ -13,6 +13,9 @@ import {
   ExternalVideoBlock,
   GalleryProjectBlock,
   GalleryItems,
+  ImageAsset,
+  ExternalVideo,
+  VideoAsset,
 } from "@/app/lib/definitions";
 import { useState } from "react";
 import clsx from "clsx";
@@ -190,29 +193,7 @@ export default function ModalContent({
 
     return undefined;
   };
-
-  const checkImageVertical = (
-    item:
-      | ExternalVideoBlock
-      | GalleryItems
-      | PortfolioGalleryType
-      | GalleryProjectBlock
-      | ContentBlock,
-  ) => {
-    if (
-      item.__typename === "GalleryItemRecord" ||
-      item.__typename === "GalleryProjectRecord"
-    ) {
-      const height = item.asset.height;
-      const width = item.asset.width;
-
-      if (height > width) return true;
-
-      return false;
-    }
-    return false;
-  };
-
+  
   const activeItem = isMatchingItem(galleryList);
 
   const activeGallery = isMatchingGallery(galleryList);
@@ -233,7 +214,71 @@ export default function ModalContent({
       ? true
       : false;
 
-  const isVertical = checkImageVertical(activeItem);
+  // create image component, pass className and assign to media
+  const imageComponent = (image: ImageAsset, style: string) => {
+
+    const isSquare = image.width === image.height;
+    const isVertical = image.height > image.width;
+    const isHorizontal = image.height < image.width;
+    
+    return (
+      <div
+        className={clsx(
+          `aspect-[${image.width}/${image.height}] w-full h-auto md:max-w-xl`,
+          {
+            "lg:max-w-xl 2xl:max-w-7xl`" : isVertical,
+            "lg:max-w-5xl 2xl:max-w-7xl`" : isHorizontal,
+            "lg:max-w-3xl 2xl:max-w-4xl" : isSquare,
+          }
+        )}
+      >
+        <Image
+          src={image.url}
+          className={`w-full ${style}`}
+          width={image.width}
+          height={image.height}
+          alt={image.alt}
+        />
+      </div>
+    );
+  }
+
+  // create video component and assign to media
+  const videoComponent = (
+    video: VideoAsset | null,
+    externalVideo: ExternalVideo | null,
+  ) => {
+
+    let media = null;
+
+    if (video) {
+      media = (
+        <VideoPlayer
+          data={video.video}
+          className="w-full h-full object-cover"
+          preload="none"
+        />
+      );
+    }
+
+    if (externalVideo) {
+      media = (
+        <ReactPlayer
+          src={externalVideo.url}
+          light={externalVideo.thumbnailUrl}
+          controls={true}
+          width="100%"
+          height="100%"
+        />
+      );
+    }
+
+    return (
+      <div className="aspect-[16/9] w-full h-auto md:max-w-xl lg:max-w-5xl 2xl:max-w-7xl">
+        {media ? media : "No Media"}
+      </div>
+    );
+  };
 
   const isProjectModal = activeItem.__typename === "GalleryPortfolioRecord";
   let media = null;
@@ -251,10 +296,7 @@ export default function ModalContent({
     activeItem.__typename === "GalleryItemRecord"
   ) {
     // image
-    let imgUrl = "";
-    let imgWidth = 0;
-    let imgHeight = 0;
-    let imgAlt = "";
+    let imageAsset = null;
     let imgClassName = "";
     let linkUrl = "";
     let linkText = null;
@@ -262,14 +304,12 @@ export default function ModalContent({
     if (
       activeItem.__typename === "GalleryPortfolioRecord" &&
       activeItem.projectId.contentType.content.__typename ===
-        "SlideProjectRecord" &&
+      "SlideProjectRecord" &&
       !activeItem.projectId.contentType.content.videoMedia
     ) {
-      imgUrl = activeItem.projectId.thumbnail.url;
-      imgWidth = activeItem.projectId.thumbnail.width;
-      imgHeight = activeItem.projectId.thumbnail.height;
-      imgAlt = activeItem.projectId.thumbnail.alt;
+      // project image
       imgClassName = "h-auto";
+      imageAsset = imageComponent(activeItem.projectId.thumbnail, imgClassName);
       title = activeItem.projectId.title;
 
       if (activeItem.projectId.contentType.content.date) {
@@ -323,40 +363,28 @@ export default function ModalContent({
         );
       }
     } else if (activeItem.__typename === "GalleryItemRecord") {
-      imgUrl = activeItem.asset.url;
-      imgWidth = activeItem.asset.width;
-      imgHeight = activeItem.asset.height;
-      imgAlt = activeItem.asset.alt;
+      // gallery image and title
       imgClassName = "h-full object-cover";
+      imageAsset = imageComponent(activeItem.asset, imgClassName);
       title = activeItem.title;
+
     } else if (activeItem.__typename === "GalleryProjectRecord") {
-      imgUrl = activeItem.asset.url;
-      imgWidth = activeItem.asset.width;
-      imgHeight = activeItem.asset.height;
-      imgAlt = activeItem.asset.alt;
+      // gallery image
+      imageAsset = imageComponent(activeItem.asset, imgClassName);
       imgClassName = "h-full object-cover";
+
     }
 
-    media = (
-      <Image
-        src={imgUrl}
-        className={`w-full ${imgClassName}`}
-        width={imgWidth}
-        height={imgHeight}
-        alt={imgAlt}
-      />
-    );
+    media = imageAsset;
   } else if (
     (activeItem.__typename === "GalleryPortfolioRecord" &&
       activeItem.projectId.contentType.content.__typename ===
-        "SlideProjectRecord" &&
+      "SlideProjectRecord" &&
       activeItem.projectId.contentType.content.videoMedia.externalVideo) ||
-    activeItem.__typename === "ExternalVideoTitleRecord"
-  ) {
-    // external link
-    let externalLinkId = null;
-    let externalLinkUrl = "";
-    let externalLinkThumbnailUrl = "";
+      activeItem.__typename === "ExternalVideoTitleRecord"
+    ) {
+    // external video
+    let videoAsset = null;
 
     if (
       activeItem.__typename === "GalleryPortfolioRecord" &&
@@ -364,47 +392,35 @@ export default function ModalContent({
         "SlideProjectRecord" &&
       activeItem.projectId.contentType.content.videoMedia.externalVideo
     ) {
-      externalLinkId = activeItem.projectId.contentType.content.id;
-      externalLinkUrl =
-        activeItem.projectId.contentType.content.videoMedia.externalVideo.url;
-      externalLinkThumbnailUrl =
-        activeItem.projectId.contentType.content.videoMedia.externalVideo
-          .thumbnailUrl;
+
+      videoAsset = videoComponent(
+        null,
+        activeItem.projectId.contentType.content.videoMedia.externalVideo,
+      );
       title = activeItem.projectId.title;
+
     } else if (activeItem.__typename === "ExternalVideoTitleRecord") {
-      externalLinkId = activeItem.id;
-      externalLinkUrl = activeItem.link.url;
-      externalLinkThumbnailUrl = activeItem.link.thumbnailUrl;
+
+      videoAsset = videoComponent(
+        null,
+        activeItem.link,
+      );
       title = activeItem.title;
     }
 
-    media = (
-      <ReactPlayer
-        key={externalLinkId}
-        src={externalLinkUrl}
-        light={externalLinkThumbnailUrl}
-        controls={true}
-        width="100%"
-        height="100%"
-      />
-    );
+    media = videoAsset;
   } else if (
     activeItem.__typename === "GalleryPortfolioRecord" &&
     activeItem.projectId.contentType.content.__typename ===
-      "SlideProjectRecord" &&
+    "SlideProjectRecord" &&
     activeItem.projectId.contentType.content.videoMedia.videoAsset
   ) {
+    // uploaded video
     title = activeItem.projectId.title;
 
-    media = (
-      <VideoPlayer
-        key={activeItem.projectId.contentType.content.id}
-        data={
-          activeItem.projectId.contentType.content.videoMedia.videoAsset.video
-        }
-        className="w-full h-full object-cover"
-        preload="none"
-      />
+    media = videoComponent(
+      activeItem.projectId.contentType.content.videoMedia.videoAsset,
+      null,
     );
   }
 
@@ -413,16 +429,7 @@ export default function ModalContent({
       key={activeItem.id}
       className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] 2xl:max-w-[1800px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start"
     >
-      <div
-        className={clsx("w-full flex flex-col gap-4", {
-          "aspect-[16/9] lg:max-w-7xl": isProjectModal === true || !isVertical,
-          "aspect-[2/3] h-auto md:!w-[450px] lg:!w-[550px] 2xl:!w-[1000px]":
-            isVertical,
-        })}
-      >
-        {/* change to media */}
-        {media}
-      </div>
+      {media}
       <div
         className={clsx("flex flex-col gap-4", {
           hidden: isExpand === true || removeDetails,
