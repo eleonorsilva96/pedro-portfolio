@@ -33,6 +33,7 @@ export default async function Slide({
         src={projectDetails.videoMedia.externalVideo.url}
         light={projectDetails.videoMedia.externalVideo.thumbnailUrl}
         controls={true}
+        muted={false}
         width="100%"
         height="100%"
       />

@@ -37,6 +37,7 @@ export default function SectionItem({
                   controls={true}
                   width="100%"
                   height="100%"
+                  muted={false}
                 />
               </div>
             </Link>

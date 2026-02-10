@@ -134,6 +134,7 @@ export default function CardTextMedia({
             width="100%"
             height="100%" // This fills the parent container defined above
             controls={true}
+            muted={false}
           />
         </div>
       );
