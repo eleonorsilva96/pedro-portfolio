@@ -1,6 +1,7 @@
 import { performRequest } from "@/app/lib/datocms";
 import { HomeData } from "@/app/lib/definitions";
 import HomeContent from "./ui/home-content";
+import { Metadata } from "next";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -86,12 +87,60 @@ const PAGE_CONTENT_QUERY = `
           }
         }
       }
+      seo {
+        title
+        description
+        image {
+          url
+          width
+          height
+        }
+      }
     }
   }
 `;
 
+export async function generateMetadata(): Promise<Metadata> {
+  const { homepage } = await performRequest(PAGE_CONTENT_QUERY) as HomeData;
+  
+  if(!homepage) return {};
+
+  const { seo, title } = homepage;
+
+  if(!seo) return {};
+
+  return {
+    title: seo.title || title,
+    description: seo.description,
+    openGraph: {
+      images: [
+        {
+          url: seo.image?.url,
+          width: seo.image?.width,
+          height: seo.image?.height,
+          alt: seo.title || title,
+        }
+      ]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      images: [
+        {
+          url: seo.image?.url,
+          width: seo.image?.width,
+          height: seo.image?.height,
+          alt: seo.title || title,
+        }
+      ],
+    },
+  };
+}
+
 export default async function Home() {
-  // run the query and treat the result as HomeData
+  // I do another request but what Next.js does is if the same request already exists, 
+  // it uses the same response and doesn't request again (deduplication removes duplicated requests)
   const { homepage } = (await performRequest(PAGE_CONTENT_QUERY)) as HomeData;
 
   return (

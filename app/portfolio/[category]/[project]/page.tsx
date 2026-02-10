@@ -2,6 +2,7 @@ import { performRequest } from "@/app/lib/datocms";
 import { ProjectData, PortfolioGalleryType } from "@/app/lib/definitions";
 import ProjectContentView from "@/app/ui/project-content-view";
 import Modal from "@/app/ui/modal";
+import { Metadata } from "next";
 
 // send query to DatoCMS
 const PAGE_CONTENT_QUERY = `
@@ -11,6 +12,12 @@ const PAGE_CONTENT_QUERY = `
       id
       title
       project
+      thumbnail {
+        url,
+        width,
+        height,
+        alt
+      }
       description
       
       contentType {
@@ -124,6 +131,15 @@ const PAGE_CONTENT_QUERY = `
           }
         }
       }
+      seo {
+        title
+        description
+        image {
+          url
+          width
+          height
+        }
+      }
     }
     
     # get gallery by category to handle projects navigation 
@@ -143,8 +159,43 @@ const PAGE_CONTENT_QUERY = `
   }
 `;
 
+export async function generateMetadata({ params } : { params: Promise<{ category: string; project: string; }> }): Promise<Metadata> {
+  const { category, project } = await params;
+  const response = await performRequest(PAGE_CONTENT_QUERY, {
+    variables: {
+      project: project,
+      category: category,
+    }
+  }) as ProjectData;
+
+  if (!response) return {};
+
+  const { title, description, thumbnail, seo } = response.project;
+
+  const shareImage = {
+    url: seo?.image?.url || thumbnail?.url,
+    width: seo?.image?.width || thumbnail?.width,
+    height: seo?.image?.height || thumbnail?.height,
+    alt: seo?.title || thumbnail?.alt || title,
+  }
+
+  return {
+    title: seo?.title || title,
+    description: seo?.description || description,
+    openGraph: {
+      images: [shareImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo?.title || title,
+      description: seo?.description || description,
+      images: [shareImage],
+    },
+  };
+}
+
 // add props to receive fetching data
-export default async function PortfolioPage({
+export default async function ProjectPage({
   params,
   searchParams,
 }: {

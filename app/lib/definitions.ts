@@ -1,6 +1,16 @@
 // This file contains type definitions for your data.
 // It describes the shape of the data, and what data type each property should accept.
 
+type SEOBlock = {
+  title: string;
+  description: string;
+  image: {
+    url: string;
+    width: number;
+    height: number;
+  };
+};
+
 export type ImageAsset = {
   url: string;
   width: number;
@@ -246,8 +256,10 @@ export type ProjectDataBlock = {
   id: string;
   title: string;
   project: string;
+  thumbnail: ImageAsset;
   description: string;
   contentType: ContentTypeBlock;
+  seo: SEOBlock;
 }
 
 export type ProjectData = {
@@ -255,9 +267,16 @@ export type ProjectData = {
   allPortfolioCategories: allProjectsBlock[];
 };
 
+type PortfolioSEOBlock = {
+  title: string;
+  description: string;
+  seo: SEOBlock;
+};
+
 export type PortfolioData = {
   allPortfolioCategories: PortfolioCategoryRecord[];
   allPortfolioTags: PortfolioGalleryTag[];
+  portfolioCategory: PortfolioSEOBlock;
 };
 
 export type ServiceDataBlock = {
@@ -267,6 +286,7 @@ export type ServiceDataBlock = {
   title: string;
   description: string;
   buttonText: string;
+  seo: SEOBlock;
 };
 
 export type ServiceData = {
@@ -290,6 +310,7 @@ export type HomeData = {
   homepage: {
     title: string;
     contentType: MultipleBlock;
+    seo: SEOBlock;
   };
 };
 
@@ -311,6 +332,7 @@ export type AboutDataBlock = {
   title: string;
   coverImage: ImageAsset;
   description: string;
+  seo: SEOBlock;
 };
 
 export type AboutData = {
@@ -323,6 +345,7 @@ export type ContactDataBlock = {
   coverImage: ImageAsset;
   phoneNumber: string;
   email: string;
+  seo: SEOBlock;
 };
 
 export type ContactData = {
@@ -340,6 +363,27 @@ export type PrivacyPolicyData = {
   privacyPolicy: {
     title: string;
     text: PrivacyPolicyBlock[];
+  }
+}
+
+export type GlobalSeoData = {
+  _site: {
+    globalSeo: {
+      siteName: string;
+      titleSuffix: string;
+      fallbackSeo: {
+        description: string;
+        title: string;
+        image: {
+          url: string;
+          width: number;
+          height: string;
+        }
+      }
+    };
+    favicon: {
+      url: string;
+    }
   }
 }
 

@@ -3,9 +3,32 @@ import { quicksand, openSans, lemon, mulish, specialElite } from "@/app/ui/fonts
 import "./globals.css";
 import Header from '@/app/ui/header';
 import Footer from "@/app/ui/footer";
-import { GlobalData } from "@/app/lib/definitions";
+import { GlobalData, GlobalSeoData } from "@/app/lib/definitions";
 import { performRequest } from "./lib/datocms";
 import WhatsAppButton from "./ui/whatsapp-button";
+
+const GLOBAL_SEO_QUERY = `
+  query GlobalSeo {
+    _site {
+      globalSeo {
+        siteName
+        titleSuffix
+        fallbackSeo {
+          description
+          title
+          image {
+            url
+            width
+            height
+          }
+        }
+      }
+      favicon {
+        url
+      }
+    }
+  }
+`; 
 
 const PAGE_CONTENT_QUERY = `
   query Global {
@@ -58,10 +81,58 @@ const PAGE_CONTENT_QUERY = `
     }
   }`;
 
-export const metadata: Metadata = {
-  title: "Pedro Martins | Videógrafo e fotógrafo | Aveiro",
-  description: "Olá, o meu nome é Pedro Martins, sou videógrafo e fotógrafo freelancer de Aveiro. Faço gravação, edição de vídeo, motion-graphics, registo de fotos, edição de fotos e gravação com drone.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await performRequest(GLOBAL_SEO_QUERY) as GlobalSeoData;
+
+  // to avoid 500 error
+  if (!data?._site?.globalSeo) {
+    return {
+      title: "Pedro A. Martins Portfolio",
+      description: "Videógrafo e Fotógrafo",
+    };
+  }
+
+  const { globalSeo, favicon } = data._site;
+
+  console.log("global seo", globalSeo);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+  return {
+    metadataBase: new URL(siteUrl),
+
+    // site title
+    title: {
+      default: globalSeo.fallbackSeo.title,
+      template: `%s ${globalSeo.titleSuffix}`, // Ex: "About Me | Client Portfolio"
+    },
+    
+    // description for google
+    description: globalSeo.fallbackSeo.description,
+    
+    // favicon 
+    icons: {
+      icon: favicon.url,
+    },
+
+    // how it shows in google/social media
+    openGraph: {
+      title: globalSeo.fallbackSeo.title,
+      description: globalSeo.fallbackSeo.description,
+      siteName: globalSeo.siteName,
+      locale: 'pt_PT',
+      type: 'website',
+      images: [
+        {
+          url: globalSeo.fallbackSeo.image.url,
+          width: globalSeo.fallbackSeo.image.width,
+          height: globalSeo.fallbackSeo.image.height,
+          alt: globalSeo.siteName,
+        },
+      ],
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
