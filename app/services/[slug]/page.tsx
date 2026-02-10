@@ -48,24 +48,24 @@ export async function generateMetadata({
 
   const { title, thumbnailImage, seo } = service;
 
-  const shareImage = {
+  const shareImage = seo?.image?.url ? {
     url: seo?.image?.url || thumbnailImage?.url,
     width: seo?.image?.width || thumbnailImage?.width,
     height: seo?.image?.height || thumbnailImage?.height,
     alt: seo?.title || thumbnailImage?.alt || title,
-  }
+  } : undefined;
 
   return {
     title: seo?.title || title,
     description: seo?.description,
     openGraph: {
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: seo?.title || title,
       description: seo?.description,
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
   };
 }

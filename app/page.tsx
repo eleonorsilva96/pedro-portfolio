@@ -107,33 +107,25 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const { seo, title } = homepage;
 
-  if(!seo) return {};
+  // check for images to ensure nextjs uses the global seo image if its undefined  
+  const shareImage = seo?.image?.url ? {
+    url: seo.image.url,
+    width: seo.image.width,
+    height: seo.image.height,
+    alt: seo.title || title,
+  } : undefined;
 
   return {
-    title: seo.title || title,
-    description: seo.description,
+    title: seo?.title || title,
+    description: seo?.description,
     openGraph: {
-      images: [
-        {
-          url: seo.image?.url,
-          width: seo.image?.width,
-          height: seo.image?.height,
-          alt: seo.title || title,
-        }
-      ]
+      images: shareImage ? [shareImage] : undefined
     },
     twitter: {
       card: "summary_large_image",
-      title: seo.title,
-      description: seo.description,
-      images: [
-        {
-          url: seo.image?.url,
-          width: seo.image?.width,
-          height: seo.image?.height,
-          alt: seo.title || title,
-        }
-      ],
+      title: seo?.title,
+      description: seo?.description,
+      images: shareImage ? [shareImage] : undefined,
     },
   };
 }

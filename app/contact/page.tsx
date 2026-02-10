@@ -37,24 +37,24 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const { title, coverImage, seo } = contact;
 
-  const shareImage = {
+  const shareImage = seo?.image?.url ? {
     url: seo?.image?.url || coverImage?.url,
     width: seo?.image?.width || coverImage?.width,
     height: seo?.image?.height || coverImage?.height,
     alt: seo?.title || coverImage?.alt || title,
-  }
+  } : undefined;
 
   return {
     title: seo?.title || title,
     description: seo?.description,
     openGraph: {
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: seo?.title || title,
       description: seo?.description,
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
   };
 }

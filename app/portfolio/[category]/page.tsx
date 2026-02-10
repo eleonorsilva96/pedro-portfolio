@@ -161,26 +161,24 @@ export async function generateMetadata({
 
   const { title, description, seo } = portfolioCategory;
 
-  if (!seo) return {};
-
-  const shareImage = {
-    url: seo.image?.url,
-    width: seo.image?.width,
-    height: seo.image?.height,
-    alt: seo.title || title,
-  }
+  const shareImage = seo?.image?.url ? {
+    url: seo?.image?.url,
+    width: seo?.image?.width,
+    height: seo?.image?.height,
+    alt: seo?.title || title,
+  } : undefined;
 
   return {
-    title: seo.title || title,
-    description: seo.description || description,
+    title: seo?.title || title,
+    description: seo?.description || description,
     openGraph: {
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
     twitter: {
       card: "summary_large_image",
-      title: seo.title || title,
-      description: seo.description || description,
-      images: [shareImage],
+      title: seo?.title || title,
+      description: seo?.description || description,
+      images: shareImage ? [shareImage] : undefined,
     },
   };
 }

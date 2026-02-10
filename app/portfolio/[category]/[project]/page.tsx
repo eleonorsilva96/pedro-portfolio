@@ -172,24 +172,24 @@ export async function generateMetadata({ params } : { params: Promise<{ category
 
   const { title, description, thumbnail, seo } = response.project;
 
-  const shareImage = {
+  const shareImage = seo?.image?.url ? {
     url: seo?.image?.url || thumbnail?.url,
     width: seo?.image?.width || thumbnail?.width,
     height: seo?.image?.height || thumbnail?.height,
     alt: seo?.title || thumbnail?.alt || title,
-  }
+  } : undefined;
 
   return {
     title: seo?.title || title,
     description: seo?.description || description,
     openGraph: {
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: seo?.title || title,
       description: seo?.description || description,
-      images: [shareImage],
+      images: shareImage ? [shareImage] : undefined,
     },
   };
 }
