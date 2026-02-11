@@ -1,6 +1,5 @@
 "use client";
 
-import { VideoPlayer } from "react-datocms";
 import CardTextMedia from "@/app/ui/card-text-media";
 import Gallery from "@/app/ui/gallery";
 import Form from "@/app/ui/form";
@@ -27,7 +26,7 @@ export default function HomeContent({
     <>
       <div className="relative w-full h-[1000px] lg:h-[800px]">
         <div className="text-center">work in progress</div>
-        
+
         {/* to avoid showing control panel */}
         <div className="absolute inset-0 z-10 bg-transparent"></div>
       </div>
