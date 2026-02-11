@@ -26,26 +26,8 @@ export default function HomeContent({
   return (
     <>
       <div className="relative w-full h-[1000px] lg:h-[800px]">
-        <VideoPlayer
-          data={videoBlock.videoAsset.video}
-          className="w-full h-full"
-          autoPlay
-          muted
-          playsInline
-          loop
-          preload="auto"
-          style={{
-            // @ts-expect-error: Custom CSS variables for Mux Player are not typed in React
-            "--loading-indicator": "none",
-            // hide play button
-            "--play-button": "none",
-            // hide bottom bar controls
-            "--controls": "none",
-            // forces the video to cover the area (Zoom/Crop)
-            "--media-object-fit": "cover",
-            "--media-object-position": "center",
-          }}
-        />
+        <div className="text-center">work in progress</div>
+        
         {/* to avoid showing control panel */}
         <div className="absolute inset-0 z-10 bg-transparent"></div>
       </div>
