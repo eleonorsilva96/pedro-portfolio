@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@payload-config": ["./payload.config.ts"]
     }
   },
   "include": [
@@ -29,6 +30,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/lib/datocms.js", "app/portfolio/@modal1/default.tsx"  ],
+, "app/(my-app)/lib/datocms.js", "app/(my-app)/portfolio/@modal1/default.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -1,0 +1,41 @@
+"use client";
+
+import { CategoryRecord } from "@/app/(my-app)/lib/definitions";
+import Link from "next/link";
+import CardPortfolio from "@/app/(my-app)/ui/card-portfolio";
+import { useSearchParams, usePathname } from "next/navigation";
+
+export default function GalleryPortfolio({
+  data,
+  isModal,
+}: {
+  data: CategoryRecord[];
+  isModal: boolean;
+}) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  return (
+    <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-[repeat(4,minmax(0,1fr))] gap-4">
+      {data.map((project) => {
+        if (project.__typename === "GalleryPortfolioRecord") {
+          const params = new URLSearchParams(searchParams); // use utility methods from API to manipulate the URL params
+          let newUrl = null;
+
+          if (isModal) {
+            params.set("id", project.projectId.project);
+            newUrl = `${pathname}?${params.toString()}`;
+          } else {
+            newUrl = `${pathname}/${project.projectId.project}`;
+          }
+
+          return (
+            <Link key={project.id} href={newUrl}>
+              <CardPortfolio project={project} />
+            </Link>
+          );
+        }
+      })}
+    </div>
+  );
+}
