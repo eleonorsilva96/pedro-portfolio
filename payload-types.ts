@@ -96,16 +96,14 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    header: Header;
-    footer: Footer;
+    'site-settings': SiteSetting;
     homepage: Homepage;
     'about-me': AboutMe;
     contact: Contact;
     privacy: Privacy;
   };
   globalsSelect: {
-    header: HeaderSelect<false> | HeaderSelect<true>;
-    footer: FooterSelect<false> | FooterSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     'about-me': AboutMeSelect<false> | AboutMeSelect<true>;
     contact: ContactSelect<false> | ContactSelect<true>;
@@ -379,7 +377,7 @@ export interface Service {
     };
     [k: string]: unknown;
   };
-  thumbnail: string | Media;
+  image: string | Media;
   buttonText: string;
   updatedAt: string;
   createdAt: string;
@@ -663,7 +661,7 @@ export interface ServicesSelect<T extends boolean = true> {
   generateSlug?: T;
   slug?: T;
   description?: T;
-  thumbnail?: T;
+  image?: T;
   buttonText?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -710,73 +708,71 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header".
+ * via the `definition` "site-settings".
  */
-export interface Header {
+export interface SiteSetting {
   id: string;
-  logo: string;
-  serviceGroup: {
-    title: string;
-    navServices?:
-      | {
-          service: string | Service;
-          id?: string | null;
-        }[]
-      | null;
+  header: {
+    logo: string;
+    serviceGroup: {
+      title: string;
+      navServices?:
+        | {
+            service: string | Service;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    categoryGroup: {
+      title: string;
+      navCategories?:
+        | {
+            category: string | Category;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    aboutMeGroup: {
+      title: string;
+      /**
+       * This route is locked by the system.
+       */
+      url?: string | null;
+    };
+    contactGroup: {
+      title: string;
+      /**
+       * This route is locked by the system.
+       */
+      url?: string | null;
+    };
   };
-  categoryGroup: {
-    title: string;
-    navCategories?:
-      | {
-          category: string | Category;
-          id?: string | null;
-        }[]
-      | null;
+  footer: {
+    columnLeft: {
+      phoneNumber: string;
+      email: string;
+      socialMediaLabel: string;
+      socialMediaList?:
+        | {
+            image: string | Media;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    columnRight: {
+      /**
+       * This route is locked by the system.
+       */
+      complaintsBookPage?: string | null;
+      /**
+       * This route is locked by the system.
+       */
+      privacyPage?: string | null;
+      copyright: string;
+    };
   };
-  aboutMeGroup: {
-    title: string;
-    /**
-     * This route is locked by the system.
-     */
-    url?: string | null;
-  };
-  contactGroup: {
-    title: string;
-    /**
-     * This route is locked by the system.
-     */
-    url?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer".
- */
-export interface Footer {
-  id: string;
-  columnLeft: {
-    phoneNumber: string;
-    email: string;
-    socialMediaLabel: string;
-    socialMediaList?:
-      | {
-          image: string | Media;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  columnRight: {
-    /**
-     * This route is locked by the system.
-     */
-    complaintsBookPage?: string | null;
-    /**
-     * This route is locked by the system.
-     */
-    privacyPage?: string | null;
-    copyright: string;
+  contactSection?: {
+    formTitle?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -830,7 +826,7 @@ export interface AboutMe {
    */
   generateSlug?: boolean | null;
   slug: string;
-  content: {
+  description: {
     root: {
       type: string;
       children: {
@@ -846,7 +842,6 @@ export interface AboutMe {
     [k: string]: unknown;
   };
   image: string | Media;
-  formTitle: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -863,7 +858,6 @@ export interface Contact {
   generateSlug?: boolean | null;
   slug: string;
   image: string | Media;
-  formTitle: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -899,72 +893,76 @@ export interface Privacy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header_select".
+ * via the `definition` "site-settings_select".
  */
-export interface HeaderSelect<T extends boolean = true> {
-  logo?: T;
-  serviceGroup?:
+export interface SiteSettingsSelect<T extends boolean = true> {
+  header?:
     | T
     | {
-        title?: T;
-        navServices?:
+        logo?: T;
+        serviceGroup?:
           | T
           | {
-              service?: T;
-              id?: T;
+              title?: T;
+              navServices?:
+                | T
+                | {
+                    service?: T;
+                    id?: T;
+                  };
             };
-      };
-  categoryGroup?:
-    | T
-    | {
-        title?: T;
-        navCategories?:
+        categoryGroup?:
           | T
           | {
-              category?: T;
-              id?: T;
+              title?: T;
+              navCategories?:
+                | T
+                | {
+                    category?: T;
+                    id?: T;
+                  };
             };
-      };
-  aboutMeGroup?:
-    | T
-    | {
-        title?: T;
-        url?: T;
-      };
-  contactGroup?:
-    | T
-    | {
-        title?: T;
-        url?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
- */
-export interface FooterSelect<T extends boolean = true> {
-  columnLeft?:
-    | T
-    | {
-        phoneNumber?: T;
-        email?: T;
-        socialMediaLabel?: T;
-        socialMediaList?:
+        aboutMeGroup?:
           | T
           | {
-              image?: T;
-              id?: T;
+              title?: T;
+              url?: T;
+            };
+        contactGroup?:
+          | T
+          | {
+              title?: T;
+              url?: T;
             };
       };
-  columnRight?:
+  footer?:
     | T
     | {
-        complaintsBookPage?: T;
-        privacyPage?: T;
-        copyright?: T;
+        columnLeft?:
+          | T
+          | {
+              phoneNumber?: T;
+              email?: T;
+              socialMediaLabel?: T;
+              socialMediaList?:
+                | T
+                | {
+                    image?: T;
+                    id?: T;
+                  };
+            };
+        columnRight?:
+          | T
+          | {
+              complaintsBookPage?: T;
+              privacyPage?: T;
+              copyright?: T;
+            };
+      };
+  contactSection?:
+    | T
+    | {
+        formTitle?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1023,9 +1021,8 @@ export interface AboutMeSelect<T extends boolean = true> {
   title?: T;
   generateSlug?: T;
   slug?: T;
-  content?: T;
+  description?: T;
   image?: T;
-  formTitle?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1039,7 +1036,6 @@ export interface ContactSelect<T extends boolean = true> {
   generateSlug?: T;
   slug?: T;
   image?: T;
-  formTitle?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

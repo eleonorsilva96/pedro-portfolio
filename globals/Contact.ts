@@ -5,6 +5,9 @@ import { imageField } from "@/fields/imageField";
 
 export const Contact: GlobalConfig = {
   slug: "contact",
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       name: "title",
@@ -13,11 +16,5 @@ export const Contact: GlobalConfig = {
     },
     slugField(),
     imageField,
-    {
-      name: "formTitle",
-      type: "text",
-      required: true,
-      defaultValue: "Pede um orçamento gratis",
-    },
   ],
 };

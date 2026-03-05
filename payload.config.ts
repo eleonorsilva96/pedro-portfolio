@@ -14,15 +14,14 @@ import { Services } from "./collections/Services";
 import { Homepage } from "./globals/Homepage";
 import { AboutMe } from "./globals/AboutMe";
 import { Contact } from "./globals/Contact";
-import { Header } from "./globals/Header";
-import { Footer } from "./globals/Footer";
 import { Privacy } from "./globals/Privacy";
+import { SiteSettings } from "./globals/SiteSettings";
 
 export default buildConfig({
   editor: lexicalEditor(),
   // Define and configure your collections in this array
   collections: [Users, Media, Projects, Categories, Tags, Services],
-  globals: [Header, Footer, Homepage, AboutMe, Contact, Privacy],
+  globals: [SiteSettings, Homepage, AboutMe, Contact, Privacy],
   secret: process.env.PAYLOAD_SECRET || "",
   db: mongooseAdapter({
     url: process.env.MONGODB_URI || "",

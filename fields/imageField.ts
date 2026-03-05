@@ -6,7 +6,7 @@ export const imageField: Field = {
   relationTo: "media",
   required: true,
   filterOptions: {
-    // only show video files
+    // only show image files
     mimeType: { contains: "image" },
   },
 };

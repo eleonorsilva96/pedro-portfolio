@@ -1,6 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { slugField } from "payload";
 
+import { imageField } from "@/fields/imageField";
+
 export const Services: CollectionConfig = {
   slug: "services",
   admin: {
@@ -20,12 +22,7 @@ export const Services: CollectionConfig = {
       type: "richText",
       required: true
     },
-    {
-      name: "thumbnail",
-      type: "upload",
-      relationTo: "media",
-      required: true,
-    },
+    imageField,
     {
       name: "buttonText",
       type: "text",
