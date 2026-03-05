@@ -3,6 +3,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { buildConfig } from "payload";
 import path from "path";
+import { s3Storage } from '@payloadcms/storage-s3';
 
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
@@ -32,4 +33,28 @@ export default buildConfig({
     outputFile: path.resolve(process.cwd(), "payload-types.ts"),
   },
   cors: "*",
+  plugins: [
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'uploads', // the uploads will be stored inside a uploads folder
+          generateFileURL: ({ filename }) => {
+            // intercepts the default Payload URL and replaces it with your Cloudflare r2.dev link
+            // to tell the frontend exactly where to find the image
+            return `${process.env.R2_PUBLIC_URL}/uploads/${filename}`;
+          },
+        },
+      },
+      bucket: process.env.R2_BUCKET || '',
+      config: {
+        credentials: {
+          accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+        },
+        endpoint: process.env.R2_ENDPOINT || '',
+        region: 'auto', 
+        forcePathStyle: true, 
+      },
+    }),
+  ],
 });
