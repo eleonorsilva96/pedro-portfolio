@@ -1,72 +1,26 @@
-import { Metadata } from "next";
-import { performRequest } from "../lib/datocms";
-import { AboutData } from "../lib/definitions";
+import { AboutMe } from "../../../payload-types";
+
 import SectionContent from "../ui/section-content";
 
-const PAGE_CONTENT_QUERY = `
-  query AboutPage {
-    about {
-      __typename
-      title
-      coverImage {
-        url
-        width
-        height
-        alt
-      }
-      description
-      seo {
-        title
-        description
-        image {
-          url
-          width
-          height
-        }
-      }
-    }
-  }
-`;
-
-export async function generateMetadata(): Promise<Metadata> {
-  const { about } = await performRequest(PAGE_CONTENT_QUERY) as AboutData;
-
-  if (!about) return {};
-
-  const { title, coverImage, seo } = about;
-
-  const shareImage = seo?.image?.url ? {
-    url: seo?.image?.url || coverImage?.url,
-    width: seo?.image?.width || coverImage?.width,
-    height: seo?.image?.height || coverImage?.height,
-    alt: seo?.title || coverImage?.alt || title,
-  } : undefined;
-
-  return {
-    title: seo?.title || title,
-    description: seo?.description,
-    openGraph: {
-      images: shareImage ? [shareImage] : undefined,
+async function getAboutMeData() {
+  const res = await fetch("http://localhost:3000/api/globals/about-me", {
+    cache: "force-cache",
+    next: {
+      tags: ["global_about_me"],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: seo?.title || title,
-      description: seo?.description,
-      images: shareImage ? [shareImage] : undefined,
-    },
-  };
+  });
+
+  if (!res.ok) throw Error("Failed to fetch About Me data");
+
+  return res.json();
 }
 
 export default async function AboutPage() {
-  const { about } = (await performRequest(PAGE_CONTENT_QUERY)) as AboutData;
-
-  // add response check
-
-  console.log(about);
+  const aboutData = (await getAboutMeData()) as AboutMe;
 
   return (
     <div className="flex flex-col w-full items-center bg-white">
-      <SectionContent content={about} />
+      <SectionContent content={{ ...aboutData, docType: "AboutMe" as const }} />  {/* the doctType is not a string */}
     </div>
   );
 }

@@ -1,31 +1,35 @@
 'use client'
 
-import { AboutDataBlock, ContactDataBlock, ServiceDataBlock } from "../lib/definitions";
-import CardTextMedia from "@/app/(my-app)/ui/card-text-media";
+import { AboutMe, Contact, Service } from "../../../payload-types";
 import Form from "@/app/(my-app)/ui/form";
 import { useRef } from "react";
+import { RichText } from '@payloadcms/richtext-lexical/react';
+import CardTextImage from "./card-text-image";
+
+export type PayloadAbout = AboutMe & { docType: 'AboutMe' };
+export type PayloadContact = Contact & { docType: 'Contact' };
+export type PayloadService = Service & { docType: 'Service' };
 
 export default function SectionContent({
     content
 } : {
-    content: ServiceDataBlock | AboutDataBlock | ContactDataBlock;
+    content: PayloadAbout | PayloadContact | PayloadService;
 }) {
+  // when the service form is visible attach it to the ref and pass it on the CardTextImage to create a smooth anchor 
   const formRef = useRef<HTMLDivElement>(null);
 
-  // put items assignment logic here
+  const description = content.docType === 'AboutMe' || content.docType === 'Service' ? <RichText data={content.description} /> : undefined;
 
   return (
     <>
-      <CardTextMedia
+      <CardTextImage
         title={content.title}
-        desc={content.__typename !== 'ContactRecord' ? content.description : undefined}
-        btnLabel={content.__typename === 'ServiceRecord' ? content.buttonText : undefined}
-        media={content.__typename === 'ServiceRecord' ? content.thumbnailImage : content.coverImage}
+        desc={description}
+        btnLabel={content.docType === 'Service' ? content.buttonText : undefined}
+        image={typeof content.image === 'object' ? content.image : null} // check if is a object (media type)
         formRef={formRef}
-        isMediaRight
-        isVertical
       />
-      {content.__typename !== 'ContactRecord' ? <Form innerRef={formRef} hasBgWhite /> : null}
+      {content.docType === 'AboutMe' || content.docType === 'Service' ? <Form innerRef={formRef} hasBgWhite /> : null}
     </>
   );
 }

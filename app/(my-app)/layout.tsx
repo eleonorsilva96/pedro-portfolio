@@ -94,7 +94,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const { globalSeo, favicon } = data._site;
 
-  console.log("global seo", globalSeo);
+  // console.log("global seo", globalSeo);
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -154,7 +154,7 @@ export default async function RootLayout({
     copy: global.copyright,
   } 
 
-  console.log("global", global);
+  // console.log("global", global);
 
   return (
     <html lang="en">

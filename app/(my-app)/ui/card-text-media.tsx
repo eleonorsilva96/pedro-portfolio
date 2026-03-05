@@ -60,7 +60,7 @@ export default function CardTextMedia({
         })}
       ></div>
       {/* insert description in a markdown parser to allow links */}
-      <ReactMarkdown
+      {/* <ReactMarkdown
         // add custom style for the link
         components={{
           // remove node property out of the object
@@ -90,7 +90,8 @@ export default function CardTextMedia({
         }}
       >
         {desc}
-      </ReactMarkdown>
+      </ReactMarkdown> */}
+      {desc}
       {btnLabel ? (
         <a
           onClick={(e) => scrollToSection(e)}
