@@ -1,5 +1,5 @@
 import type { GlobalConfig } from "payload";
-import { slugField } from "payload";
+import { slugField } from "@/fields/slugField";
 
 import { imageField } from "@/fields/imageField";
 

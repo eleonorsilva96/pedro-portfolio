@@ -1,5 +1,5 @@
 import type { GlobalConfig } from "payload";
-import { slugField } from 'payload';
+import { slugField } from "@/fields/slugField";
 
 export const Privacy: GlobalConfig = {
   slug: "privacy",

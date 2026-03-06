@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { slugField } from 'payload';
+import { slugField } from "@/fields/slugField";
 
 import { ImageBlock } from '../blocks/Image';
 import { SectionBlock } from '../blocks/Section';

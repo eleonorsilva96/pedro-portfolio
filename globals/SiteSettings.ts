@@ -34,7 +34,13 @@ export const SiteSettings: GlobalConfig = {
                     name: 'formTitle',
                     type: 'text',
                     defaultValue: 'Pede um orçamento grátis',
-                }
+                },
+                //  QUERO ORÇAMENTO button
+                {
+                  name: "buttonText",
+                  type: "text",
+                  required: true,
+                },
             ],
         },
 

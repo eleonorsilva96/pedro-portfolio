@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { slugField } from "payload";
+import { slugField } from "@/fields/slugField";
 
 import { VideoBlock } from "../blocks/Video";
 import { ExternalLinkBlock } from "../blocks/ExternalLink";
