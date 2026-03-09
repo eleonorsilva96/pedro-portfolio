@@ -189,11 +189,7 @@ export interface Media {
 export interface Project {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   category: string | Category;
   description?: string | null;
   thumbnail: string | Media;
@@ -248,11 +244,7 @@ export interface Project {
               | (
                   | {
                       title: string;
-                      /**
-                       * When enabled, the slug will auto-generate from the title field on save and autosave.
-                       */
-                      generateSlug?: boolean | null;
-                      slug: string;
+                      slug?: string | null;
                       /**
                        * Enter a valid URL
                        */
@@ -263,11 +255,7 @@ export interface Project {
                     }
                   | {
                       title: string;
-                      /**
-                       * When enabled, the slug will auto-generate from the title field on save and autosave.
-                       */
-                      generateSlug?: boolean | null;
-                      slug: string;
+                      slug?: string | null;
                       image: string | Media;
                       id?: string | null;
                       blockName?: string | null;
@@ -291,11 +279,7 @@ export interface Project {
 export interface Category {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   description?: string | null;
   thumbnail: string | Media;
   content?: ('gallery' | 'blog') | null;
@@ -342,11 +326,7 @@ export interface Category {
 export interface Tag {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -357,11 +337,7 @@ export interface Tag {
 export interface Service {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   description: {
     root: {
       type: string;
@@ -378,7 +354,6 @@ export interface Service {
     [k: string]: unknown;
   };
   image: string | Media;
-  buttonText: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -519,7 +494,6 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   category?: T;
   description?: T;
@@ -571,7 +545,6 @@ export interface ProjectsSelect<T extends boolean = true> {
                       | T
                       | {
                           title?: T;
-                          generateSlug?: T;
                           slug?: T;
                           externalLink?: T;
                           id?: T;
@@ -581,7 +554,6 @@ export interface ProjectsSelect<T extends boolean = true> {
                       | T
                       | {
                           title?: T;
-                          generateSlug?: T;
                           slug?: T;
                           image?: T;
                           id?: T;
@@ -601,7 +573,6 @@ export interface ProjectsSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   description?: T;
   thumbnail?: T;
@@ -647,7 +618,6 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface TagsSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -658,11 +628,9 @@ export interface TagsSelect<T extends boolean = true> {
  */
 export interface ServicesSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   description?: T;
   image?: T;
-  buttonText?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -771,8 +739,9 @@ export interface SiteSetting {
       copyright: string;
     };
   };
-  contactSection?: {
+  contactSection: {
     formTitle?: string | null;
+    buttonText: string;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -821,11 +790,7 @@ export interface Homepage {
 export interface AboutMe {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   description: {
     root: {
       type: string;
@@ -852,11 +817,7 @@ export interface AboutMe {
 export interface Contact {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   image: string | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -868,11 +829,7 @@ export interface Contact {
 export interface Privacy {
   id: string;
   title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   content: {
     root: {
       type: string;
@@ -963,6 +920,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | T
     | {
         formTitle?: T;
+        buttonText?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1019,7 +977,6 @@ export interface HomepageSelect<T extends boolean = true> {
  */
 export interface AboutMeSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   description?: T;
   image?: T;
@@ -1033,7 +990,6 @@ export interface AboutMeSelect<T extends boolean = true> {
  */
 export interface ContactSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   image?: T;
   updatedAt?: T;
@@ -1046,7 +1002,6 @@ export interface ContactSelect<T extends boolean = true> {
  */
 export interface PrivacySelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   content?: T;
   updatedAt?: T;

@@ -1,95 +1,61 @@
-import { performRequest } from "@/app/(my-app)/lib/datocms";
-import { ServiceData } from "@/app/(my-app)/lib/definitions";
+import { getPayload } from "payload";
+import config from '@payload-config';
+
+import { unstable_cache } from "next/cache";
+
+import { Service } from "@/payload-types";
+
 import SectionContent from "@/app/(my-app)/ui/section-content";
-import { Metadata } from "next";
 
-const PAGE_CONTENT_QUERY = `
-query IndividualService($slug: String!) {
-  service(filter: { slug: { eq: $slug } }) {
-    __typename
-    slug
-    thumbnailImage {
-      url
-      width
-      height
-      alt
-    }
-    title
-    description
-    buttonText
-    seo {
-      title
-      description
-      image {
-        url
-        width
-        height
-        alt
-      }
-    }
+async function getServiceData(slug: string) {
+  // using the Payload Local API is a better option because the Next.js frontend (Server Components) 
+  // and Payload CMS backend live in the exact same Node.js server. This delivers faster responses just by calling a function
+  // and completely eliminates the need for HTTP network requests.
+  const payload = await getPayload({ config });
+
+  const result = await payload.find({
+    collection: 'services',
+    where: {
+      slug: {
+        equals: slug
+      },
+    },
+    limit: 1, // stop searching the second it finds a match
+    depth: 1, // the number of nested fields/relationships I want to retrieve
+  });
+
+  return result.docs[0] || null;
+}
+
+export const getCachedServiceBySlug = unstable_cache(
+  // function with the request
+  async (slug: string) => getServiceData(slug),
+  // key array to facilitate the finding of the cached data
+  ['service-by-slug-cache'], 
+  // tag name to eventually clear it when data changes on the db
+  {
+    tags: ['collection_services'], 
+    revalidate: 3600, // auto-revalidate every hour
   }
-}
-`;
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-
-  const { service } = (await performRequest(PAGE_CONTENT_QUERY, {
-    variables: {
-      slug: slug,
-    },
-  })) as ServiceData;
-
-  if (!service) return {};
-
-  const { title, thumbnailImage, seo } = service;
-
-  const shareImage = seo?.image?.url ? {
-    url: seo?.image?.url || thumbnailImage?.url,
-    width: seo?.image?.width || thumbnailImage?.width,
-    height: seo?.image?.height || thumbnailImage?.height,
-    alt: seo?.title || thumbnailImage?.alt || title,
-  } : undefined;
-
-  return {
-    title: seo?.title || title,
-    description: seo?.description,
-    openGraph: {
-      images: shareImage ? [shareImage] : undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: seo?.title || title,
-      description: seo?.description,
-      images: shareImage ? [shareImage] : undefined,
-    },
-  };
-}
+);
 
 export default async function ServicesPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // inside the route props we can get the dynamic url from the route using params
+  // inside the route props get the dynamic url 
   const { slug } = await params;
-  const response = (await performRequest(PAGE_CONTENT_QUERY, {
-    variables: {
-      slug: slug,
-    },
-  })) as ServiceData;
 
-  const content = response.service;
+  const serviceData = (await getCachedServiceBySlug(slug)) as Service;
 
-  console.log(response);
+  console.log("service data");
+  console.log(serviceData);
 
   return (
     <div className="flex flex-col w-full items-center bg-white">
-      <SectionContent content={content} />
+      {/* PASS THE BUTTON NAME FROM SITE SETTINGS GLOBAL */}
+      <SectionContent content={{ ...serviceData, docType: 'Service' as const }} />
     </div>
   );
 }

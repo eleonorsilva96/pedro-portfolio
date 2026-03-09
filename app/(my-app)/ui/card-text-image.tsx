@@ -61,14 +61,14 @@ export default function CardTextImage({
   );
 
   const imageContent = (
-    <div className="w-full">
+    <div className="relative w-full aspect-[9/16] max-h-[600px] lg:max-h-[850px] overflow-hidden">
       <Image
         src={image.url}
-        className="w-full object-cover md:object-center 2xl:object-[50%_19%] aspect-[9/16] max-h-[600px] lg:max-h-[850px]"
-        // provide safe fallbacks just in case Payload misses the dimensions
-        width={image.width || 1200}
-        height={image.height || 800}
         alt={image.alt || title}
+        fill // ignore its original file dimensions and stretch to the container
+        className="object-cover"
+        // optimize image size for each device by telling the browser the image is full-screen on mobile but half-screen on desktop
+        sizes="(max-width: 1024px) 100vw, 50vw"
       />
     </div>
   );

@@ -1,19 +1,20 @@
 
-import { formatPhoneNumber } from "../lib/utils";
+// import { formatPhoneNumber } from "../lib/utils";
+import { getPayload } from "payload";
+import config from '@payload-config';
+
 import SectionContent from "../ui/section-content";
 import { Contact } from "@/payload-types";
 
 async function getContactData() {
-  const res = await fetch("http://localhost:3000/api/globals/contact", {
-    cache: "force-cache",
-    next: {
-      tags: ["global_about_me"],
-    },
+  const payload = await getPayload({ config });
+
+  const result = await payload.findGlobal({
+    slug: 'contact',
+    depth: 1, 
   });
 
-  if (!res.ok) throw Error("Failed to fetch Contact data");
-
-  return res.json();
+  return result || null;
 }
 
 export default async function ContactPage() {
@@ -26,16 +27,16 @@ export default async function ContactPage() {
 
       <SectionContent content={{...contactData, docType: 'Contact' as const}} />
 
-      <div className="flex justify-center w-full py-14 bg-neutral-200">  
         {/* GET CONTACT INFO FROM SITE SETTINGS GLOBALS */}
+      {/* <div className="flex justify-center w-full py-14 bg-neutral-200">  
 
-        {/* <div className="p-10 flex flex-col items-center gap-2 bg-primary-600 text-white text-xl">
+        <div className="p-10 flex flex-col items-center gap-2 bg-primary-600 text-white text-xl">
             <a href={`tel:${formatPhoneNumber(contactData.phoneNumber)}`} className="underline">
               {contactData.phoneNumber}
             </a>
             <a href={`mailto:${contact.email}`} className="underline">{contact.email}</a>            
-        </div> */}
-      </div>
+        </div>
+      </div> */}
     </div>
   );
 }

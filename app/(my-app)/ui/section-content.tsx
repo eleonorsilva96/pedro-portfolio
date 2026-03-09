@@ -25,7 +25,8 @@ export default function SectionContent({
       <CardTextImage
         title={content.title}
         desc={description}
-        btnLabel={content.docType === 'Service' ? content.buttonText : undefined}
+        // THE BUTTON NAME FROM SITE SETTINGS GLOBAL
+        btnLabel={content.docType === 'Service' ? "test" : undefined}
         image={typeof content.image === 'object' ? content.image : null} // check if is a object (media type)
         formRef={formRef}
       />
