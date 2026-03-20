@@ -191,27 +191,45 @@ export interface Project {
   title: string;
   slug?: string | null;
   category: string | Category;
-  description?: string | null;
+  tag?: (string | Tag)[] | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  hideProject?: boolean | null;
   thumbnail: string | Media;
   content?: ('single' | 'multiple') | null;
   singleContent?: {
-    video: (
-      | {
-          image: string | Media;
-          id?: string | null;
-          blockName?: string | null;
-          blockType: 'videoBlock';
-        }
-      | {
-          /**
-           * Enter a valid URL
-           */
-          externalLink: string;
-          id?: string | null;
-          blockName?: string | null;
-          blockType: 'externalLinkBlock';
-        }
-    )[];
+    video?:
+      | (
+          | {
+              image: string | Media;
+              id?: string | null;
+              blockName?: string | null;
+              blockType: 'videoBlock';
+            }
+          | {
+              /**
+               * Enter a valid URL
+               */
+              externalLink: string;
+              id?: string | null;
+              blockName?: string | null;
+              blockType: 'externalLinkBlock';
+            }
+        )[]
+      | null;
     role?: string | null;
     context?: {
       root: {
@@ -229,46 +247,70 @@ export interface Project {
       [k: string]: unknown;
     } | null;
     date?: string | null;
+    addLink?: boolean | null;
+    externalLinkTitleGroup?: {
+      name: string;
+      /**
+       * Enter a valid URL
+       */
+      externalLink: string;
+    };
   };
   multipleContent?:
     | (
         | {
-            image: string | Media;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'imageBlock';
-          }
-        | {
-            title: string;
-            content?:
-              | (
-                  | {
-                      title: string;
-                      slug?: string | null;
-                      /**
-                       * Enter a valid URL
-                       */
-                      externalLink: string;
-                      id?: string | null;
-                      blockName?: string | null;
-                      blockType: 'externalLinkTitleBlock';
-                    }
-                  | {
-                      title: string;
-                      slug?: string | null;
-                      image: string | Media;
-                      id?: string | null;
-                      blockName?: string | null;
-                      blockType: 'imageTitleBlock';
-                    }
-                )[]
+            images?:
+              | {
+                  image: string | Media;
+                  id?: string | null;
+                }[]
               | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'sectionBlock';
+            blockType: 'ImagesBlock';
+          }
+        | {
+            sections?:
+              | {
+                  title: string;
+                  sectionContent?:
+                    | (
+                        | {
+                            title: string;
+                            /**
+                             * Enter a valid URL
+                             */
+                            externalLink: string;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'externalLinkTitleBlock';
+                          }
+                        | {
+                            title: string;
+                            image: string | Media;
+                            id?: string | null;
+                            blockName?: string | null;
+                            blockType: 'imageTitleBlock';
+                          }
+                      )[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'SectionsBlock';
           }
       )[]
     | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -280,42 +322,87 @@ export interface Category {
   id: string;
   title: string;
   slug?: string | null;
-  description?: string | null;
-  thumbnail: string | Media;
-  content?: ('gallery' | 'blog') | null;
-  gallery?:
-    | {
-        project: string | Project;
-        tags?: (string | Tag)[] | null;
-        id?: string | null;
-      }[]
-    | null;
-  blog?:
-    | {
-        title: string;
-        description?: string | null;
-        link?:
-          | (
-              | {
-                  image: string | Media;
-                  id?: string | null;
-                  blockName?: string | null;
-                  blockType: 'videoBlock';
-                }
-              | {
-                  /**
-                   * Enter a valid URL
-                   */
-                  externalLink: string;
-                  id?: string | null;
-                  blockName?: string | null;
-                  blockType: 'externalLinkBlock';
-                }
-            )[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  addBlog?: boolean | null;
+  blogGroup?: {
+    blogList?:
+      | {
+          title: string;
+          description?: {
+            root: {
+              type: string;
+              children: {
+                type: any;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
+            [k: string]: unknown;
+          } | null;
+          link?:
+            | (
+                | {
+                    image: string | Media;
+                    id?: string | null;
+                    blockName?: string | null;
+                    blockType: 'videoBlock';
+                  }
+                | {
+                    /**
+                     * Enter a valid URL
+                     */
+                    externalLink: string;
+                    id?: string | null;
+                    blockName?: string | null;
+                    blockType: 'externalLinkBlock';
+                  }
+              )[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    cta?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -354,6 +441,14 @@ export interface Service {
     [k: string]: unknown;
   };
   image: string | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -496,7 +591,9 @@ export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   category?: T;
+  tag?: T;
   description?: T;
+  hideProject?: T;
   thumbnail?: T;
   content?: T;
   singleContent?:
@@ -523,46 +620,68 @@ export interface ProjectsSelect<T extends boolean = true> {
         role?: T;
         context?: T;
         date?: T;
+        addLink?: T;
+        externalLinkTitleGroup?:
+          | T
+          | {
+              name?: T;
+              externalLink?: T;
+            };
       };
   multipleContent?:
     | T
     | {
-        imageBlock?:
+        ImagesBlock?:
           | T
           | {
-              image?: T;
-              id?: T;
-              blockName?: T;
-            };
-        sectionBlock?:
-          | T
-          | {
-              title?: T;
-              content?:
+              images?:
                 | T
                 | {
-                    externalLinkTitleBlock?:
-                      | T
-                      | {
-                          title?: T;
-                          slug?: T;
-                          externalLink?: T;
-                          id?: T;
-                          blockName?: T;
-                        };
-                    imageTitleBlock?:
-                      | T
-                      | {
-                          title?: T;
-                          slug?: T;
-                          image?: T;
-                          id?: T;
-                          blockName?: T;
-                        };
+                    image?: T;
+                    id?: T;
                   };
               id?: T;
               blockName?: T;
             };
+        SectionsBlock?:
+          | T
+          | {
+              sections?:
+                | T
+                | {
+                    title?: T;
+                    sectionContent?:
+                      | T
+                      | {
+                          externalLinkTitleBlock?:
+                            | T
+                            | {
+                                title?: T;
+                                externalLink?: T;
+                                id?: T;
+                                blockName?: T;
+                              };
+                          imageTitleBlock?:
+                            | T
+                            | {
+                                title?: T;
+                                image?: T;
+                                id?: T;
+                                blockName?: T;
+                              };
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -575,39 +694,43 @@ export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   description?: T;
-  thumbnail?: T;
-  content?: T;
-  gallery?:
+  addBlog?: T;
+  blogGroup?:
     | T
     | {
-        project?: T;
-        tags?: T;
-        id?: T;
+        blogList?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              link?:
+                | T
+                | {
+                    videoBlock?:
+                      | T
+                      | {
+                          image?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                    externalLinkBlock?:
+                      | T
+                      | {
+                          externalLink?: T;
+                          id?: T;
+                          blockName?: T;
+                        };
+                  };
+              id?: T;
+            };
+        cta?: T;
       };
-  blog?:
+  meta?:
     | T
     | {
         title?: T;
         description?: T;
-        link?:
-          | T
-          | {
-              videoBlock?:
-                | T
-                | {
-                    image?: T;
-                    id?: T;
-                    blockName?: T;
-                  };
-              externalLinkBlock?:
-                | T
-                | {
-                    externalLink?: T;
-                    id?: T;
-                    blockName?: T;
-                  };
-            };
-        id?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -631,6 +754,13 @@ export interface ServicesSelect<T extends boolean = true> {
   slug?: T;
   description?: T;
   image?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -719,23 +849,29 @@ export interface SiteSetting {
     columnLeft: {
       phoneNumber: string;
       email: string;
-      socialMediaLabel: string;
+      socialMediaLabel?: string | null;
       socialMediaList?:
         | {
+            /**
+             * Enter a valid URL
+             */
+            externalLink: string;
             image: string | Media;
             id?: string | null;
           }[]
         | null;
     };
     columnRight: {
+      complaintsBookName: string;
       /**
        * This route is locked by the system.
        */
-      complaintsBookPage?: string | null;
+      complaintsBookLink?: string | null;
+      privacyPageName: string;
       /**
        * This route is locked by the system.
        */
-      privacyPage?: string | null;
+      privacyPageLink?: string | null;
       copyright: string;
     };
   };
@@ -780,6 +916,14 @@ export interface Homepage {
   formSection: {
     title: string;
   };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -807,6 +951,14 @@ export interface AboutMe {
     [k: string]: unknown;
   };
   image: string | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -819,6 +971,14 @@ export interface Contact {
   title: string;
   slug?: string | null;
   image: string | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -904,6 +1064,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               socialMediaList?:
                 | T
                 | {
+                    externalLink?: T;
                     image?: T;
                     id?: T;
                   };
@@ -911,8 +1072,10 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         columnRight?:
           | T
           | {
-              complaintsBookPage?: T;
-              privacyPage?: T;
+              complaintsBookName?: T;
+              complaintsBookLink?: T;
+              privacyPageName?: T;
+              privacyPageLink?: T;
               copyright?: T;
             };
       };
@@ -967,6 +1130,13 @@ export interface HomepageSelect<T extends boolean = true> {
     | {
         title?: T;
       };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -980,6 +1150,13 @@ export interface AboutMeSelect<T extends boolean = true> {
   slug?: T;
   description?: T;
   image?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -992,6 +1169,13 @@ export interface ContactSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   image?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

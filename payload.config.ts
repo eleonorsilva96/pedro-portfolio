@@ -4,10 +4,10 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { buildConfig } from "payload";
 import path from "path";
 import { s3Storage } from '@payloadcms/storage-s3';
+import { seoPlugin } from '@payloadcms/plugin-seo';
 
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
-import { Projects } from "./collections/Projects";
 import { Categories } from "./collections/Categories";
 import { Tags } from "./collections/Tags";
 import { Services } from "./collections/Services";
@@ -16,6 +16,7 @@ import { AboutMe } from "./globals/AboutMe";
 import { Contact } from "./globals/Contact";
 import { Privacy } from "./globals/Privacy";
 import { SiteSettings } from "./globals/SiteSettings";
+import { Projects } from "./collections/Projects";
 
 export default buildConfig({
   editor: lexicalEditor(),
@@ -32,13 +33,14 @@ export default buildConfig({
     outputFile: path.resolve(process.cwd(), "payload-types.ts"),
   },
   cors: "*",
+  // send media imports to Cloudflare storage 
   plugins: [
     s3Storage({
       collections: {
         media: {
           prefix: 'uploads', // the uploads will be stored inside a uploads folder
           generateFileURL: ({ filename }) => {
-            // intercepts the default Payload URL and replaces it with your Cloudflare r2.dev link
+            // intercepts the default Payload URL and replaces it with your Cloudflare store link
             // to tell the frontend exactly where to find the image
             return `${process.env.R2_PUBLIC_URL}/uploads/${filename}`;
           },
@@ -55,5 +57,20 @@ export default buildConfig({
         forcePathStyle: true, 
       },
     }),
+    // generates seo fields on the admin panel where the images can be imported from the media collection
+    // the generate functions auto-fill defaults from the document's existing fields 
+    // and is possible to preview the content 
+    seoPlugin({
+      collections: [
+        'categories', 'projects', 'services'
+      ],
+      globals: [
+        'about-me', 'contact', 'homepage'
+      ],
+      uploadsCollection: 'media',
+      generateTitle: ({ doc }) => `Pedro A. Martins — ${doc.title}`,
+      generateDescription: ({ doc }) => doc.excerpt,
+      generateImage: ({ doc }) => doc?.featuredImage,
+    })
   ],
 });
