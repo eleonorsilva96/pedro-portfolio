@@ -41,12 +41,16 @@ export default function HomeContent({
         {/* to avoid showing control panel */}
         <div className="absolute inset-0 z-10 bg-transparent"></div>
       </div>
-      {/* <div className="w-full max-h-[660px]"> */}
-      <CardTextMedia
-        title={cardTextImg.title}
-        desc={cardTextImg.description}
-        btnLabel={cardTextImg.buttonText}
-        media={cardTextImg.asset}
+      {/* about me */}
+      <CardTextImage
+        title={homepageData.aboutSection.title}
+        desc={homepageData.aboutSection.description}
+        btnLabel={homepageData.aboutSection.buttonText}
+        image={
+          (typeof homepageData.aboutSection.image === "object" &&
+            homepageData.aboutSection.image) ||
+          null
+        }
         formRef={formRef}
         isMediaRight
       />
