@@ -1,6 +1,6 @@
-import { Field } from "payload";
+import { UploadField } from "payload";
 
-export const videoField: Field = {
+export const videoField: UploadField = {
   name: "video",
   type: "upload",
   relationTo: "media",

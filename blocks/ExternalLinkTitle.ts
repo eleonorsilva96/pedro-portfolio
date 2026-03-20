@@ -1,5 +1,4 @@
 import { Block } from "payload";
-import { slugField } from "@/fields/slugField";
 
 import { externalLinkField } from "../fields/externalLinkField";
 
@@ -11,7 +10,6 @@ export const ExternalLinkTitleBlock: Block = {
         type: 'text',
         required: true,
     },
-    slugField(),
-    externalLinkField
+    externalLinkField,
   ],
 };

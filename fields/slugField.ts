@@ -16,6 +16,7 @@ const formatSlug = (stringToFormat: string): string => {
 export const slugField = (fallbackField: string = 'title'): Field => ({
   name: 'slug',
   type: 'text',
+  unique: true,
   admin: {
     position: 'sidebar', // Keeps it nicely tucked on the right side of the CMS
   },

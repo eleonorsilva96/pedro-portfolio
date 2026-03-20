@@ -1,5 +1,6 @@
 import { Field } from "payload";
 import { imageField } from "./imageField";
+import { externalLinkField } from "./externalLinkField";
 
 export const footerFields: Field[] = [
   {
@@ -33,7 +34,6 @@ export const footerFields: Field[] = [
       {
         name: "socialMediaLabel",
         type: "text",
-        required: true,
       },
       {
         name: "socialMediaList",
@@ -42,7 +42,16 @@ export const footerFields: Field[] = [
           singular: "Icon",
           plural: "Icons",
         },
-        fields: [imageField],
+        fields: [
+          externalLinkField,
+          {
+            ...imageField,
+            filterOptions: {
+              // only show image files
+              mimeType: { contains: "image/svg+xml" },
+            },
+          }
+        ],
       },
     ],
   },
@@ -52,7 +61,12 @@ export const footerFields: Field[] = [
     label: "Right Column",
     fields: [
       {
-        name: "complaintsBookPage",
+        name: "complaintsBookName",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "complaintsBookLink",
         type: "text",
         defaultValue: "/complaints",
         admin: {
@@ -61,7 +75,12 @@ export const footerFields: Field[] = [
         },
       },
       {
-        name: "privacyPage",
+        name: "privacyPageName",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "privacyPageLink",
         type: "text",
         defaultValue: "/privacy",
         admin: {
