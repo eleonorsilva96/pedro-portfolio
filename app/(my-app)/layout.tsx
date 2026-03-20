@@ -1,138 +1,34 @@
-import type { Metadata } from "next";
 import { quicksand, openSans, lemon, mulish, specialElite } from "@/app/(my-app)/ui/fonts";
 import "./globals.css";
 import Header from '@/app/(my-app)/ui/header';
 import Footer from "@/app/(my-app)/ui/footer";
-import { GlobalData, GlobalSeoData } from "@/app/(my-app)/lib/definitions";
-import { performRequest } from "./lib/datocms";
 import WhatsAppButton from "./ui/whatsapp-button";
+import { getPayload } from "payload";
+import config from '@payload-config';
+import { unstable_cache } from "next/cache";
 
-const GLOBAL_SEO_QUERY = `
-  query GlobalSeo {
-    _site {
-      globalSeo {
-        siteName
-        titleSuffix
-        fallbackSeo {
-          description
-          title
-          image {
-            url
-            width
-            height
-          }
-        }
-      }
-      favicon {
-        url
-      }
-    }
-  }
-`; 
+async function getSiteSettingsData() {
+  const payload = await getPayload({ config });
 
-const PAGE_CONTENT_QUERY = `
-  query Global {
-    global {
-      headerLogo
-      headerNavigation {
-        ... on NavItemRecord {
-          id
-          singleLink {
-          # to get the page name (for the url) check only for the models type
-            __typename 
-          }
-          categoryLinks {
-            ... on LinkRecord { # Nested Modular Content
-              id
-              name
-              link {
-                # check for the type to get the prefix (/services/...)
-                __typename
-                # ask the specific models for their slug
-                ... on PortfolioCategoryRecord { 
-                  slug
-                }
-                ... on ServiceRecord { 
-                  slug
-                }
-              }
-            }
-          }
-        }
-      }
-      footerPhoneNumber
-      footerEmail
-      footerSocialMediaLinks { # modular content list that could contain different types of blocks
-        ... on SocialMediaLinkRecord {
-          __typename
-          id
-          link
-          icon
-        }
-      }
-      complaintsBookLink
-      privacyPolicyLink {
-        ... on PrivacyPolicyRecord {
-          title
-          slug
-        }
-      }
-      copyright
-    }
-  }`;
+  const result = await payload.findGlobal({
+    slug: 'site-settings',
+    depth: 4, 
+  });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const data = await performRequest(GLOBAL_SEO_QUERY) as GlobalSeoData;
-
-  // to avoid 500 error
-  if (!data?._site?.globalSeo) {
-    return {
-      title: "Pedro A. Martins Portfolio",
-      description: "Videógrafo e Fotógrafo",
-    };
-  }
-
-  const { globalSeo, favicon } = data._site;
-
-  // console.log("global seo", globalSeo);
-
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-  return {
-    metadataBase: new URL(siteUrl),
-
-    // site title
-    title: {
-      default: globalSeo.fallbackSeo.title,
-      template: `%s ${globalSeo.titleSuffix}`, // Ex: "About Me | Client Portfolio"
-    },
-    
-    // description for google
-    description: globalSeo.fallbackSeo.description,
-    
-    // favicon 
-    icons: {
-      icon: favicon.url,
-    },
-
-    // how it shows in google/social media
-    openGraph: {
-      title: globalSeo.fallbackSeo.title,
-      description: globalSeo.fallbackSeo.description,
-      siteName: globalSeo.siteName,
-      locale: 'pt_PT',
-      type: 'website',
-      images: [
-        {
-          url: globalSeo.fallbackSeo.image.url,
-          width: globalSeo.fallbackSeo.image.width,
-          height: globalSeo.fallbackSeo.image.height,
-          alt: globalSeo.siteName,
-        },
-      ],
-    },
-  };
+  return result || null;
 }
+
+export const getCachedSiteSettings = unstable_cache(
+  // function with the request
+  async () => getSiteSettingsData(),
+  // key array to facilitate the finding of the cached data
+  ['site-settings-cache'], 
+  // tag name to eventually clear it when data changes on the db
+  {
+    tags: ['global_site_settings'], 
+    revalidate: 86400, // auto-revalidate every 24 hours
+  }
+);
 
 export default async function RootLayout({
   children,
@@ -140,32 +36,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // run the query and treat the result as HomeData
-  const { global } = await performRequest(PAGE_CONTENT_QUERY) as GlobalData;
-  
-  if(!global) return null;
-
-  const FOOTER = {
-    number: global.footerPhoneNumber,
-    email: global.footerEmail,
-    mediaLinks: global.footerSocialMediaLinks,
-    complaintsLink: global.complaintsBookLink,
-    privacyLink: global.privacyPolicyLink,
-    copy: global.copyright,
-  } 
-
-  // console.log("global", global);
+  const siteSettingsData = (await getCachedSiteSettings());
 
   return (
     <html lang="en">
       <body
         className={`${quicksand.variable} ${openSans.variable} ${lemon.variable} ${mulish.variable} ${specialElite.variable} antialiased flex flex-col !min-h-screen`}
       >
-        <Header logo={global.headerLogo} navLinks={global.headerNavigation} />
+        <Header data={siteSettingsData.header} />
         <main className="font-quick flex-grow">
           {children}
         </main>
-        <Footer data={FOOTER}/>
+        <Footer data={siteSettingsData.footer}/>
         <WhatsAppButton />
       </body>
     </html>
