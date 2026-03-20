@@ -13,6 +13,7 @@
     "@datocms/cda-client": "^0.2.7",
     "@payloadcms/db-mongodb": "^3.78.0",
     "@payloadcms/next": "^3.78.0",
+    "@payloadcms/plugin-seo": "^3.79.0",
     "@payloadcms/richtext-lexical": "^3.78.0",
     "@payloadcms/storage-s3": "^3.78.0",
     "clsx": "^2.1.1",
