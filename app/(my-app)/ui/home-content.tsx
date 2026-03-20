@@ -1,26 +1,29 @@
 "use client";
 
-import CardTextMedia from "@/app/(my-app)/ui/card-text-media";
-import Gallery from "@/app/(my-app)/ui/gallery";
 import Form from "@/app/(my-app)/ui/form";
-import { ContentBlock } from "../lib/definitions";
 import { Suspense, useRef } from "react";
-
+import GalleryPortfolio from "./gallery-portfolio";
+import CardTextImage from "./card-text-image";
+import { Homepage } from "@/payload-types";
+import { Project, Service } from "@/payload-types";
 
 export default function HomeContent({
-    sections
-} : {
-    sections: ContentBlock[];
+  homepageData,
+}: {
+  homepageData: Homepage;
 }) {
   const formRef = useRef<HTMLDivElement>(null);
 
-  const videoBlock = sections?.find((s) => s.__typename === 'VideoBlockRecord');
-  const cardTextImg = sections?.find((s) => s.__typename === 'CardTextImgRecord');
-  const cardGallery = sections?.filter((s) => s.__typename === 'SectionProjectRecord');
-  
-  if (!videoBlock) return null;
-  if (!cardTextImg) return null;
-  if (!cardGallery) return null;
+  // map transforms each item (extracting one property)
+  // filter removes/keeps item based on a condition
+  const extractProjects = homepageData.featuredProjectsSection.projects?.map(
+    (project) =>
+      typeof project.referenceProject === "object" && project.referenceProject,
+  ).filter((item): item is Project => Boolean(item)); // filters array to remove all null and falsy values (null, false, undefined)
+  const extractServices = homepageData.servicesSection.services?.map(
+    (project) =>
+      typeof project.referenceService === "object" && project.referenceService,
+  ).filter((item): item is Service => Boolean(item));
 
   return (
     <div className="flex flex-col w-full items-center sm:items-start">
@@ -52,34 +55,34 @@ export default function HomeContent({
           null
         }
         formRef={formRef}
-        isMediaRight
+        // isMediaRight
       />
       {/* </div> */}
       <div
         id="last-works"
         className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px] bg-white"
       >
-        <h1 className="text-4xl lg:text-[44px]">{cardGallery[0].title}</h1>
+        <h1 className="text-4xl lg:text-[44px]">
+          {homepageData.featuredProjectsSection.title}
+        </h1>
         <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
         <Suspense fallback={null}>
-          <Gallery galleryItems={cardGallery[0].galleryItems || []} />
+          <GalleryPortfolio data={extractProjects ?? []} refProject />
         </Suspense>
       </div>
       <div
         id="services"
         className="flex flex-col w-full h-auto items-center py-16 px-5 lg:px-[56px]"
       >
-        <h1 className="text-4xl lg:text-[44px]">{cardGallery[1].title}</h1>
+        <h1 className="text-4xl lg:text-[44px]">
+          {homepageData.servicesSection.title}
+        </h1>
         <div className="w-7 h-[3px] bg-foreground mx-auto my-6"></div>
         <Suspense fallback={null}>
-          <Gallery
-            galleryItems={cardGallery[1].galleryItems || []}
-            hasTitle
-            removeBtn
-          />
+          <GalleryPortfolio data={extractServices ?? []} />
         </Suspense>
       </div>
       <Form innerRef={formRef} />
-    </>
+    </div>
   );
 }
