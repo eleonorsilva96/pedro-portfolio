@@ -1,16 +1,31 @@
-import type { GlobalConfig, UploadField } from "payload";
+import type { GlobalConfig } from "payload";
 
 import { videoField } from "@/fields/videoFields";
 import { imageField } from "@/fields/imageField";
+import { revalidateTag } from 'next/cache';
+
 
 export const Homepage: GlobalConfig = {
   slug: "homepage",
-  // Globals don't need 'admin.useAsTitle' because there is no list of items!
+  hooks: {
+    // event triggered when the content is changed (hit save button) 
+    afterChange: [
+      ({ doc, req }) => {
+        // safety check: avoid hitting the Next.js Cache API during bulk DB scripts or migrations
+        if (req.context?.skipRevalidate) return doc;
+
+        // when the data is saved on the MongoDB, immediately clear this specific cache tag in the front
+        revalidateTag('global_homepage', { expire: 0 });
+
+        return doc;
+      },
+    ],
+  },
   fields: [
     {
       ...videoField, // unpack all default properties to add a new one
       label: "Hero Video",
-    } as UploadField,
+    },
     {
       name: "aboutSection",
       type: "group",
