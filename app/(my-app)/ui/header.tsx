@@ -1,30 +1,24 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import clsx from "clsx";
 import { useState } from "react";
 import { useEffect } from "react";
 import Image from "next/image";
-import { HeaderNavigation } from "@/app/(my-app)/lib/definitions";
+import { SiteSetting } from "@/payload-types";
 
-export default function Header({
-  logo,
-  navLinks,
-}: {
-  logo: string;
-  navLinks: HeaderNavigation[];
-}) {
+export default function Header({ data }: { data: SiteSetting["header"] }) {
   const [show, setShow] = useState(false);
-  const [showCategories, setCategories] = useState<string | null>(null);
+  const [showDropdown, setDropdown] = useState<string | null>(null);
 
   // when component mounts
   useEffect(() => {
-    // remove scrollbar when menu list appears 
+    // remove scrollbar when mobile menu appears
     if (show) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
-    } 
-    
+    }
+
     // when component unmounts and menu is not open reset overflow style
     return () => {
       document.documentElement.style.overflow = "unset";
@@ -36,74 +30,104 @@ export default function Header({
     <header className="font-open sticky w-full h-20 bg-neutral-200 items-center justify-between px-4 z-50">
       <nav className="relative flex h-full items-center justify-between">
         <div id="logo" className="font-lemon text-xl text-primary-500">
-          <Link href="/">{logo}</Link>
+          <Link href="/">{data.logo}</Link>
         </div>
         <div
           id="links"
           className="hidden lg:flex items-center justify-around gap-10 uppercase font-bold text-neutral-500"
         >
-          {navLinks.map((link) => {
-            // has more than one link
-            if (link.categoryLinks.length > 0) {
-              return (
-                <div
-                  key={link.id}
-                  className="relative p-2"
-                  onMouseEnter={() => setCategories(link.id)}
-                  onMouseLeave={() => setCategories(null)}
-                >
-                  <span>
-                    {link.categoryLinks[0].link.__typename === "ServiceRecord" // check only the first element to know the category
-                      ? "Serviços"
-                      : "Portfólio"}
-                  </span>
-                  <div
-                    className={clsx(
-                      "absolute top-full -left-5 bg-gray-100 w-[120px] lg:w-fit flex flex-col gap-3 p-2",
-                      {
-                        // when hover the category show the corresponded links and hide the other one
-                        hidden: showCategories !== link.id,
-                        block: showCategories === link.id,
-                      }
-                    )}
+          {/* services */}
+          <div
+            className="relative p-2"
+            onMouseEnter={() => setDropdown(data.serviceGroup.title)}
+            onMouseLeave={() => setDropdown(null)}
+          >
+            <span>{data.serviceGroup.title}</span>
+            <div
+              className={clsx(
+                "absolute top-full -left-5 bg-gray-100 w-[120px] lg:w-fit flex flex-col gap-3 p-2",
+                {
+                  // when hover the category show the corresponded links and hide the other one
+                  hidden: showDropdown !== data.serviceGroup.title,
+                  block: showDropdown === data.serviceGroup.title,
+                },
+              )}
+            >
+              {data.serviceGroup.navServices?.map((link) => {
+                const title =
+                  typeof link.service === "object" ? link.service.title : null;
+                const url =
+                  typeof link.service === "object" && link.service.slug
+                    ? link.service.slug
+                    : null;
+
+                return (
+                  <Link
+                    key={link.id}
+                    className="whitespace-nowrap hover:text-primary-600"
+                    href={`/services/${url}`}
                   >
-                    {link.categoryLinks.map((categoryLink) => {
-                      return (
-                        <a
-                          key={categoryLink.id}
-                          className="whitespace-nowrap hover:text-primary-600"
-                          href={`/${
-                            link.categoryLinks[0].link.__typename ===
-                            "ServiceRecord"
-                              ? "services"
-                              : "portfolio"
-                          }/${categoryLink.link.slug}`}
-                        >
-                          {categoryLink.name}
-                        </a>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            } else {
-              return (
-                <Link
-                  key={link.id}
-                  href={`/${
-                    link.singleLink?.__typename === "AboutRecord"
-                      ? "about"
-                      : "contact"
-                  }`}
-                  className="p-2"
-                >
-                  {link.singleLink?.__typename === "AboutRecord"
-                    ? "Sobre mim"
-                    : "Contacto"}
-                </Link>
-              );
-            }
-          })}
+                    {title}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          {/* categories */}
+          <div
+            className="relative p-2"
+            onMouseEnter={() => setDropdown(data.categoryGroup.title)}
+            onMouseLeave={() => setDropdown(null)}
+          >
+            <span>{data.categoryGroup.title}</span>
+            <div
+              className={clsx(
+                "absolute top-full -left-5 bg-gray-100 w-[120px] lg:w-fit flex flex-col gap-3 p-2",
+                {
+                  // when hover the category show the corresponded links and hide the other one
+                  hidden: showDropdown !== data.categoryGroup.title,
+                  block: showDropdown === data.categoryGroup.title,
+                },
+              )}
+            >
+              {data.categoryGroup.navCategories?.map((link) => {
+                const title =
+                  typeof link.category === "object"
+                    ? link.category.title
+                    : null;
+                const url =
+                  typeof link.category === "object" && link.category.slug
+                    ? link.category.slug
+                    : null;
+
+                return (
+                  <Link
+                    key={link.id}
+                    className="whitespace-nowrap hover:text-primary-600"
+                    href={`/portfolio/${url}`}
+                  >
+                    {title}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          {/* about me */}
+          <div className="relative p-2">
+            <Link
+              href={`${data.aboutMeGroup.url ? data.aboutMeGroup.url : null}`}
+            >
+              {data.aboutMeGroup.title}
+            </Link>
+          </div>
+          {/* contact */}
+          <div className="relative p-2">
+            <Link
+              href={`${data.contactGroup.url ? data.contactGroup.url : null}`}
+            >
+              {data.contactGroup.title}
+            </Link>
+          </div>
         </div>
         {/* mobile */}
         <button
@@ -116,7 +140,7 @@ export default function Header({
         {/* mobile */}
         <div
           className={clsx(
-            'bg-neutral-200 absolute text-lg z-50 top-full -top-4 -left-4 flex flex-col h-screen w-screen lg:hidden',
+            "bg-neutral-200 absolute text-lg z-50 top-full -top-4 -left-4 flex flex-col h-screen w-screen lg:hidden",
             {
               hidden: show === false,
             },
@@ -130,83 +154,139 @@ export default function Header({
           >
             Home
           </Link>
-          {navLinks.map((link) => {
-            if (link.categoryLinks.length > 0) {
-              return (
-                <div
-                  key={link.id}
-                  id="category-menu"
-                  className="flex flex-col"
-                  onClick={() =>
-                    showCategories !== link.id
-                      ? setCategories(link.id)
-                      : setCategories(null)
-                  }
-                >
-                  <div
-                    id="category-label"
-                    className="w-full py-2 px-3 flex justify-between text-heading active:bg-gray-300"
-                  >
-                    <span>
-                      {link.categoryLinks[0].link.__typename === "ServiceRecord" // check only the first element to know the category
-                        ? "Serviços"
-                        : "Portfólio"}
-                    </span>
-
-                    <Image
-                      src="/arrow-down.svg"
-                      width={24}
-                      height={24}
-                      alt="Arrow down"
-                    />
-                  </div>
-                  <div
-                    id="category-items"
-                    className={clsx(
-                      "flex flex-col bg-neutral-300 rounded my-3 mx-3",
-                      {
-                        hidden: showCategories !== link.id,
-                        block: showCategories === link.id,
-                      }
-                    )}
-                  >
-                    {link.categoryLinks.map((categoryLink) => (
-                      <a
-                        key={categoryLink.id}
-                        href={`/${
-                          link.categoryLinks[0].link.__typename ===
-                          "ServiceRecord"
-                            ? "services"
-                            : "portfolio"
-                        }/${categoryLink.link.slug}`}
-                        onClick={() => setShow(false)}
-                        className="w-full py-2 pl-4 text-heading rounded hover:bg-primary-300 active:bg-gray-300"
-                      >
-                        {categoryLink.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            } else {
-              return (
-                <Link
-                  key={link.id}
-                  href={`/${
-                    link.singleLink?.__typename === "AboutRecord"
-                      ? "about"
-                      : "contact"
-                  }`}
-                  onClick={() => setShow(false)}
-                  className="w-full py-2 px-3 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
-                >
-                  {link.singleLink?.__typename === "AboutRecord"
-                    ? "Sobre mim"
-                    : "Contacto"}
-                </Link>
-              );
+          {/* services */}
+          {/* menu */}
+          <div
+            className="flex flex-col"
+            // if the menu is not open set the state to the related menu if it's open close it
+            onClick={() =>
+              showDropdown !== data.serviceGroup.title
+                ? setDropdown(data.serviceGroup.title)
+                : setDropdown(null)
             }
-          })}
+          >
+            <div
+              id="category-label"
+              className="w-full py-2 px-3 flex justify-between text-heading active:bg-gray-300"
+            >
+              <span>{data.serviceGroup.title}</span>
+
+              <Image
+                src="/arrow-down.svg"
+                width={24}
+                height={24}
+                alt="Arrow down"
+              />
+            </div>
+            {/* list */}
+            <div
+              id="category-items"
+              className={clsx(
+                "flex flex-col bg-neutral-300 rounded my-3 mx-3",
+                {
+                  // if the clicked menu is not the current hide it 
+                  hidden: showDropdown !== data.serviceGroup.title,
+                  block: showDropdown === data.serviceGroup.title,
+                },
+              )}
+            >
+              {data.serviceGroup.navServices?.map((link) => {
+                const title =
+                  typeof link.service === "object"
+                    ? link.service.title
+                    : null;
+                const url =
+                  typeof link.service === "object" && link.service.slug
+                    ? link.service.slug
+                    : null;
+
+                return (
+                  <Link
+                    key={link.id}
+                    href={`/services/${url}`}
+                    onClick={() => setShow(false)}
+                    className="w-full py-2 pl-4 text-heading rounded hover:bg-primary-300 active:bg-gray-300"
+                  >
+                    {title}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          {/* categories */}
+          {/* menu */}
+          <div
+            className="flex flex-col"
+            // if the menu is not open set the state to the related menu if it's open close it
+            onClick={() =>
+              showDropdown !== data.categoryGroup.title
+                ? setDropdown(data.categoryGroup.title)
+                : setDropdown(null)
+            }
+          >
+            <div
+              id="category-label"
+              className="w-full py-2 px-3 flex justify-between text-heading active:bg-gray-300"
+            >
+              <span>{data.categoryGroup.title}</span>
+
+              <Image
+                src="/arrow-down.svg"
+                width={24}
+                height={24}
+                alt="Arrow down"
+              />
+            </div>
+            {/* list */}
+            <div
+              id="category-items"
+              className={clsx(
+                "flex flex-col bg-neutral-300 rounded my-3 mx-3",
+                {
+                  hidden: showDropdown !== data.categoryGroup.title,
+                  block: showDropdown === data.categoryGroup.title,
+                },
+              )}
+            >
+              {data.categoryGroup.navCategories?.map((link) => {
+                const title =
+                  typeof link.category === "object"
+                    ? link.category.title
+                    : null;
+                const url =
+                  typeof link.category === "object" && link.category.slug
+                    ? link.category.slug
+                    : null;
+
+                return (
+                  <Link
+                    key={link.id}
+                    href={`/portfolio/${url}`}
+                    onClick={() => setShow(false)}
+                    className="w-full py-2 pl-4 text-heading rounded hover:bg-primary-300 active:bg-gray-300"
+                  >
+                    {title}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+          {/* about me */}
+          <Link
+            href={`/${data.aboutMeGroup.url ? data.aboutMeGroup.url : null}`}
+            onClick={() => setShow(false)}
+            className="w-full py-2 px-3 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
+          >
+            {data.aboutMeGroup.title}
+          </Link>
+          {/* contact */}
+          <Link
+            href={`/${data.contactGroup.url ? data.contactGroup.url : null}`}
+            onClick={() => setShow(false)}
+            className="w-full py-2 px-3 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
+          >
+            {data.contactGroup.title}
+          </Link>
         </div>
       </nav>
     </header>
