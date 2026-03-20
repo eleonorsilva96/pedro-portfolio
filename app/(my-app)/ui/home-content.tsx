@@ -23,9 +23,20 @@ export default function HomeContent({
   if (!cardGallery) return null;
 
   return (
-    <>
-      <div className="relative w-full h-[1000px] lg:h-[800px]">
-        <div className="text-center">work in progress</div>
+    <div className="flex flex-col w-full items-center sm:items-start">
+      <div className="relative w-full h-[1000px] md:h-[800px] 2xl:h-[1000px]">
+        <video
+          src={
+            (typeof homepageData.video === "object" &&
+              homepageData.video.url) ||
+            ""
+          }
+          className="w-full h-full object-cover object-center"
+          autoPlay
+          loop
+          muted
+          playsInline // autoplay for iOS Safari
+        />
 
         {/* to avoid showing control panel */}
         <div className="absolute inset-0 z-10 bg-transparent"></div>
