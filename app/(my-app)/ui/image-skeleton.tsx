@@ -3,9 +3,9 @@
 import Image, { ImageProps } from "next/image";
 import { useState } from "react";
 
-// to be able to use custom props we need to extend ImagePros 
+// create a interface that extends Image props and a custom prop 
 interface ImageSkeletonProps extends ImageProps {
-  removeOpacity?: boolean
+  removeOpacity?: boolean,
 }
 
 export default function ImageSkeleton({ className, alt, removeOpacity, ...props }: ImageSkeletonProps) {

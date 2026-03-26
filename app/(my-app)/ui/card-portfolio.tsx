@@ -1,54 +1,51 @@
-import {
-  PortfolioGalleryType,
-  GalleryItems,
-  GalleryRelatedProjects,
-} from "@/app/(my-app)/lib/definitions";
 import ImageSkeleton from "./image-skeleton";
+import { Project } from "@/payload-types";
+import { ImagesBlock } from "./gallery-portfolio";
+import clsx from "clsx";
 
 export default function CardPortfolio({
-  project,
+  item,
 }: {
-  project: PortfolioGalleryType | GalleryItems | GalleryRelatedProjects;
+  item: (null | Project | NonNullable<ImagesBlock['images']>[number]);
 }) {
-  let urlProps = null;
-  let widthProps = null;
-  let heightProps = null;
-  let altProps = null;
-  let titleProps = null;
+  if (!item) return null;
 
-  if (project.__typename === "GalleryPortfolioRecord") {
-    urlProps = project.projectId.thumbnail.url;
-    widthProps = project.projectId.thumbnail.width;
-    heightProps = project.projectId.thumbnail.height;
-    altProps = project.projectId.thumbnail.alt;
-    titleProps = project.projectId.title;
-  } else if (project.__typename === "GalleryItemRecord") {
-    urlProps = project.asset.url;
-    widthProps = project.asset.width;
-    heightProps = project.asset.height;
-    altProps = project.asset.alt;
-    titleProps = project.title;
-  } else {
-    urlProps = project.project.thumbnail.url;
-    widthProps = project.project.thumbnail.width;
-    heightProps = project.project.thumbnail.height;
-    altProps = project.project.thumbnail.alt;
-    titleProps = project.project.title;
+  function isProject(item: Project | NonNullable<ImagesBlock['images']>[number]): item is Project {
+    return 'slug' in item;
   }
+
+  const projectTitle = isProject(item) ? item.title : null;
+  const projectImage = isProject(item) && typeof item.thumbnail === 'object' ? item.thumbnail : null;
+  const imageBlock = !isProject(item) && typeof item.image === 'object' ? item.image : null;
 
   return (
     <div
-      className="relative aspect-[4/2.65] overflow-hidden w-full h-auto rounded-lg shadow-lg bg-purple-300 group cursor-pointer"
+      className={clsx(
+        "relative aspect-[4/2.65] overflow-hidden w-full h-auto rounded-lg shadow-lg cursor-pointer group",
+        {
+          'bg-purple-300' : isProject(item),
+        }
+      )}
     >
       <ImageSkeleton
-        src={urlProps}
-        width={widthProps}
-        height={heightProps}
-        alt={altProps}
-        className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
+        src={projectImage?.url || imageBlock?.url || ''}
+        width={projectImage?.width || imageBlock?.width || undefined}
+        height={projectImage?.height || imageBlock?.height || undefined}
+        alt={projectImage?.alt || imageBlock?.alt || projectTitle || ''}
+        className={clsx(
+          {
+            "w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0" : isProject(item),
+          }
+        )}
+        removeOpacity={!isProject(item)}
       />
-      <div className="absolute opacity-0 group-hover:opacity-100 inset-0 flex items-center justify-center transition-opacity duration-300">
-        <span className="text-center">{titleProps}</span>
+      <div className={clsx(
+        "absolute opacity-0 group-hover:opacity-100 inset-0 flex items-center justify-center transition-opacity duration-300",
+        {
+          'hidden': !isProject(item),
+        }
+      )}>
+        <span className="text-center">{projectTitle}</span>
       </div>
     </div>
   );
