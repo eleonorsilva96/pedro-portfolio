@@ -27,10 +27,17 @@ body {
   min-height: 100vh;
   color: var(--foreground);
 }
-/* default styles wrapped in a layer to let utility classes override them */
+
+/* put the styles wrapped in a layer to let utility classes override them */
 @layer base {
   a {
     color: inherit;
     text-decoration: none;
+  }
+}
+
+@layer components {
+  .rich-text a {
+    @apply text-stone-900 underline hover:text-stone-700 transition-colors;
   }
 }
