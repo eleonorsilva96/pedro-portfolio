@@ -18,7 +18,7 @@ export default function SectionContent({
   // when the service form is visible attach it to the ref and pass it on the CardTextImage to create a smooth anchor 
   const formRef = useRef<HTMLDivElement>(null);
 
-  const description = content.docType === 'AboutMe' || content.docType === 'Service' ? <RichText data={content.description} /> : undefined;
+  const description = content.docType === 'AboutMe' || content.docType === 'Service' ? <RichText data={content.description} className="rich-text" /> : undefined;
 
   return (
     <>

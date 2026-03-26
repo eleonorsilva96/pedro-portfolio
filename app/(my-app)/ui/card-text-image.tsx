@@ -26,7 +26,7 @@ export default function CardTextImage({
   formRef?: RefObject<HTMLDivElement | null>;
 }) {
   // if there is no image, don't render the component
-  if (!image?.url) return null;
+  if (!image) return null;
 
   const scrollToSection = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ export default function CardTextImage({
   const imageContent = (
     <div className="relative w-full aspect-[9/16] max-h-[600px] lg:max-h-[850px] overflow-hidden">
       <Image
-        src={image.url}
+        src={image.url || ''}
         alt={image.alt || title}
         fill // ignore its original file dimensions and stretch to the container
         className="object-cover"
