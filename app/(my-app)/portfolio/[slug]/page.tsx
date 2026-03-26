@@ -11,7 +11,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 
-import ModalImageMedia from "../../ui/modal-image-media";
+import Modal from "../../ui/modal";
 
 // returns a single Category object or null if it doesn't exists
 async function getCategoryBySlug(slug: string): Promise<Category | null> {
@@ -210,7 +210,7 @@ export default async function PortfolioPage({
       )}
       {mainContent}
       {modalGallery && modalContent ? (
-        <ModalImageMedia modalContent={modalContent} modalGallery={modalGallery} modalId={id} category={category?.slug || null} projectModal />
+        <Modal modalContent={modalContent} modalGallery={modalGallery} modalId={id} category={category?.slug || null} projectModal />
       ) : ''}
     </div>
   );

@@ -4,7 +4,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { unstable_cache } from "next/cache";
 import { Project } from "@/payload-types";
-import ModalImageMedia from "@/app/(my-app)/ui/modal-image-media";
+import Modal from "@/app/(my-app)/ui/modal";
 import { notFound } from 'next/navigation';
 
 
@@ -144,7 +144,7 @@ export default async function ProjectPage({
         category={slug}
       />
       {id && (
-        <ModalImageMedia
+        <Modal
           modalContent={imageModal || sectionLink || sectionImage || null}
           modalGallery={imagesModal || sectionsLink || sectionsImage || []}
           modalId={id}
