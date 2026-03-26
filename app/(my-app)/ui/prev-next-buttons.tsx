@@ -1,15 +1,12 @@
 "use client";
 
-import {
-  PortfolioGalleryType,
-  ExternalVideoBlock,
-  GalleryProjectBlock,
-  GalleryItems
-} from "../lib/definitions";
 import clsx from "clsx";
 import ArrowLeft from "./icons/arrow-left";
 import ArrowRight from "./icons/arrow-right";
 import Link from "next/link";
+import { Project } from "@/payload-types";
+import { ImagesBlock } from "./gallery-portfolio";
+import { SectionsBlock } from "./sections";
 
 export default function PrevNextButtons({
   gallery,
@@ -17,51 +14,60 @@ export default function PrevNextButtons({
   category,
   project,
   isTextBtn,
-  isModal,
   hidePrev,
   hideNext,
-  isProject,
+  projectModal,
+  isProjectStyles,
 }: {
-  gallery: (PortfolioGalleryType | GalleryProjectBlock | ExternalVideoBlock | GalleryItems)[];
-  // gallery: (PortfolioGalleryType | GalleryItemsProjectBlock | ContentBlock)[];
-  currentId: string;
+  gallery: (
+    | Project
+    | NonNullable<ImagesBlock["images"]>[number]
+    | NonNullable<NonNullable<SectionsBlock["sections"]>[number]["sectionContent"]>[number]
+  )[];
+  currentId: string | undefined;
   category: string;
   project?: string | null;
   isTextBtn?: boolean;
   isModal?: boolean;
   hidePrev?: boolean;
   hideNext?: boolean;
-  isProject?: boolean;
+  projectModal?: boolean;
+  isProjectStyles?: boolean;
 }) {
   let disableBtn = null;
-  let prevSlug = null;
-  let nextSlug = null;
   let urlPrev = "#";
   let urlNext = "#";
   let prevProject = null;
   let nextProject = null;
 
+  console.log("gallery", gallery);
+
   if (!gallery) return null;
 
-  console.log("GALLERY", gallery);
-  
-  const findId = (item: PortfolioGalleryType | GalleryProjectBlock | ExternalVideoBlock | GalleryItems) => {
-    if (item.__typename === 'GalleryPortfolioRecord') {
-      return item.projectId.id === currentId;
-    } else {
-      return item.id === currentId;
-    }
-  };
-  
-  const currentIndex = gallery.findIndex(findId);
-  const galleryLength = gallery?.length - 1;
+  // type guard
+  function isProject(
+    item:
+      | Project
+      | NonNullable<ImagesBlock["images"]>[number]
+      | NonNullable<NonNullable<SectionsBlock["sections"]>[number]["sectionContent"]>[number],
+  ): item is Project {
+    return "slug" in item;
+  }
 
-  console.log("CURRENT INDEX", currentIndex);
+  // i need to check if the element is a object because it could be a string
+  const currentIndex = gallery.findIndex((element) => element.id === currentId); // find the index of the current element/project
+  const galleryLength = gallery.length - 1;
 
   if (currentIndex === 0) {
-    disableBtn = "prev";
-    prevProject = null;
-    nextProject = gallery[currentIndex + 1];
+    if (gallery.length === 1) {
+      disableBtn = "both";
+      prevProject = null;
+      nextProject = null;
+    } else {
+      disableBtn = "prev";
+      prevProject = null;
+      nextProject = gallery[currentIndex + 1];
+    }
   } else if (currentIndex === galleryLength) {
     disableBtn = "next";
     prevProject = gallery[currentIndex - 1];
@@ -71,44 +77,40 @@ export default function PrevNextButtons({
     nextProject = gallery[currentIndex + 1];
   }
 
-  const getSlug = (item: PortfolioGalleryType | GalleryProjectBlock | ExternalVideoBlock | GalleryItems | null) => {
-    if(!item) return "";
-    if (item.__typename === 'GalleryPortfolioRecord') {
-      return item.projectId.project || "";
-    } else if (item.__typename === 'ExternalVideoTitleRecord' || item.__typename === 'GalleryItemRecord') {
-      if (item.slug) {
-        return item.slug || "";
+  console.log("prevProject");
+  console.log(prevProject);
+  console.log("nextProject");
+  console.log(nextProject);
+
+  if (prevProject) {
+    if (isProject(prevProject)) {
+      if (projectModal) {
+        urlPrev = `/portfolio/${category}?id=${prevProject.id}`;
       } else {
-        return item.id || "";
+        urlPrev = `/portfolio/${category}/${prevProject.slug}`;
       }
-    } 
-    else if (item.__typename === 'GalleryProjectRecord') {
-      return item.id || "";
-    }
-  };
-
-  prevSlug = getSlug(prevProject);
-  nextSlug = getSlug(nextProject);
-
-  if (isModal) {
-    if (project) {
-      urlPrev = `/portfolio/${category}/${project}?id=${prevSlug}`;
-      urlNext = `/portfolio/${category}/${project}?id=${nextSlug}`;
     } else {
-      urlPrev = `/portfolio/${category}?id=${prevSlug}`;
-      urlNext = `/portfolio/${category}?id=${nextSlug}`;
+      urlPrev = `/portfolio/${category}/${project}?id=${prevProject.id}`;
     }
-  // slide nav
-  } else {
-    urlPrev = `/portfolio/${category}/${prevSlug}`;
-    urlNext = `/portfolio/${category}/${nextSlug}`;
+  }
+
+  if (nextProject) {
+    if (isProject(nextProject)) {
+      if (projectModal) {
+        urlNext = `/portfolio/${category}?id=${nextProject.id}`;
+      } else {
+        urlNext = `/portfolio/${category}/${nextProject.slug}`;
+      }
+    } else {
+      urlNext = `/portfolio/${category}/${project}?id=${nextProject.id}`;
+    }
   }
 
   const prevButtonType = isTextBtn ? (
     <span
       className={clsx({
-        "text-neutral-400": disableBtn === "prev",
-        "text-neutral-900": disableBtn !== "prev",
+        "text-neutral-400": disableBtn === "prev" || disableBtn === "both",
+        "text-neutral-900": disableBtn !== "prev" && disableBtn !== "both",
       })}
     >
       Anterior
@@ -116,14 +118,15 @@ export default function PrevNextButtons({
   ) : (
     <div className="relative z-50">
       <ArrowLeft
-        className={clsx(
-          'w-10 h-10 lg:w-12 lg:h-12',
-          {
-            "text-neutral-900": disableBtn !== "prev" && isProject,
-            "text-neutral-500": disableBtn === "prev" && (!isProject || isProject),
-            "text-neutral-100": disableBtn !== "prev" && !isProject,
-          }
-        )}
+        className={clsx("w-10 h-10 lg:w-12 lg:h-12", {
+          "text-neutral-900":
+            disableBtn !== "prev" && disableBtn !== "both" && isProjectStyles,
+          "text-neutral-500":
+            disableBtn === "prev" ||
+            (disableBtn === "both" && (!isProjectStyles || isProjectStyles)),
+          "text-neutral-100":
+            disableBtn !== "prev" && disableBtn !== "both" && !isProjectStyles,
+        })}
       />
       <div className="absolute inset-0 -z-10 w-10 h-10 lg:w-12 lg:h-12 bg-neutral-100/30 rounded-full"></div>
     </div>
@@ -132,8 +135,8 @@ export default function PrevNextButtons({
   const nextButtonType = isTextBtn ? (
     <span
       className={clsx({
-        "text-neutral-400": disableBtn === "next",
-        "text-neutral-900": disableBtn !== "next",
+        "text-neutral-400": disableBtn === "next" || disableBtn === "both",
+        "text-neutral-900": disableBtn !== "next" && disableBtn !== "both",
       })}
     >
       Próximo
@@ -141,14 +144,15 @@ export default function PrevNextButtons({
   ) : (
     <div className="relative z-50">
       <ArrowRight
-        className={clsx(
-          'w-10 h-10 lg:w-12 lg:h-12',
-          {
-            "text-neutral-900": disableBtn !== "next" && isProject,
-            "text-neutral-500": disableBtn === "next" && (!isProject || isProject),
-            "text-neutral-100": disableBtn !== "next"&& !isProject,
-          }
-        )}
+        className={clsx("w-10 h-10 lg:w-12 lg:h-12", {
+          "text-neutral-900":
+            disableBtn !== "next" && disableBtn !== "both" && isProjectStyles,
+          "text-neutral-500":
+            disableBtn === "next" ||
+            (disableBtn === "both" && (!isProjectStyles || isProjectStyles)),
+          "text-neutral-100":
+            disableBtn !== "next" && disableBtn !== "both" && !isProjectStyles,
+        })}
       />
       <div className="absolute inset-0 -z-10 w-10 h-10 lg:w-12 lg:h-12 bg-neutral-100/30 rounded-full"></div>
     </div>
@@ -160,7 +164,8 @@ export default function PrevNextButtons({
         href={urlPrev}
         className={clsx({
           hidden: hidePrev === true,
-          "pointer-events-none cursor-not-allowed": disableBtn === "prev",
+          "pointer-events-none cursor-not-allowed":
+            disableBtn === "prev" || disableBtn === "both",
         })}
       >
         {prevButtonType}
@@ -170,8 +175,8 @@ export default function PrevNextButtons({
         className={clsx({
           hidden: hideNext === true,
           "pointer-events-none opacity-50 cursor-not-allowed":
-            disableBtn === "next",
-          "opacity-100": disableBtn !== "next",
+            disableBtn === "next" || disableBtn === "both",
+          "opacity-100": disableBtn !== "next" && disableBtn !== "both",
         })}
       >
         {nextButtonType}
@@ -183,7 +188,8 @@ export default function PrevNextButtons({
         href={urlPrev}
         className={clsx({
           hidden: hidePrev === true,
-          "pointer-events-none cursor-not-allowed": disableBtn === "prev",
+          "pointer-events-none cursor-not-allowed":
+            disableBtn === "prev" || disableBtn === "both",
         })}
       >
         {prevButtonType}
@@ -193,20 +199,14 @@ export default function PrevNextButtons({
         className={clsx({
           hidden: hideNext === true,
           "pointer-events-none opacity-50 cursor-not-allowed":
-            disableBtn === "next",
-          "opacity-100": disableBtn !== "next",
+            disableBtn === "next" || disableBtn === "both",
+          "opacity-100": disableBtn !== "next" && disableBtn !== "both",
         })}
       >
         {nextButtonType}
       </Link>
     </>
   );
-
-  console.log("urlPrev", urlPrev);
-  console.log("urlNext", urlNext);
-
-  console.log("prevSlug", prevSlug);
-  console.log("nextSlug", nextSlug);
 
   return <>{buttonsLayout}</>;
 }
