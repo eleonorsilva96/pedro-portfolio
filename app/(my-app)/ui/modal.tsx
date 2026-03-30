@@ -12,6 +12,7 @@ import PrevNextButtons from "./prev-next-buttons";
 import { ImagesBlock } from "./gallery-portfolio";
 import { SectionsBlock } from "./sections";
 import ReactPlayer from "react-player";
+import { useScrollLock } from "../lib/hooks";
 
 export default function Modal({
   modalContent,
@@ -41,7 +42,9 @@ export default function Modal({
   projectModal?: boolean;
 }) {
   const [isExpand, setExpand] = useState<boolean>(false);
-
+  // lock scroll only if content exists
+  useScrollLock(Boolean(modalId && category && modalContent));
+  
   if (!modalId || !category || !modalContent) return null;
 
   function isProjectType(
