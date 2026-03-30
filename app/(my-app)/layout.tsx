@@ -6,6 +6,7 @@ import WhatsAppButton from "./ui/whatsapp-button";
 import { getPayload } from "payload";
 import config from '@payload-config';
 import { unstable_cache } from "next/cache";
+import { SiteSettingsContext } from "./context/SiteSettingsContext";
 
 async function getSiteSettingsData() {
   const payload = await getPayload({ config });
@@ -45,7 +46,10 @@ export default async function RootLayout({
       >
         <Header data={siteSettingsData.header} />
         <main className="font-quick flex-grow">
-          {children}
+          {/* wrap all components with context provider to have access to the site settings contact info if needed */}
+          <SiteSettingsContext value={siteSettingsData.contactSection}>
+            {children}
+          </SiteSettingsContext>
         </main>
         <Footer data={siteSettingsData.footer}/>
         <WhatsAppButton />

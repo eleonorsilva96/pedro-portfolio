@@ -2,7 +2,8 @@
 
 import { sendEmail, State } from "@/app/(my-app)/lib/actions";
 import clsx from "clsx";
-import { RefObject, useActionState, useState } from "react";
+import { RefObject, useActionState, useContext, useState } from "react";
+import { SiteSettingsContext } from "../context/SiteSettingsContext";
 
 export default function Form({ 
   hasBgWhite,
@@ -21,6 +22,7 @@ export default function Form({
   // create a state object to know which error input was touched that will receive property names with a boolean value
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   let globalMessage = null;
+  const contactDetails = useContext(SiteSettingsContext)
 
   // access the current state, copy added properties and add new property
   const handleFocus = (field: string) => {
@@ -58,7 +60,7 @@ export default function Form({
         }
       )}
     >
-      <h1 className="text-4xl lg:text-[44px] text-center">Pede um orçamento gratis</h1>
+      <h1 className="text-4xl lg:text-[44px] text-center">{contactDetails?.formTitle}</h1>
       <div className="w-7 h-[3px] bg-foreground mx-auto my-5"></div>
       <form
         onSubmit={() => setTouched({})}
@@ -170,7 +172,7 @@ export default function Form({
             type="submit"
             className="font-mulish font-medium w-full rounded-full h-12 bg-primary-500 hover:bg-primary-600 cursor-pointer text-white mt-8"
           >
-            Submeter
+            {contactDetails?.buttonText}
           </button>
         </div>
       </form>
