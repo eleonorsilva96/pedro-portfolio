@@ -11,9 +11,7 @@ export default function Close({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  // const currentScroll = window.scrollY;
-  // console.log("current scroll close", currentScroll);
-
+  
   const handleClose = () => {
     const savedPosition = sessionStorage.getItem("projectScrollPos");
     // remove url param to close Modal

@@ -47,8 +47,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
 
   const homepageData = (await getCachedHomepageData());
-
-  console.log("Homepage Data", homepageData);
   
   return <HomeContent homepageData={homepageData} />;
 }
