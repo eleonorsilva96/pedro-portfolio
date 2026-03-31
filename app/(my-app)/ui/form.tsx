@@ -22,7 +22,7 @@ export default function Form({
   // create a state object to know which error input was touched that will receive property names with a boolean value
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   let globalMessage = null;
-  const contactDetails = useContext(SiteSettingsContext)
+  const contactDetails = useContext(SiteSettingsContext);
 
   // access the current state, copy added properties and add new property
   const handleFocus = (field: string) => {

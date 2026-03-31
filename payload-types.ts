@@ -808,9 +808,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
-export interface SiteSetting {
+export interface  SiteSetting {
   id: string;
   favicon: string | Media;
+  titleSuffix: string;
   header: {
     logo: string;
     serviceGroup: {
@@ -1015,6 +1016,7 @@ export interface Privacy {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   favicon?: T;
+  titleSuffix?: T;
   header?:
     | T
     | {

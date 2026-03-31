@@ -37,6 +37,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const favicon = typeof siteSettings.favicon === 'object' ? siteSettings.favicon : null;
 
   return {
+    title: {
+      template: `%s ${siteSettings.titleSuffix}`,
+      default: siteSettings.titleSuffix.replace('- ', ''),
+    },
     icons: {
       icon: favicon?.url || 'app/favicon.ico',
     }

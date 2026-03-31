@@ -68,7 +68,7 @@ export default buildConfig({
         'about-me', 'contact', 'homepage'
       ],
       uploadsCollection: 'media',
-      generateTitle: ({ doc }) => `Pedro A. Martins — ${doc.title}`,
+      generateTitle: ({ doc }) => `${doc.title}`,
       generateDescription: ({ doc }) => doc.excerpt,
       generateImage: ({ doc }) => doc?.featuredImage,
     })

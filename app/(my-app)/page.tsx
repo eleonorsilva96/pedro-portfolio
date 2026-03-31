@@ -2,7 +2,7 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { unstable_cache } from "next/cache";
-import { Metadata } from 'next'
+import { Metadata } from 'next';
 
 import HomeContent from "./ui/home-content";
 
@@ -31,12 +31,11 @@ export const getCachedHomepageData = unstable_cache(
 
 export async function generateMetadata(): Promise<Metadata> {
   const homepage = await getCachedHomepageData();
-  
   return {
-    title: homepage.meta?.title || 'Pedro A. Martins — Homepage',
+    title: (homepage.meta?.title || 'Homepage') + ' — Pedro A. Martins',
     description: homepage.meta?.description,
     openGraph: {
-      title: homepage.meta?.title || 'Pedro A. Martins — Homepage',
+      title: (homepage.meta?.title || 'Homepage') + ' — Pedro A. Martins',
       // add condition to omit description if it doesn't exist
       ...(homepage.meta?.description && { description: homepage.meta.description }), 
       images: typeof homepage.meta?.image === 'object' && homepage.meta?.image?.url ? [{ url: homepage.meta.image.url }] : [],

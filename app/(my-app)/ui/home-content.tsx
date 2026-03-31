@@ -36,6 +36,7 @@ export default function HomeContent({
           }
           className="w-full h-full object-cover object-center"
           autoPlay
+          preload="auto"
           loop
           muted
           playsInline // autoplay for iOS Safari

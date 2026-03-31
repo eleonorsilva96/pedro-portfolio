@@ -30,6 +30,12 @@ export const SiteSettings: GlobalConfig = {
       required: true,
     },
     {
+      name: 'titleSuffix',
+      type: 'text',
+      required: true,
+      defaultValue: '— Pedro A. Martins'
+    },
+    {
       type: 'tabs',
       tabs: [
         // header

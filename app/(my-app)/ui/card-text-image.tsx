@@ -69,6 +69,7 @@ export default function CardTextImage({
         className="object-cover"
         // optimize image size for each device by telling the browser the image is full-screen on mobile but half-screen on desktop
         sizes="(max-width: 1024px) 100vw, 50vw"
+        priority
       />
     </div>
   );
