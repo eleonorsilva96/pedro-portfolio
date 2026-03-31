@@ -810,6 +810,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteSetting {
   id: string;
+  favicon: string | Media;
   header: {
     logo: string;
     serviceGroup: {
@@ -1013,6 +1014,7 @@ export interface Privacy {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  favicon?: T;
   header?:
     | T
     | {

@@ -24,6 +24,12 @@ export const SiteSettings: GlobalConfig = {
   },
   fields: [
     {
+      name: "favicon",
+      type: "upload",
+      relationTo: "media",
+      required: true,
+    },
+    {
       type: 'tabs',
       tabs: [
         // header

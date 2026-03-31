@@ -7,6 +7,7 @@ import { getPayload } from "payload";
 import config from '@payload-config';
 import { unstable_cache } from "next/cache";
 import { SiteSettingsContext } from "./context/SiteSettingsContext";
+import { Metadata } from "next";
 
 async function getSiteSettingsData() {
   const payload = await getPayload({ config });
@@ -30,6 +31,18 @@ export const getCachedSiteSettings = unstable_cache(
     revalidate: 86400, // auto-revalidate every 24 hours
   }
 );
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteSettings = await getCachedSiteSettings();
+  const favicon = typeof siteSettings.favicon === 'object' ? siteSettings.favicon : null;
+
+  return {
+    icons: {
+      icon: favicon?.url || 'app/favicon.ico',
+    }
+  }
+
+}
 
 export default async function RootLayout({
   children,
