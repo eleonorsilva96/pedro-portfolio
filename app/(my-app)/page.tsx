@@ -1,7 +1,6 @@
 
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { unstable_cache } from "next/cache";
 import { Metadata } from 'next';
 
 import HomeContent from "./ui/home-content";
@@ -17,20 +16,8 @@ async function getHomepageData() {
   return result || null;
 }
 
-export const getCachedHomepageData = unstable_cache(
-  // function with the request
-  async () => getHomepageData(),
-  // key array to facilitate the finding of the cached data
-  ["homepage-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["global_homepage"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
-
 export async function generateMetadata(): Promise<Metadata> {
-  const homepage = await getCachedHomepageData();
+  const homepage = await getHomepageData();
   return {
     title: (homepage.meta?.title || 'Homepage') + ' — Pedro A. Martins',
     description: homepage.meta?.description,
@@ -45,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
 
-  const homepageData = (await getCachedHomepageData());
+  const homepageData = (await getHomepageData());
   
   return <HomeContent homepageData={homepageData} />;
 }

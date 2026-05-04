@@ -3,24 +3,9 @@ import { slugField } from '@/fields/slugField';
 
 import { VideoBlock } from '../blocks/Video';
 import { ExternalLinkBlock } from '../blocks/ExternalLink';
-import { revalidateTag } from 'next/cache';
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
-  hooks: {
-    // event triggered when the content is changed (hit save button) 
-    afterChange: [
-      ({ doc, req }) => {
-        // safety check: avoid hitting the Next.js Cache API during bulk DB scripts or migrations
-        if (req.context?.skipRevalidate) return doc;
-
-        // when the data is saved on the MongoDB, immediately clear this specific cache tag in the front
-        revalidateTag('collection_categories', { expire: 0 });
-
-        return doc;
-      },
-    ],
-  },
   admin: {
     // title in admin
     useAsTitle: 'title',

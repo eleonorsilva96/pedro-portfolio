@@ -1,7 +1,6 @@
 import { getPayload } from "payload";
 import config from '@payload-config';
 import { Metadata } from 'next'
-import { unstable_cache } from "next/cache";
 import { notFound } from 'next/navigation';
 
 import SectionContent from "@/app/(my-app)/ui/section-content";
@@ -26,18 +25,6 @@ async function getServiceData(slug: string) {
   return result.docs[0] || null;
 }
 
-export const getCachedServiceBySlug = unstable_cache(
-  // function with the request
-  async (slug: string) => getServiceData(slug),
-  // key array to facilitate the finding of the cached data
-  ['service-by-slug-cache'], 
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ['collection_services'], 
-    revalidate: 86400, // auto-revalidate every 24 hours
-  }
-);
-
 export async function generateMetadata({
   params,
 }: {
@@ -45,7 +32,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
-  const service = await getCachedServiceBySlug(slug);
+  const service = await getServiceData(slug);
 
   if (!service) {
     return { title: 'Service Not Found' }
@@ -71,7 +58,7 @@ export default async function ServicesPage({
   // inside the route props get the dynamic url 
   const { slug } = await params;
 
-  const serviceData = (await getCachedServiceBySlug(slug));
+  const serviceData = (await getServiceData(slug));
 
   if (!serviceData) {
     notFound();

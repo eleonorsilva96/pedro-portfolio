@@ -2,7 +2,6 @@ import ProjectContentView from "@/app/(my-app)/ui/project-content-view";
 import { Metadata } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { unstable_cache } from "next/cache";
 import { Project } from "@/payload-types";
 import Modal from "@/app/(my-app)/ui/modal";
 import { notFound } from 'next/navigation';
@@ -43,31 +42,6 @@ async function getProjects(slug: string): Promise<Project[]> {
   return result.docs;
 }
 
-export const getCachedProjectBySlug = 
-unstable_cache(
-  // function with the request
-  async (projectSlug: string) => getProjectBySlug(projectSlug),
-  // key array to facilitate the finding of the cached data
-  ["project-by-slug-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["collection_projects"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
-
-export const getCachedProjects = unstable_cache(
-  // function with the request
-  async (slug: string) => getProjects(slug),
-  // key array to facilitate the finding of the cached data
-  ["projects-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["collection_projects"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
-
 export async function generateMetadata({
   params,
 }: {
@@ -75,7 +49,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { projectSlug } = await params;
 
-  const project = await getCachedProjectBySlug(projectSlug);
+  const project = await getProjectBySlug(projectSlug);
 
   if (!project) {
     return { title: 'Project Not Found' }
@@ -106,8 +80,8 @@ export default async function ProjectPage({
 
   // get both queries data at the same time using Promise.all
   const [project, projects] = await Promise.all([
-    getCachedProjectBySlug(projectSlug),
-    getCachedProjects(slug),
+    getProjectBySlug(projectSlug),
+    getProjects(slug),
   ]);
 
   if (!project) {

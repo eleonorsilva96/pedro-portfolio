@@ -1,24 +1,9 @@
 import type { GlobalConfig } from "payload";
 import { headerFields } from "@/fields/headerFields";
 import { footerFields } from "@/fields/footerFields";
-import { revalidateTag } from 'next/cache';
 
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
-  hooks: {
-    // event triggered when the content is changed in the cms panel (hit save button) 
-    afterChange: [
-      ({ doc, req }) => {
-        // safety check: avoid hitting the Next.js Cache API during bulk DB scripts or migrations
-        if (req.context?.skipRevalidate) return doc;
-
-        // when the data is saved on the MongoDB, immediately clear this specific cache tag in the front
-        revalidateTag('global_site_settings', { expire: 0 }); 
-
-        return doc;
-      },
-    ],
-  },
   access: {
     read: () => true,
   },

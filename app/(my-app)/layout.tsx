@@ -5,7 +5,6 @@ import Footer from "@/app/(my-app)/ui/footer";
 import WhatsAppButton from "./ui/whatsapp-button";
 import { getPayload } from "payload";
 import config from '@payload-config';
-import { unstable_cache } from "next/cache";
 import { SiteSettingsContext } from "./context/SiteSettingsContext";
 import { Metadata } from "next";
 
@@ -20,20 +19,9 @@ async function getSiteSettingsData() {
   return result || null;
 }
 
-export const getCachedSiteSettings = unstable_cache(
-  // function with the request
-  async () => getSiteSettingsData(),
-  // key array to facilitate the finding of the cached data
-  ['site-settings-cache'], 
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ['global_site_settings'], 
-    revalidate: 86400, // auto-revalidate every 24 hours
-  }
-);
 
 export async function generateMetadata(): Promise<Metadata> {
-  const siteSettings = await getCachedSiteSettings();
+  const siteSettings = await getSiteSettingsData();
   const favicon = typeof siteSettings.favicon === 'object' ? siteSettings.favicon : null;
 
   return {
@@ -54,7 +42,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const siteSettingsData = (await getCachedSiteSettings());
+  const siteSettingsData = (await getSiteSettingsData());
 
   return (
     <html lang="en">

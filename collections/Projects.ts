@@ -6,25 +6,10 @@ import { SectionsBlock } from '../blocks/Sections';
 import { VideoBlock } from '../blocks/Video';
 import { ExternalLinkBlock } from '../blocks/ExternalLink';
 import { externalLinkTitleField } from '@/fields/externalLinkTitleField';
-import { revalidateTag } from 'next/cache';
 
 export const Projects: CollectionConfig = {
   slug: "projects",
   orderable: true,
-  hooks: {
-    // event triggered when the content is changed (hit save button) 
-    afterChange: [
-      ({ doc, req }) => {
-        // safety check: avoid hitting the Next.js Cache API during bulk DB scripts or migrations
-        if (req.context?.skipRevalidate) return doc;
-
-        // when the data is saved on the MongoDB, immediately clear this specific cache tag in the front
-        revalidateTag('collection_projects', { expire: 0 }); 
-
-        return doc;
-      },
-    ],
-  },
   admin: {
     // title in admin
     useAsTitle: "title",

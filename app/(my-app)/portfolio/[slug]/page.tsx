@@ -4,7 +4,6 @@ import CardTextMedia from "@/app/(my-app)/ui/card-text-media";
 import { Suspense } from "react";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { unstable_cache } from "next/cache";
 import { Category, Project, Tag } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Metadata } from "next";
@@ -36,6 +35,7 @@ async function getProjectsByCategorySlug(slug: string): Promise<Project[]> {
   const result = await payload.find({
     collection: "projects",
     sort: "_order",
+    limit: 0, // payload defaults to 10 doc per page
     where: {
       // look for slug inside categories
       "category.slug": {
@@ -48,30 +48,6 @@ async function getProjectsByCategorySlug(slug: string): Promise<Project[]> {
   return result.docs;
 }
 
-export const getCachedCategoryBySlug = unstable_cache(
-  // function with the request
-  async (slug: string) => getCategoryBySlug(slug),
-  // key array to facilitate the finding of the cached data
-  ["category-by-slug-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["collection_categories"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
-
-export const getCachedProjectsByCategorySlug = unstable_cache(
-  // function with the request
-  async (slug: string) => getProjectsByCategorySlug(slug),
-  // key array to facilitate the finding of the cached data
-  ["projects-by-category-slug-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["collection_projects"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
-
 export async function generateMetadata({
   params,
 }: {
@@ -79,7 +55,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
-  const category = await getCachedCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
 
   if (!category) {
     return { title: "Project Not Found" };
@@ -116,8 +92,8 @@ export default async function PortfolioPage({
 
   // get both queries data at the same time using Promise.all
   const [category, projects] = await Promise.all([
-    getCachedCategoryBySlug(slug),
-    getCachedProjectsByCategorySlug(slug),
+    getCategoryBySlug(slug),
+    getProjectsByCategorySlug(slug),
   ]);
 
   if (!category) {

@@ -1,6 +1,5 @@
 import { getPayload } from "payload";
 import config from '@payload-config';
-import { unstable_cache } from "next/cache";
 import { Metadata } from 'next'
 
 import SectionContent from "../ui/section-content";
@@ -16,20 +15,8 @@ async function getAboutMeData() {
   return result || null;
 }
 
-export const getCachedAboutMeData = unstable_cache(
-  // function with the request
-  async () => getAboutMeData(),
-  // key array to facilitate the finding of the cached data
-  ["about-me-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["global_about_me"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
-
 export async function generateMetadata(): Promise<Metadata> {
-  const aboutMe = await getCachedAboutMeData();
+  const aboutMe = await getAboutMeData();
   
   return {
     title: aboutMe.meta?.title || aboutMe.title,
@@ -44,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const aboutData = (await getCachedAboutMeData());
+  const aboutData = (await getAboutMeData());
 
   return (
     <div className="flex flex-col w-full items-center bg-white">

@@ -1,7 +1,6 @@
 
 import { getPayload } from "payload";
 import config from '@payload-config';
-import { unstable_cache } from "next/cache";
 
 import SectionContent from "../ui/section-content";
 import { Metadata } from 'next'
@@ -17,20 +16,9 @@ async function getContactData() {
   return result || null;
 }
 
-export const getCachedContactData = unstable_cache(
-  // function with the request
-  async () => getContactData(),
-  // key array to facilitate the finding of the cached data
-  ["contact-cache"],
-  // tag name to eventually clear it when data changes on the db
-  {
-    tags: ["global_contact"],
-    revalidate: 86400, // auto-revalidate every 24 hours
-  },
-);
 
 export async function generateMetadata(): Promise<Metadata> {
-  const contact = await getCachedContactData();
+  const contact = await getContactData();
   
   return {
     title: contact.meta?.title || contact.title,
@@ -45,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const contactData = await (getCachedContactData());
+  const contactData = await (getContactData());
 
   return (
     <div className="flex flex-col w-full items-center bg-white">
