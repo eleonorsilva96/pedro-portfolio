@@ -4,9 +4,11 @@ import { Service } from "@/payload-types";
 
 // add boolean for the border and shadow
 export default function CardService({
-    data
+    data,
+    priority,
 } : {
     data: null | Service,
+    priority?: boolean,
 }) {
   if (!data) return null;
 
@@ -24,6 +26,7 @@ export default function CardService({
             width={typeof data.image === 'object' && data.image.width || undefined}
             height={typeof data.image === 'object' && data.image.height || undefined}
             alt={typeof data.image === 'object' && data.image.alt || data.title}
+            priority={priority}
           />
       </div>
           <h3 className={clsx(

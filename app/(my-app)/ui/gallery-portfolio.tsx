@@ -34,7 +34,7 @@ export default function GalleryPortfolio({
 
   return (
     <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-[repeat(4,minmax(0,1fr))] gap-4">
-      {data.map((item) => {
+      {data.map((item, index) => {
         const params = new URLSearchParams(searchParams); // use utility methods from API to manipulate the URL params
         let newUrl = null;
         const projectSlug = isProject(item) ? item.slug : null;
@@ -55,9 +55,9 @@ export default function GalleryPortfolio({
         return (
           <Link key={item?.id} href={newUrl} className="group">
             {isService(item) ? (
-              <CardService data={item} />
+              <CardService data={item} priority={index === 0} />
             ) : (
-              <CardPortfolio item={item} />
+              <CardPortfolio item={item} priority={index === 0} />
             )}
           </Link>
         );

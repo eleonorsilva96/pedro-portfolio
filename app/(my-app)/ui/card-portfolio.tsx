@@ -5,8 +5,11 @@ import clsx from "clsx";
 
 export default function CardPortfolio({
   item,
+  priority,
 }: {
   item: (null | Project | NonNullable<ImagesBlock['images']>[number]);
+  /** First visible grid tile: improves LCP for above-the-fold thumbnails */
+  priority?: boolean;
 }) {
   if (!item) return null;
 
@@ -28,6 +31,7 @@ export default function CardPortfolio({
       )}
     >
       <ImageSkeleton
+        priority={priority}
         src={projectImage?.url || imageBlock?.url || ''}
         width={projectImage?.width || imageBlock?.width || undefined}
         height={projectImage?.height || imageBlock?.height || undefined}
