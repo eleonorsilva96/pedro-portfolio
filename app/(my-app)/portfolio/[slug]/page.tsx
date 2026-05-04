@@ -123,14 +123,22 @@ export default async function PortfolioPage({
     notFound();
   }
 
-  const tagsById = new Map<string, Tag>();
+  const allTags: (string | Tag)[] = [];
   for (const project of projects) {
-    for (const tagItem of project.tag ?? []) {
-      if (typeof tagItem !== "object" || !tagItem.id) continue;
-      tagsById.set(tagItem.id, tagItem);
+    if (project.tag) {
+      for (const tagItem of project.tag) {
+        // avoid duplicated filter tags for each project object
+        if (
+          typeof tagItem === "object" &&
+          !allTags.some(
+            (tag) => typeof tag === "object" && tag.id === tagItem.id,
+          )
+        ) {
+          allTags.push(tagItem);
+        }
+      }
     }
   }
-  const allTags = Array.from(tagsById.values());
 
   const getVisibleProjects = projects.filter(
     (project) => project.hideProject === false,
