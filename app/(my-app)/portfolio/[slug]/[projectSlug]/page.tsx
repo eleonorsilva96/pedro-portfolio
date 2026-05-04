@@ -30,6 +30,7 @@ async function getProjects(slug: string): Promise<Project[]> {
 
   const result = await payload.find({
     collection: "projects",
+    sort: "_order",
     where: {
       // look for slug inside categories
       "category.slug": {

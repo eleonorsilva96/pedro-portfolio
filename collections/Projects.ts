@@ -10,6 +10,7 @@ import { revalidateTag } from 'next/cache';
 
 export const Projects: CollectionConfig = {
   slug: "projects",
+  orderable: true,
   hooks: {
     // event triggered when the content is changed (hit save button) 
     afterChange: [
