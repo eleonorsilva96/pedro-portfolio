@@ -51,10 +51,9 @@ export default async function Slide({
       </span>
       <span className="font-bold">
         Contexto:{" "}
-        <span className="font-normal">
+        <div className="font-normal">
           {projectDetails?.context && <RichText data={projectDetails.context} className="rich-text" />}
-
-        </span>
+        </div>
       </span>
       <span className="font-bold">
         Data:{" "}
