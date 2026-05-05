@@ -1,6 +1,5 @@
 "use client";
 
-import { GalleryItemsProjectBlock } from "@/app/(my-app)/lib/definitions";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import ReactPlayer from "react-player";

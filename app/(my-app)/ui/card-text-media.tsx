@@ -3,10 +3,8 @@
 import clsx from "clsx";
 import { Category } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import ReactPlayer from "react-player";
 
-import dynamic from 'next/dynamic';
-
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 // pull the link block type from Category, enter blogGroup type using NonNullable to strip away null 
 // and then enter blogList array type using again NonNullable 
