@@ -171,10 +171,10 @@ export default async function PortfolioPage({
   ) : (
     <>
       {musicBlogList}
-      <div className="flex justify-center w-full mt-8 py-14 bg-neutral-400/50 ">
+      <div className="flex justify-center w-full mt-20 lg:mt-24 py-14 bg-neutral-400/50 ">
         {/* use Payload rich text renderer to render the lexical rich text object */}
         {musicCTA && (
-          <RichText data={musicCTA} className="rich-text text-4xl" />
+          <RichText data={musicCTA} className="rich-text text-4xl text-center" />
         )}
       </div>
     </>

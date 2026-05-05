@@ -31,7 +31,7 @@ export default function CardPortfolio({
       )}
     >
       <ImageSkeleton
-        priority={priority}
+        preload={priority}
         src={projectImage?.url || imageBlock?.url || ''}
         width={projectImage?.width || imageBlock?.width || undefined}
         height={projectImage?.height || imageBlock?.height || undefined}
@@ -44,7 +44,7 @@ export default function CardPortfolio({
         removeOpacity={!isProject(item)}
       />
       <div className={clsx(
-        "absolute opacity-0 group-hover:opacity-100 inset-0 flex items-center justify-center transition-opacity duration-300",
+        "absolute opacity-0 group-hover:opacity-100 inset-0 p-4 flex items-center justify-center transition-opacity duration-300",
         {
           'hidden': !isProject(item),
         }

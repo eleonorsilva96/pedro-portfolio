@@ -1,9 +1,12 @@
 "use client";
 
-import ReactPlayer from "react-player";
 import clsx from "clsx";
 import { Category } from "@/payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
+
+import dynamic from 'next/dynamic';
+
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 // pull the link block type from Category, enter blogGroup type using NonNullable to strip away null 
 // and then enter blogList array type using again NonNullable 
@@ -82,10 +85,10 @@ export default function CardTextMedia({
 
   return (
     <div
-      className="flex flex-col w-full h-auto mt-14 px-4"
+      className="flex flex-col w-full h-auto mt-14 lg:mt-20 px-4"
     >
       <div
-        className="w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 rounded"
+        className="w-1/5 h-[1.2px] bg-neutral-500 mx-auto mb-14 lg:mb-20 rounded"
       ></div>
       <div
         className="flex flex-col lg:flex-row w-full items-center bg-transparent justify-center gap-7 md:gap-11"
