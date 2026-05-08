@@ -42,7 +42,7 @@ export default function CardTextImage({
       <h1 className="text-4xl 2xl:text-5xl lg:w-xl md:text-[44px] text-center">{title}</h1>
       <div className="w-7 h-[4px] bg-primary-500 mx-auto my-4"></div>
 
-      <div className="text-base md:text-lg lg:text-[22px] max-w-[55ch] px-4 text-center">{desc}</div>
+      <div className="text-base md:text-lg lg:text-[22px] max-w-[55ch] px-4 text-left">{desc}</div>
 
       {btnLabel ? (
         <a

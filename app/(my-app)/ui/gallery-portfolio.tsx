@@ -5,6 +5,7 @@ import CardPortfolio from "@/app/(my-app)/ui/card-portfolio";
 import { useSearchParams, usePathname } from "next/navigation";
 import { Project, Service } from "@/payload-types";
 import CardService from "./card-service";
+import Masonry from "react-masonry-css";
 
 // get me the types of single elements inside multipleContent block (is an array)
 export type MultipleContentBlock = NonNullable<Project['multipleContent']>[number];
@@ -24,6 +25,12 @@ export default function GalleryPortfolio({
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
+  const breakpointColumns = {
+    default: 3,
+    1024: 2,
+    640: 1,
+  };
+
   function isProject(item: Project | NonNullable<ImagesBlock['images']>[number] | Service): item is Project {
     return 'slug' in item && 'category' in item;
   }
@@ -33,7 +40,11 @@ export default function GalleryPortfolio({
   }
 
   return (
-    <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-[repeat(4,minmax(0,1fr))] gap-4">
+    <Masonry
+      breakpointCols={breakpointColumns}
+      className="flex gap-4"
+      columnClassName="flex flex-col gap-4"
+    >
       {data.map((item, index) => {
         const params = new URLSearchParams(searchParams); // use utility methods from API to manipulate the URL params
         let newUrl = null;
@@ -62,6 +73,6 @@ export default function GalleryPortfolio({
           </Link>
         );
       })}
-    </div>
+    </Masonry>
   );
 }
