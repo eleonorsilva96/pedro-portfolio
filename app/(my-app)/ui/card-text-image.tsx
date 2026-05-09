@@ -15,12 +15,14 @@ interface PayloadImage {
 export default function CardTextImage({
   title,
   desc,
+  textAlign,
   btnLabel,
   image,
   formRef,
 }: {
   title: string;
   desc?: ReactNode; // to load Payload <RichText />
+  textAlign?: string; 
   btnLabel?: string;
   image?: PayloadImage | null;
   formRef?: RefObject<HTMLDivElement | null>;
@@ -42,7 +44,7 @@ export default function CardTextImage({
       <h1 className="text-4xl 2xl:text-5xl lg:w-xl md:text-[44px] text-center">{title}</h1>
       <div className="w-7 h-[4px] bg-primary-500 mx-auto my-4"></div>
 
-      <div className="text-base md:text-lg lg:text-[22px] max-w-[55ch] px-4 text-left">{desc}</div>
+      <div className={`text-base md:text-lg lg:text-[22px] max-w-[55ch] px-4 text-${textAlign}`}>{desc}</div>
 
       {btnLabel ? (
         <a

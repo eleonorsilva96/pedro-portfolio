@@ -25,6 +25,7 @@ export default function SectionContent({
       <CardTextImage
         title={content.title}
         desc={description}
+        textAlign="left"
         btnLabel={content.docType === 'Service' ? "Quero um orçamento" : undefined}
         image={typeof content.image === 'object' ? content.image : null} // check if is a object (media type)
         formRef={formRef}

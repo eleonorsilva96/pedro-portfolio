@@ -49,6 +49,7 @@ export default function HomeContent({
       <CardTextImage
         title={homepageData.aboutSection.title}
         desc={homepageData.aboutSection.description}
+        textAlign="center"
         btnLabel={homepageData.aboutSection.buttonText}
         image={
           (typeof homepageData.aboutSection.image === "object" &&
