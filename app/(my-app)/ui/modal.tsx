@@ -219,7 +219,7 @@ export default function Modal({
       <div className="w-full h-auto lg:max-w-[900px] xl:max-w-[1400px] 2xl:max-w-[1800px] flex flex-col lg:flex-row px-4 gap-8 justify-center items-center lg:items-start">
         <div
           className={clsx("w-full h-auto", {
-            "xl:max-w-5xl 2xl:max-w-6xl": isProject,
+            "xl:max-w-3xl": isProject,
             "aspect-video xl:max-w-5xl 2xl:max-w-6xl": isSection(content),
             "max-w-lg":
               (isImage(content) || isImageSection(content)) && vertical,
