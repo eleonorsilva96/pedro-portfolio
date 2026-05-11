@@ -2,10 +2,13 @@ import type { GlobalConfig } from "payload";
 
 import { videoField } from "@/fields/videoFields";
 import { imageField } from "@/fields/imageField";
-
+import { revalidateGlobal } from '@/app/(my-app)/lib/hooks';
 
 export const Homepage: GlobalConfig = {
   slug: "homepage",
+  hooks: {
+    afterChange: [revalidateGlobal('/')],
+  },
   fields: [
     {
       ...videoField, // unpack all default properties to add a new one

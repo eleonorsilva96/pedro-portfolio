@@ -3,9 +3,16 @@ import { slugField } from '@/fields/slugField';
 
 import { VideoBlock } from '../blocks/Video';
 import { ExternalLinkBlock } from '../blocks/ExternalLink';
+import { revalidateCollectionAfterChange, revalidateCollectionAfterDelete } from '@/app/(my-app)/lib/hooks';
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  hooks: {
+    // triggers on the create and update
+    afterChange: [revalidateCollectionAfterChange('/portfolio')],
+    // ensure don't show empty data
+    afterDelete: [revalidateCollectionAfterDelete('/portfolio')],
+  },
   admin: {
     // title in admin
     useAsTitle: 'title',

@@ -12,7 +12,7 @@ import PrevNextButtons from "./prev-next-buttons";
 import { ImagesBlock } from "./gallery-portfolio";
 import { SectionsBlock } from "./sections";
 import ReactPlayer from "react-player";
-import { useScrollLock } from "../lib/hooks";
+import { useScrollLock } from "../lib/utils";
 
 export default function Modal({
   modalContent,

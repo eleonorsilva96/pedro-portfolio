@@ -6,9 +6,16 @@ import { SectionsBlock } from '../blocks/Sections';
 import { VideoBlock } from '../blocks/Video';
 import { ExternalLinkBlock } from '../blocks/ExternalLink';
 import { externalLinkTitleField } from '@/fields/externalLinkTitleField';
+import { revalidateCollectionAfterChange, revalidateCollectionAfterDelete } from '@/app/(my-app)/lib/hooks';
 
 export const Projects: CollectionConfig = {
   slug: "projects",
+  hooks: {
+    // triggers on the create and update
+    afterChange: [revalidateCollectionAfterChange('/portfolio')],
+    // ensure don't show empty data
+    afterDelete: [revalidateCollectionAfterDelete('/portfolio')],
+  },
   orderable: true,
   admin: {
     // title in admin

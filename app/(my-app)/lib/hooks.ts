@@ -1,18 +1,33 @@
-import { useEffect } from "react"
+import { revalidatePath } from "next/cache";
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, GlobalAfterChangeHook } from "payload";
 
-export const useScrollLock = (element: boolean) => {
-    useEffect(() => {
-        // remove scroll from body if element/modal shows up
-        if (element) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        
-        // reset when component unmounts 
-        return () => {
-            document.body.style.overflow = '';
-        };
+// this way we type the function so it knows what to expect 
+// for the input and output using CollectionAfterChangeHook, GlobalAfterChangeHook, etc 
+export const revalidateCollectionAfterChange = (path: string): CollectionAfterChangeHook => {
+    // Destructures the doc from the Payload data
+    return ({ doc }) => {
+        // Invalidates the specific page cache so the Next server fetches data again from the CMS
+        revalidatePath(path)
 
-    }, [element]) // re-run
+        return doc
+    }
+}
+export const revalidateCollectionAfterDelete = (path: string): CollectionAfterDeleteHook => {
+    // Destructures the doc from the Payload data
+    return ({ doc }) => {
+        console.log(`collection delete path: ${path}`) 
+        // Invalidates the specific page cache so the Next server fetches data again from the CMS
+        revalidatePath(path)
+
+        return doc
+    }
+}
+export const revalidateGlobal = (path: string): GlobalAfterChangeHook => {
+    // Destructures the doc from the Payload data
+    return ({ doc }) => {
+        // Invalidates the specific page cache so the Next server fetches data again from the CMS
+        revalidatePath(path)
+
+        return doc
+    }
 }

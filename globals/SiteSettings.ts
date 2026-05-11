@@ -1,9 +1,13 @@
 import type { GlobalConfig } from "payload";
 import { headerFields } from "@/fields/headerFields";
 import { footerFields } from "@/fields/footerFields";
+import { revalidateGlobal } from '@/app/(my-app)/lib/hooks';
 
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
+  hooks: {
+    afterChange: [revalidateGlobal('/')],
+  },
   access: {
     read: () => true,
   },
