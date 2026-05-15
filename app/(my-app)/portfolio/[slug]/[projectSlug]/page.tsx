@@ -30,6 +30,7 @@ async function getProjects(slug: string): Promise<Project[]> {
   const result = await payload.find({
     collection: "projects",
     sort: "_order",
+    limit: 0, // payload defaults to 10 doc per page
     where: {
       // look for slug inside categories
       "category.slug": {
@@ -91,11 +92,6 @@ export default async function ProjectPage({
   const visibleProjects = projects.filter(
     (project) => project.hideProject === false,
   );
-
-  console.log("Project By Id Data");
-  console.log(project);
-  console.log("Projects");
-  console.log(visibleProjects);
 
   const sectionsBlock = project?.multipleContent?.find((block) => block.blockType === "SectionsBlock");
   const sectionLinkBlock = sectionsBlock?.sections?.find((section) => section.sectionContent?.find((block) => block.blockType === 'externalLinkTitleBlock' && block.id === id))
