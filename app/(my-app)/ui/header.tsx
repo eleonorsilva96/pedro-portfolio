@@ -273,7 +273,7 @@ export default function Header({ data }: { data: SiteSetting["header"] }) {
           </div>
           {/* about me */}
           <Link
-            href={`/${data.aboutMeGroup.url ? data.aboutMeGroup.url : null}`}
+            href={`${data.aboutMeGroup.url ? data.aboutMeGroup.url : null}`}
             onClick={() => setShow(false)}
             className="w-full py-2 px-3 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
           >
@@ -281,7 +281,7 @@ export default function Header({ data }: { data: SiteSetting["header"] }) {
           </Link>
           {/* contact */}
           <Link
-            href={`/${data.contactGroup.url ? data.contactGroup.url : null}`}
+            href={`${data.contactGroup.url ? data.contactGroup.url : null}`}
             onClick={() => setShow(false)}
             className="w-full py-2 px-3 text-heading rounded hover:bg-gray-300 active:bg-gray-300"
           >
